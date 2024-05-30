@@ -1,0 +1,27 @@
+[versions]
+agp = "8.2.2"
+androidx-activityCompose = "1.9.0"
+androidx-ui-tooling = "1.6.7"
+compose-plugin = "1.6.2"
+koin = "3.5.3"
+kotlin = "1.9.23"
+decompose = "2.2.0-alpha03"
+extensionsComposeJetbrains = "2.1.4-compose-experimental"
+kotlinxSerializationJson = "1.6.1"
+okio = "3.9.0"
+
+[libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-ui-tooling" }
+androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidx-ui-tooling" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "extensionsComposeJetbrains" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
