@@ -44,8 +44,8 @@ fun App() {
                 is RootComponent.Child.TestScreen -> ScreenB()
             }
         }
-        Modal(title = "Test", type = ModalType.WARNING, ok = true) {
-            Text("Meine Parenten sind am Ende mit der Rente")
+        Modal(title = "Test", type = ModalType.INFO, ok = true) {
+            Text("This is just an experiment")
         }
     }
 }

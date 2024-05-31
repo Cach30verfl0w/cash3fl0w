@@ -18,6 +18,7 @@ package de.cacheoverflow.cashflow.ui
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -46,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 
 enum class ModalType {
@@ -60,18 +62,19 @@ fun Modal(
     onDismiss: () -> Unit = {},
     title: String,
     type: ModalType,
-    width: Dp = 400.dp,
+    width: Dp = 300.dp,
+    maxModalWidth: Float = 0.75f,
     dismiss: Boolean = true,
     ok: Boolean = false,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         Surface(
             tonalElevation = 1.dp,
             modifier = Modifier
                 .align(Alignment.Center)
                 .clip(RoundedCornerShape(8.dp))
-                .width(width)
+                .width(min(maxWidth * maxModalWidth, width))
                 .border(Dp.Hairline, Color.Black, RoundedCornerShape(8.dp))
         ) {
             Column(modifier = Modifier.padding(15.dp)) {
@@ -92,12 +95,12 @@ fun Modal(
                     )
                 }
                 content()
-                Row(modifier = Modifier.padding(PaddingValues(top = 5.dp))) {
+                Row(modifier = Modifier.padding(PaddingValues(top = 10.dp))) {
                     if (dismiss) {
                         IconButton(
                             onClick = onDismiss,
                             modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.primary,
-                                RoundedCornerShape(6.dp)).clip(RoundedCornerShape(6.dp))
+                                RoundedCornerShape(6.dp))
                         ) {
                             Icon(Icons.Filled.Close, "Close")
                         }
@@ -108,7 +111,7 @@ fun Modal(
                         IconButton(
                             onClick = onOk,
                             modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.primary,
-                                RoundedCornerShape(6.dp)).clip(RoundedCornerShape(6.dp))
+                                RoundedCornerShape(6.dp))
                         ) {
                             Icon(Icons.Filled.Check, "Close")
                         }
