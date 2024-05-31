@@ -29,7 +29,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Screenshot
+import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +40,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -47,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import de.cacheoverflow.cashflow.ui.SettingsGroup
+import de.cacheoverflow.cashflow.ui.ToggleSetting
 
 enum class Menu {
     HOME,
@@ -67,23 +72,37 @@ fun Accounts() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings() {
+    val boolState = remember { mutableStateOf(false) }
+    val boolState2 = remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(title = {
                 Text(
                     text = "Settings",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White
                 )
-            })
+            }, colors = TopAppBarDefaults.topAppBarColors()
+                .copy(containerColor = Color(0xff676767)))
         }
     ) {
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()).padding(it).padding(16.dp)
         ) {
-            SettingsGroup(name = "First") {
-                Text("Hello World")
+            SettingsGroup(icon = Icons.Filled.Security, name = "Security") {
+                ToggleSetting(
+                    name = "Block screenshots",
+                    description = "Disable in-app screenshot to protect bank/financial " +
+                            "information. This feature is only working on mobile devices.",
+                    state = boolState,
+                    icon = Icons.Filled.Screenshot,
+                    onToggle = {
+                        // TODO: Toggle screenshots for this application
+                    }
+                )
             }
-            SettingsGroup(name = "Second") {
+            SettingsGroup(icon = Icons.Filled.Visibility, name = "Second") {
                 Text("Hello World")
             }
         }
