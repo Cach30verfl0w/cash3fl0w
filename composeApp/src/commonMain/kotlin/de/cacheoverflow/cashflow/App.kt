@@ -19,17 +19,24 @@ package de.cacheoverflow.cashflow
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -38,6 +45,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import de.cacheoverflow.cashflow.ui.SettingsGroup
 
 enum class Menu {
     HOME,
@@ -55,9 +64,30 @@ fun Accounts() {
     Text("Accounts")
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings() {
-    Text("Settings")
+    Scaffold(
+        topBar = {
+            TopAppBar(title = {
+                Text(
+                    text = "Settings",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            })
+        }
+    ) {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()).padding(it).padding(16.dp)
+        ) {
+            SettingsGroup(name = "First") {
+                Text("Hello World")
+            }
+            SettingsGroup(name = "Second") {
+                Text("Hello World")
+            }
+        }
+    }
 }
 
 @Composable
