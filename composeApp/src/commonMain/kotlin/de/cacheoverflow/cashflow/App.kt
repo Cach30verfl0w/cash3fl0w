@@ -52,6 +52,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import de.cacheoverflow.cashflow.ui.SettingsGroup
 import de.cacheoverflow.cashflow.ui.ToggleSetting
+import de.cacheoverflow.cashflow.utils.disableScreenshots
+import de.cacheoverflow.cashflow.utils.enableScreenshots
 
 enum class Menu {
     HOME,
@@ -72,8 +74,7 @@ fun Accounts() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings() {
-    val boolState = remember { mutableStateOf(false) }
-    val boolState2 = remember { mutableStateOf(false) }
+    val boolState = remember { mutableStateOf(true) }
 
     Scaffold(
         topBar = {
@@ -97,8 +98,11 @@ fun Settings() {
                             "information. This feature is only working on mobile devices.",
                     state = boolState,
                     icon = Icons.Filled.Screenshot,
-                    onToggle = {
-                        // TODO: Toggle screenshots for this application
+                    onToggle = { screenshotsEnabled ->
+                        when (screenshotsEnabled) {
+                            true -> disableScreenshots()
+                            false -> enableScreenshots()
+                        }
                     }
                 )
             }

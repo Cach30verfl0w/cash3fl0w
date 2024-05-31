@@ -73,7 +73,7 @@ fun SettingsGroup(icon: ImageVector? = null, name: String, content: @Composable 
 fun ToggleSetting(
     name: String,
     description: String? = null,
-    onToggle: () -> Unit = {},
+    onToggle: (Boolean) -> Unit = {},
     icon: ImageVector? = null,
     iconDescription: String? = null,
     state: MutableState<Boolean>
@@ -109,7 +109,7 @@ fun ToggleSetting(
                 checked = state.value,
                 onCheckedChange = {
                     state.value = it
-                    onToggle()
+                    onToggle(it)
                 }
             )
         }
