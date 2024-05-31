@@ -28,11 +28,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Screenshot
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import de.cacheoverflow.cashflow.ui.ClickSetting
 import de.cacheoverflow.cashflow.ui.SettingsGroup
 import de.cacheoverflow.cashflow.ui.ToggleSetting
 import de.cacheoverflow.cashflow.utils.disableScreenshots
@@ -71,6 +72,7 @@ fun Accounts() {
     Text("Accounts")
 }
 
+// TODO: Make production-ready settings screen and move into separate class
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings() {
@@ -99,15 +101,23 @@ fun Settings() {
                     state = boolState,
                     icon = Icons.Filled.Screenshot,
                     onToggle = { screenshotsEnabled ->
+                        // TODO: After restructure apply setting before start of app (= optionally
+                        //  disable screenshots if configured so)
                         when (screenshotsEnabled) {
                             true -> disableScreenshots()
                             false -> enableScreenshots()
                         }
                     }
                 )
-            }
-            SettingsGroup(icon = Icons.Filled.Visibility, name = "Second") {
-                Text("Hello World")
+                ClickSetting(
+                    icon = Icons.Filled.DeleteForever,
+                    highlightColor = Color.Red,
+                    description = "Delete all app data stored on your phone",
+                    name = "Delete all data",
+                    onClick = {
+                        // TODO: Show modal with confirmation and then delete all data
+                    }
+                )
             }
         }
     }
@@ -115,7 +125,7 @@ fun Settings() {
 
 @Composable
 fun App() {
-    var currentMenu by remember { mutableStateOf(Menu.HOME) }
+    var currentMenu by remember { mutableStateOf(Menu.SETTINGS) } // TODO: Change to home
     MaterialTheme {
         Box {
             when(currentMenu) {

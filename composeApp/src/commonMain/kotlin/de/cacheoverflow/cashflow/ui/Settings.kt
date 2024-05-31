@@ -16,7 +16,6 @@
 
 package de.cacheoverflow.cashflow.ui
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,10 +23,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.rounded.KeyboardDoubleArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -70,6 +70,57 @@ fun SettingsGroup(icon: ImageVector? = null, name: String, content: @Composable 
 }
 
 @Composable
+fun ClickSetting(
+    name: String,
+    highlightColor: Color = Color.Unspecified,
+    description: String? = null,
+    onClick: () -> Unit,
+    icon: ImageVector? = null,
+    iconDescription: String? = null
+) {
+    val showModal = remember { mutableStateOf(false) }
+    Surface(
+        color = Color.Transparent,
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (icon != null) {
+                Icon(
+                    icon,
+                    contentDescription = iconDescription,
+                    modifier = Modifier.size(25.dp),
+                    tint = highlightColor
+                )
+            }
+            Text(
+                text = name,
+                color = highlightColor,
+                modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp),
+            )
+            if (description != null) {
+                IconButton(
+                    onClick = {
+                        showModal.value = !showModal.value
+                    }
+                ) {
+                    Icon(Icons.Filled.Info, "Information")
+                }
+                Modal(title = name, type = ModalType.INFO, visible = showModal) {
+                    Text(description)
+                }
+            }
+            Spacer(modifier = Modifier.weight(1.0f))
+            Icon(
+                Icons.Rounded.KeyboardDoubleArrowRight,
+                tint = highlightColor,
+                contentDescription = null
+            )
+        }
+    }
+}
+
+@Composable
 fun ToggleSetting(
     name: String,
     description: String? = null,
@@ -79,32 +130,38 @@ fun ToggleSetting(
     state: MutableState<Boolean>
 ) {
     val showModal = remember { mutableStateOf(false) }
-    Column {
-        Row(
-            modifier = Modifier.padding(start = 5.dp, end = 35.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                if (icon != null) {
-                    Icon(icon, iconDescription)
-                    Spacer(Modifier.width(8.dp))
-                }
-                Text(name)
-                if (description != null) {
-                    IconButton(
-                        onClick = {
-                            showModal.value = !showModal.value
-                        }
-                    ) {
-                        Icon(Icons.Filled.Info, "Information")
-                    }
-                    Modal(title = name, type = ModalType.INFO, visible = showModal) {
-                        Text(description)
-                    }
-                }
-                Spacer(Modifier.weight(1f))
+    Surface(
+        color = Color.Transparent,
+        modifier = Modifier.fillMaxWidth(),
+        onClick = {
+            state.value = !state.value
+            onToggle(state.value)
+        }
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (icon != null) {
+                Icon(
+                    icon,
+                    contentDescription = iconDescription
+                )
             }
+            Text(
+                text = name,
+                modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp),
+            )
+            if (description != null) {
+                IconButton(
+                    onClick = {
+                        showModal.value = !showModal.value
+                    }
+                ) {
+                    Icon(Icons.Filled.Info, "Information")
+                }
+                Modal(title = name, type = ModalType.INFO, visible = showModal) {
+                    Text(description)
+                }
+            }
+            Spacer(Modifier.weight(1f))
             Switch(
                 checked = state.value,
                 onCheckedChange = {
