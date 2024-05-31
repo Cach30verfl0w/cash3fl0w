@@ -1,7 +1,7 @@
 # Cash3Fl0w
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Cash3Fl0w is a finance software developed with Kotlin Multiplatform for mobile devices. This application supports FinTS/HBCI to access information from German banking accounts.
+Cash3Fl0w is a finance software developed with Kotlin Multiplatform for mobile devices. This application supports FinTS/HBCI to access information from German banking accounts. This application doesn't use any centralized storage or third-party environment to execute requests etc. Only your handy is used.
 
 ## HBCI/FinTS Support
 This application supports the FinTS protocol (formally known as HBCI) specified by the [German Banking Industry Committee](https://die-dk.de/) with support for over 2000 banks in Germany. But [since 2019 the protocol can only be used with authorized products](https://www.hbci-zka.de/register/register_faq.htm). Before you can use the FinTS support, you have to:
