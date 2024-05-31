@@ -16,49 +16,88 @@
 
 package de.cacheoverflow.cashflow
 
-import androidx.compose.material3.Button
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.stack.pushNew
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import de.cacheoverflow.cashflow.navigation.RootComponent
-import de.cacheoverflow.cashflow.ui.Modal
-import de.cacheoverflow.cashflow.ui.ModalType
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+
+enum class Menu {
+    HOME,
+    ACCOUNTS,
+    SETTINGS
+}
+
+@Composable
+fun Home() {
+    Text("Home")
+}
+
+@Composable
+fun Accounts() {
+    Text("Accounts")
+}
+
+@Composable
+fun Settings() {
+    Text("Settings")
+}
 
 @Composable
 fun App() {
-    val root = RootComponent(DefaultComponentContext(LifecycleRegistry()))
+    var currentMenu by remember { mutableStateOf(Menu.HOME) }
     MaterialTheme {
-        val childStack by root.childStack.subscribeAsState()
-        Children(stack = childStack, animation = stackAnimation(fade())) {
-            child -> when(child.instance) {
-                is RootComponent.Child.MainScreen -> ScreenA(root)
-                is RootComponent.Child.TestScreen -> ScreenB()
+        Box {
+            when(currentMenu) {
+                Menu.HOME -> Home()
+                Menu.ACCOUNTS -> Accounts()
+                Menu.SETTINGS -> Settings()
             }
         }
-        Modal(title = "Test", type = ModalType.INFO, ok = true) {
-            Text("This is just an experiment")
+        Box(contentAlignment = Alignment.BottomStart, modifier = Modifier.fillMaxSize()) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth().background(Color(0xffc4c4c4))
+            ) {
+                IconButton(
+                    onClick = { currentMenu = Menu.HOME },
+                    modifier = Modifier.weight(1.0f),
+                    enabled = currentMenu != Menu.HOME
+                ) {
+                    Icon(Icons.Filled.Home, "Home")
+                }
+                IconButton(
+                    onClick = { currentMenu = Menu.ACCOUNTS },
+                    modifier = Modifier.weight(1.0f),
+                    enabled = currentMenu != Menu.ACCOUNTS
+                ) {
+                    Icon(Icons.Filled.AccountBox, "Home")
+                }
+                IconButton(
+                    onClick = { currentMenu = Menu.SETTINGS },
+                    modifier = Modifier.weight(1.0f),
+                    enabled = currentMenu != Menu.SETTINGS
+                ) {
+                    Icon(Icons.Filled.Settings, "Home")
+                }
+            }
         }
     }
-}
-
-@Composable
-@OptIn(ExperimentalDecomposeApi::class)
-fun ScreenA(root: RootComponent) {
-    Button(onClick = { root.navigation.pushNew(RootComponent.Configuration.TestScreen) }) {
-        Text(text = "Test")
-    }
-}
-
-@Composable
-fun ScreenB() {
-    Text(text = "Second")
 }

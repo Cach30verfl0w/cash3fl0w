@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package de.cacheoverflow.cashflow.navigation
+package de.cacheoverflow.cashflow
 
-import com.arkivanov.decompose.ComponentContext
+import androidx.compose.ui.window.ComposeUIViewController
 
-class TestScreenComponent(
-    componentContext: ComponentContext
-): ComponentContext by componentContext {
-
+fun MainViewController() = ComposeUIViewController {
+    App()
 }
