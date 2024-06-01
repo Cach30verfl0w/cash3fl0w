@@ -30,6 +30,7 @@ kotlin {
             implementation(libs.androidx.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.decompose)
+            implementation(libs.koin.android)
         }
         iosMain.dependencies {
         }
@@ -42,6 +43,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
 
             implementation(libs.decompose)
             implementation(libs.decompose.jetbrains)

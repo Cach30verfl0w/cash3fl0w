@@ -42,19 +42,23 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import de.cacheoverflow.cashflow.store.CashFlowSettingsHolder
+import de.cacheoverflow.cashflow.store.EnumTheme
 import de.cacheoverflow.cashflow.ui.ClickSetting
 import de.cacheoverflow.cashflow.ui.SettingsGroup
 import de.cacheoverflow.cashflow.ui.ToggleSetting
+import de.cacheoverflow.cashflow.utils.DefaultColorScheme
 import de.cacheoverflow.cashflow.utils.disableScreenshots
 import de.cacheoverflow.cashflow.utils.enableScreenshots
+import org.koin.compose.getKoin
 
 enum class Menu {
     HOME,
@@ -77,6 +81,7 @@ fun Accounts() {
 @Composable
 fun Settings() {
     val boolState = remember { mutableStateOf(true) }
+    val settings = getKoin().get<CashFlowSettingsHolder>()
 
     Scaffold(
         topBar = {
@@ -84,10 +89,10 @@ fun Settings() {
                 Text(
                     text = "Settings",
                     style = MaterialTheme.typography.titleLarge,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }, colors = TopAppBarDefaults.topAppBarColors()
-                .copy(containerColor = Color(0xff676767)))
+                .copy(containerColor = MaterialTheme.colorScheme.primary))
         }
     ) {
         Column(
@@ -111,10 +116,10 @@ fun Settings() {
                 )
                 ClickSetting(
                     icon = Icons.Filled.DeleteForever,
-                    highlightColor = Color.Red,
                     description = "Delete all app data stored on your phone",
                     name = "Delete all data",
                     onClick = {
+                        settings.update { value -> value.copy(theme = EnumTheme.DARK) }
                         // TODO: Show modal with confirmation and then delete all data
                     }
                 )
@@ -126,7 +131,7 @@ fun Settings() {
 @Composable
 fun App() {
     var currentMenu by remember { mutableStateOf(Menu.SETTINGS) } // TODO: Change to home
-    MaterialTheme {
+    MaterialTheme(colorScheme = DefaultColorScheme) {
         Box {
             when(currentMenu) {
                 Menu.HOME -> Home()
@@ -137,28 +142,40 @@ fun App() {
         Box(contentAlignment = Alignment.BottomStart, modifier = Modifier.fillMaxSize()) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().background(Color(0xffc4c4c4))
+                modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondary)
             ) {
                 IconButton(
                     onClick = { currentMenu = Menu.HOME },
                     modifier = Modifier.weight(1.0f),
                     enabled = currentMenu != Menu.HOME
                 ) {
-                    Icon(Icons.Filled.Home, "Home")
+                    Icon(
+                        Icons.Filled.Home,
+                        "Home",
+                        tint = MaterialTheme.colorScheme.onSecondary
+                    )
                 }
                 IconButton(
                     onClick = { currentMenu = Menu.ACCOUNTS },
                     modifier = Modifier.weight(1.0f),
                     enabled = currentMenu != Menu.ACCOUNTS
                 ) {
-                    Icon(Icons.Filled.AccountBox, "Home")
+                    Icon(
+                        Icons.Filled.AccountBox,
+                        "Home",
+                        tint = MaterialTheme.colorScheme.onSecondary
+                    )
                 }
                 IconButton(
                     onClick = { currentMenu = Menu.SETTINGS },
                     modifier = Modifier.weight(1.0f),
                     enabled = currentMenu != Menu.SETTINGS
                 ) {
-                    Icon(Icons.Filled.Settings, "Home")
+                    Icon(
+                        Icons.Filled.Settings,
+                        "Home",
+                        tint = MaterialTheme.colorScheme.onSecondary
+                    )
                 }
             }
         }

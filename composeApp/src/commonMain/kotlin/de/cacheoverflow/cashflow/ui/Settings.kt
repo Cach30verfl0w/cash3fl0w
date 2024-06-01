@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -53,12 +54,13 @@ fun SettingsGroup(icon: ImageVector? = null, name: String, content: @Composable 
             }
             Text(
                 text = name,
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
             )
         }
         Spacer(modifier = Modifier.height(5.dp))
         Surface(
-            color = Color(0xffc4c4c4),
+            color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp)
         ) {
@@ -72,7 +74,6 @@ fun SettingsGroup(icon: ImageVector? = null, name: String, content: @Composable 
 @Composable
 fun ClickSetting(
     name: String,
-    highlightColor: Color = Color.Unspecified,
     description: String? = null,
     onClick: () -> Unit,
     icon: ImageVector? = null,
@@ -90,12 +91,12 @@ fun ClickSetting(
                     icon,
                     contentDescription = iconDescription,
                     modifier = Modifier.size(25.dp),
-                    tint = highlightColor
+                    tint = MaterialTheme.colorScheme.onSecondary
                 )
             }
             Text(
                 text = name,
-                color = highlightColor,
+                color = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp),
             )
             if (description != null) {
@@ -113,7 +114,7 @@ fun ClickSetting(
             Spacer(modifier = Modifier.weight(1.0f))
             Icon(
                 Icons.Rounded.KeyboardDoubleArrowRight,
-                tint = highlightColor,
+                tint = MaterialTheme.colorScheme.onSecondary,
                 contentDescription = null
             )
         }
@@ -142,11 +143,13 @@ fun ToggleSetting(
             if (icon != null) {
                 Icon(
                     icon,
-                    contentDescription = iconDescription
+                    contentDescription = iconDescription,
+                    tint = MaterialTheme.colorScheme.onSecondary
                 )
             }
             Text(
                 text = name,
+                color = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp),
             )
             if (description != null) {
@@ -155,7 +158,11 @@ fun ToggleSetting(
                         showModal.value = !showModal.value
                     }
                 ) {
-                    Icon(Icons.Filled.Info, "Information")
+                    Icon(
+                        Icons.Filled.Info,
+                        "Information",
+                        tint = MaterialTheme.colorScheme.onSecondary
+                    )
                 }
                 Modal(title = name, type = ModalType.INFO, visible = showModal) {
                     Text(description)
