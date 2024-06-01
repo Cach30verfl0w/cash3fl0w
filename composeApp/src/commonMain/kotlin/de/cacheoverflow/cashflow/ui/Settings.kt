@@ -70,11 +70,11 @@ fun Settings() {
                     name = disableScreenshots(),
                     description = disableScreenshotsDescription(),
                     state = boolState,
-                    icon = Icons.Filled.Screenshot,
                     onToggle = {
                         settings.update { settings -> settings.copy(screenshotsEnabled = !it) }
                     }
                 )
+
             }
         }
     }

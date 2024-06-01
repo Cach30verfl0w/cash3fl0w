@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
@@ -85,30 +84,27 @@ fun ClickSetting(
         onClick = onClick
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (icon != null) {
-                Icon(
-                    icon,
-                    contentDescription = iconDescription,
-                    modifier = Modifier.size(25.dp),
-                    tint = MaterialTheme.colorScheme.onSecondary
-                )
-            }
-            Text(
-                text = name,
-                color = MaterialTheme.colorScheme.onSecondary,
-                modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp).weight(1f),
-            )
-            if (description != null) {
-                IconButton(
-                    onClick = {
-                        showModal.value = !showModal.value
+            Row(Modifier.weight(1.0f), verticalAlignment = Alignment.CenterVertically) {
+                if (description != null) {
+                    IconButton(
+                        onClick = {
+                            showModal.value = !showModal.value
+                        }
+                    ) {
+                        Icon(
+                            Icons.Filled.Info,
+                            "Information",
+                            tint = MaterialTheme.colorScheme.onSecondary
+                        )
                     }
-                ) {
-                    Icon(Icons.Filled.Info, "Information")
+                    Modal(title = name, type = ModalType.INFO, visible = showModal) {
+                        Text(description)
+                    }
                 }
-                Modal(title = name, type = ModalType.INFO, visible = showModal) {
-                    Text(description)
-                }
+                Text(
+                    text = name,
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
             }
             Icon(
                 Icons.Rounded.KeyboardDoubleArrowRight,
@@ -124,8 +120,6 @@ fun ToggleSetting(
     name: String,
     description: String? = null,
     onToggle: (Boolean) -> Unit = {},
-    icon: ImageVector? = null,
-    iconDescription: String? = null,
     state: MutableState<Boolean>
 ) {
     val showModal = remember { mutableStateOf(false) }
@@ -137,33 +131,27 @@ fun ToggleSetting(
         }
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (icon != null) {
-                Icon(
-                    icon,
-                    contentDescription = iconDescription,
-                    tint = MaterialTheme.colorScheme.onSecondary
-                )
-            }
-            Text(
-                text = name,
-                color = MaterialTheme.colorScheme.onSecondary,
-                modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp).weight(1.0f),
-            )
-            if (description != null) {
-                IconButton(
-                    onClick = {
-                        showModal.value = !showModal.value
+            Row(Modifier.weight(1.0f), verticalAlignment = Alignment.CenterVertically) {
+                if (description != null) {
+                    IconButton(
+                        onClick = {
+                            showModal.value = !showModal.value
+                        }
+                    ) {
+                        Icon(
+                            Icons.Filled.Info,
+                            "Information",
+                            tint = MaterialTheme.colorScheme.onSecondary
+                        )
                     }
-                ) {
-                    Icon(
-                        Icons.Filled.Info,
-                        "Information",
-                        tint = MaterialTheme.colorScheme.onSecondary
-                    )
+                    Modal(title = name, type = ModalType.INFO, visible = showModal) {
+                        Text(description)
+                    }
                 }
-                Modal(title = name, type = ModalType.INFO, visible = showModal) {
-                    Text(description)
-                }
+                Text(
+                    text = name,
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
             }
             Switch(
                 checked = state.value,
