@@ -16,166 +16,63 @@
 
 package de.cacheoverflow.cashflow.ui
 
+
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.rounded.KeyboardDoubleArrowRight
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.filled.Screenshot
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import de.cacheoverflow.cashflow.ui.components.SettingsGroup
+import de.cacheoverflow.cashflow.ui.components.ToggleSetting
+import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
+import org.koin.compose.getKoin
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsGroup(icon: ImageVector? = null, name: String, content: @Composable () -> Unit) {
-    Column(modifier = Modifier.padding(vertical = 8.dp)) {
-        Row {
-            if (icon != null) {
-                Icon(icon, contentDescription = null)
-            }
-            Text(
-                text = name,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
-            )
+fun Settings() {
+    val boolState = remember { mutableStateOf(true) }
+    val settings = getKoin().get<ICashFlowSettingsHolder>()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(title = {
+                Text(
+                    text = "Settings",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }, colors = TopAppBarDefaults.topAppBarColors()
+                .copy(containerColor = MaterialTheme.colorScheme.primary))
         }
-        Spacer(modifier = Modifier.height(5.dp))
-        Surface(
-            color = MaterialTheme.colorScheme.secondary,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp)
+    ) {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()).padding(it).padding(16.dp)
         ) {
-            Column(modifier = Modifier.padding(10.dp).fillMaxHeight()) {
-                content()
-            }
-        }
-    }
-}
-
-@Composable
-fun ClickSetting(
-    name: String,
-    description: String? = null,
-    onClick: () -> Unit,
-    icon: ImageVector? = null,
-    iconDescription: String? = null
-) {
-    val showModal = remember { mutableStateOf(false) }
-    Surface(
-        color = Color.Transparent,
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            if (icon != null) {
-                Icon(
-                    icon,
-                    contentDescription = iconDescription,
-                    modifier = Modifier.size(25.dp),
-                    tint = MaterialTheme.colorScheme.onSecondary
+            SettingsGroup(icon = Icons.Filled.Security, name = "Security") {
+                ToggleSetting(
+                    name = "Block screenshots",
+                    description = "Disable in-app screenshot to protect bank/financial " +
+                            "information. This feature is only working on mobile devices.",
+                    state = boolState,
+                    icon = Icons.Filled.Screenshot,
+                    onToggle = {
+                        settings.update { settings -> settings.copy(screenshotsEnabled = !it) }
+                    }
                 )
             }
-            Text(
-                text = name,
-                color = MaterialTheme.colorScheme.onSecondary,
-                modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp),
-            )
-            if (description != null) {
-                IconButton(
-                    onClick = {
-                        showModal.value = !showModal.value
-                    }
-                ) {
-                    Icon(Icons.Filled.Info, "Information")
-                }
-                Modal(title = name, type = ModalType.INFO, visible = showModal) {
-                    Text(description)
-                }
-            }
-            Spacer(modifier = Modifier.weight(1.0f))
-            Icon(
-                Icons.Rounded.KeyboardDoubleArrowRight,
-                tint = MaterialTheme.colorScheme.onSecondary,
-                contentDescription = null
-            )
-        }
-    }
-}
-
-@Composable
-fun ToggleSetting(
-    name: String,
-    description: String? = null,
-    onToggle: (Boolean) -> Unit = {},
-    icon: ImageVector? = null,
-    iconDescription: String? = null,
-    state: MutableState<Boolean>
-) {
-    val showModal = remember { mutableStateOf(false) }
-    Surface(
-        color = Color.Transparent,
-        modifier = Modifier.fillMaxWidth(),
-        onClick = {
-            state.value = !state.value
-            onToggle(state.value)
-        }
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            if (icon != null) {
-                Icon(
-                    icon,
-                    contentDescription = iconDescription,
-                    tint = MaterialTheme.colorScheme.onSecondary
-                )
-            }
-            Text(
-                text = name,
-                color = MaterialTheme.colorScheme.onSecondary,
-                modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp),
-            )
-            if (description != null) {
-                IconButton(
-                    onClick = {
-                        showModal.value = !showModal.value
-                    }
-                ) {
-                    Icon(
-                        Icons.Filled.Info,
-                        "Information",
-                        tint = MaterialTheme.colorScheme.onSecondary
-                    )
-                }
-                Modal(title = name, type = ModalType.INFO, visible = showModal) {
-                    Text(description)
-                }
-            }
-            Spacer(Modifier.weight(1f))
-            Switch(
-                checked = state.value,
-                onCheckedChange = {
-                    state.value = it
-                    onToggle(it)
-                }
-            )
         }
     }
 }

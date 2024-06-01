@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.cacheoverflow.cashflow.utils
+package de.cacheoverflow.cashflow.ui
 
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
@@ -23,8 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
-import de.cacheoverflow.cashflow.store.CashFlowSettingsHolder
-import de.cacheoverflow.cashflow.store.EnumTheme
+import de.cacheoverflow.cashflow.utils.EnumTheme
+import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
 import org.koin.compose.getKoin
 
 val LightColorScheme: ColorScheme
@@ -51,7 +51,7 @@ val LightColorScheme: ColorScheme
             onBackground = Color(0xFF000000),
             surface = Color(0xFFFCFEFE),
             onSurface = Color(0xFF121212),
-            surfaceVariant = Color(0xFFdcf1fc),
+            surfaceVariant = Color(0xFF214152),
             onSurfaceVariant = Color(0xFF222222),
             outline = Color(0xff79d07d),
             inverseOnSurface = Color(0xFFD6F6FF),
@@ -94,10 +94,10 @@ val DefaultColorScheme: ColorScheme
     @Composable
     get() {
         // TODO: Add system theme get
-        val settings by getKoin().get<CashFlowSettingsHolder>().collectAsState()
+        val settings by getKoin().get<ICashFlowSettingsHolder>().collectAsState()
         return when (settings.theme) {
-            EnumTheme.SYSTEM -> LightColorScheme
-            EnumTheme.WHITE -> LightColorScheme
+            EnumTheme.SYSTEM -> DarkColorScheme
+            EnumTheme.LIGHT -> LightColorScheme
             EnumTheme.DARK -> DarkColorScheme
         }
     }

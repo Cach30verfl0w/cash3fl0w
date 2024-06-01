@@ -19,46 +19,34 @@ package de.cacheoverflow.cashflow
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Screenshot
-import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import de.cacheoverflow.cashflow.store.CashFlowSettingsHolder
-import de.cacheoverflow.cashflow.store.EnumTheme
-import de.cacheoverflow.cashflow.ui.ClickSetting
-import de.cacheoverflow.cashflow.ui.SettingsGroup
-import de.cacheoverflow.cashflow.ui.ToggleSetting
-import de.cacheoverflow.cashflow.utils.DefaultColorScheme
-import de.cacheoverflow.cashflow.utils.disableScreenshots
-import de.cacheoverflow.cashflow.utils.enableScreenshots
-import org.koin.compose.getKoin
+import de.cacheoverflow.cashflow.ui.DefaultColorScheme
+import de.cacheoverflow.cashflow.ui.Settings
+import de.cacheoverflow.cashflow.utils.DefaultCashFlowSettingsHolder
+import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
+
+val settingsModule = module {
+    single<ICashFlowSettingsHolder> { DefaultCashFlowSettingsHolder() }
+    singleOf(::DefaultCashFlowSettingsHolder)
+}
 
 enum class Menu {
     HOME,
@@ -67,76 +55,14 @@ enum class Menu {
 }
 
 @Composable
-fun Home() {
-    Text("Home")
-}
-
-@Composable
-fun Accounts() {
-    Text("Accounts")
-}
-
-// TODO: Make production-ready settings screen and move into separate class
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Settings() {
-    val boolState = remember { mutableStateOf(true) }
-    val settings = getKoin().get<CashFlowSettingsHolder>()
-
-    Scaffold(
-        topBar = {
-            TopAppBar(title = {
-                Text(
-                    text = "Settings",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-            }, colors = TopAppBarDefaults.topAppBarColors()
-                .copy(containerColor = MaterialTheme.colorScheme.primary))
-        }
-    ) {
-        Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()).padding(it).padding(16.dp)
-        ) {
-            SettingsGroup(icon = Icons.Filled.Security, name = "Security") {
-                ToggleSetting(
-                    name = "Block screenshots",
-                    description = "Disable in-app screenshot to protect bank/financial " +
-                            "information. This feature is only working on mobile devices.",
-                    state = boolState,
-                    icon = Icons.Filled.Screenshot,
-                    onToggle = { screenshotsEnabled ->
-                        // TODO: After restructure apply setting before start of app (= optionally
-                        //  disable screenshots if configured so)
-                        when (screenshotsEnabled) {
-                            true -> disableScreenshots()
-                            false -> enableScreenshots()
-                        }
-                    }
-                )
-                ClickSetting(
-                    icon = Icons.Filled.DeleteForever,
-                    description = "Delete all app data stored on your phone",
-                    name = "Delete all data",
-                    onClick = {
-                        settings.update { value -> value.copy(theme = EnumTheme.DARK) }
-                        // TODO: Show modal with confirmation and then delete all data
-                    }
-                )
-            }
-        }
-    }
-}
-
-@Composable
 fun App() {
     var currentMenu by remember { mutableStateOf(Menu.SETTINGS) } // TODO: Change to home
     MaterialTheme(colorScheme = DefaultColorScheme) {
         Box {
+            // TODO: Add Home and Accounts
             when(currentMenu) {
-                Menu.HOME -> Home()
-                Menu.ACCOUNTS -> Accounts()
                 Menu.SETTINGS -> Settings()
+                else -> {}
             }
         }
         Box(contentAlignment = Alignment.BottomStart, modifier = Modifier.fillMaxSize()) {
@@ -151,8 +77,7 @@ fun App() {
                 ) {
                     Icon(
                         Icons.Filled.Home,
-                        "Home",
-                        tint = MaterialTheme.colorScheme.onSecondary
+                        "Home"
                     )
                 }
                 IconButton(
@@ -162,8 +87,7 @@ fun App() {
                 ) {
                     Icon(
                         Icons.Filled.AccountBox,
-                        "Home",
-                        tint = MaterialTheme.colorScheme.onSecondary
+                        "Home"
                     )
                 }
                 IconButton(
@@ -173,8 +97,7 @@ fun App() {
                 ) {
                     Icon(
                         Icons.Filled.Settings,
-                        "Home",
-                        tint = MaterialTheme.colorScheme.onSecondary
+                        "Home"
                     )
                 }
             }
