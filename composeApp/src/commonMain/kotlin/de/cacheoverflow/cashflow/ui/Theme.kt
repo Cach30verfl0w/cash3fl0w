@@ -16,6 +16,7 @@
 
 package de.cacheoverflow.cashflow.ui
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -96,7 +97,7 @@ val DefaultColorScheme: ColorScheme
         // TODO: Add system theme get
         val settings by getKoin().get<ICashFlowSettingsHolder>().collectAsState()
         return when (settings.theme) {
-            EnumTheme.SYSTEM -> DarkColorScheme
+            EnumTheme.SYSTEM -> if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme
             EnumTheme.LIGHT -> LightColorScheme
             EnumTheme.DARK -> DarkColorScheme
         }
