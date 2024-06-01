@@ -16,7 +16,6 @@
 
 package de.cacheoverflow.cashflow.ui
 
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -37,7 +36,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.ui.components.ToggleSetting
+import de.cacheoverflow.cashflow.utils.EnumLanguage
 import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
+import de.cacheoverflow.cashflow.utils.disableScreenshots
+import de.cacheoverflow.cashflow.utils.disableScreenshotsDescription
+import de.cacheoverflow.cashflow.utils.security
+import de.cacheoverflow.cashflow.utils.settings
 import org.koin.compose.getKoin
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +54,7 @@ fun Settings() {
         topBar = {
             TopAppBar(title = {
                 Text(
-                    text = "Settings",
+                    text = settings(),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
@@ -61,11 +65,10 @@ fun Settings() {
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()).padding(it).padding(16.dp)
         ) {
-            SettingsGroup(icon = Icons.Filled.Security, name = "Security") {
+            SettingsGroup(icon = Icons.Filled.Security, name = security()) {
                 ToggleSetting(
-                    name = "Block screenshots",
-                    description = "Disable in-app screenshot to protect bank/financial " +
-                            "information. This feature is only working on mobile devices.",
+                    name = disableScreenshots(),
+                    description = disableScreenshotsDescription(),
                     state = boolState,
                     icon = Icons.Filled.Screenshot,
                     onToggle = {

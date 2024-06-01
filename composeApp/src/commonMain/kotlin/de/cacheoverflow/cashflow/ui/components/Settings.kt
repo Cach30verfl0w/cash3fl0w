@@ -82,8 +82,7 @@ fun ClickSetting(
     val showModal = remember { mutableStateOf(false) }
     Surface(
         color = Color.Transparent,
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (icon != null) {
@@ -97,7 +96,7 @@ fun ClickSetting(
             Text(
                 text = name,
                 color = MaterialTheme.colorScheme.onSecondary,
-                modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp),
+                modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp).weight(1f),
             )
             if (description != null) {
                 IconButton(
@@ -111,7 +110,6 @@ fun ClickSetting(
                     Text(description)
                 }
             }
-            Spacer(modifier = Modifier.weight(1.0f))
             Icon(
                 Icons.Rounded.KeyboardDoubleArrowRight,
                 tint = MaterialTheme.colorScheme.onSecondary,
@@ -133,7 +131,6 @@ fun ToggleSetting(
     val showModal = remember { mutableStateOf(false) }
     Surface(
         color = Color.Transparent,
-        modifier = Modifier.fillMaxWidth(),
         onClick = {
             state.value = !state.value
             onToggle(state.value)
@@ -150,7 +147,7 @@ fun ToggleSetting(
             Text(
                 text = name,
                 color = MaterialTheme.colorScheme.onSecondary,
-                modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp),
+                modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp).weight(1.0f),
             )
             if (description != null) {
                 IconButton(
@@ -168,7 +165,6 @@ fun ToggleSetting(
                     Text(description)
                 }
             }
-            Spacer(Modifier.weight(1f))
             Switch(
                 checked = state.value,
                 onCheckedChange = {

@@ -16,12 +16,15 @@
 
 package de.cacheoverflow.cashflow.utils
 
+import androidx.compose.ui.text.intl.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 val defaultCoroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -63,7 +66,8 @@ enum class EnumLanguage {
  */
 data class CashFlowSettings(
     val theme: EnumTheme = EnumTheme.SYSTEM,
-    val language: EnumLanguage = EnumLanguage.EN, // TODO: Acquire language by system
+    val language: EnumLanguage = EnumLanguage.entries
+        .firstOrNull { it.name == Locale.current.language.uppercase() } ?: EnumLanguage.EN,
     val screenshotsEnabled: Boolean = false
 )
 
@@ -89,13 +93,17 @@ interface ICashFlowSettingsHolder: StateFlow<CashFlowSettings> {
 class DefaultCashFlowSettingsHolder(
     private val flow: MutableStateFlow<CashFlowSettings> = MutableStateFlow(CashFlowSettings())
 ): ICashFlowSettingsHolder {
+    private val updateMutex = Mutex()
+
     override suspend fun collect(collector: FlowCollector<CashFlowSettings>): Nothing {
         this.flow.collect(collector)
     }
 
     override fun update(updater: (CashFlowSettings) -> CashFlowSettings) {
         defaultCoroutineScope.launch {
-            flow.emit(updater(flow.value))
+            updateMutex.withLock(this) {
+                flow.emit(updater(flow.value))
+            }
         }
     }
 
