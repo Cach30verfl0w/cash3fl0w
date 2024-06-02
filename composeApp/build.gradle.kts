@@ -1,3 +1,5 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -6,6 +8,7 @@ plugins {
 }
 
 kotlin {
+    jvm()
     androidTarget {
         compilations.all {
             kotlinOptions {
@@ -26,6 +29,7 @@ kotlin {
     }
 
     sourceSets {
+
         androidMain.dependencies {
             implementation(libs.androidx.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -50,6 +54,21 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decompose.jetbrains)
             implementation(libs.kotlinx.serialization.json)
+        }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+        }
+    }
+}
+
+compose.desktop {
+    application {
+        mainClass = "de.cacheoverflow.cashflow.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "KotlinMultiplatformComposeDesktopApplication"
+            packageVersion = "1.0.0"
         }
     }
 }

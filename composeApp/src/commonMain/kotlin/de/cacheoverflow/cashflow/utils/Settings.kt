@@ -109,7 +109,6 @@ class DefaultCashFlowSettingsHolder(
         defaultCoroutineScope.launch {
             updateMutex.withLock(this) {
                 val settings = updater(flow.value)
-                println(settings)
                 injectKoin<IPreferencesProvider>().writeSettings(settings)
                 flow.emit(settings)
             }

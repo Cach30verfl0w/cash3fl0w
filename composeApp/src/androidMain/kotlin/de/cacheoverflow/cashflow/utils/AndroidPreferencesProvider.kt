@@ -27,7 +27,6 @@ class AndroidPreferencesProvider: IPreferencesProvider {
     private lateinit var preferences: SharedPreferences
 
     init {
-        println(MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC))
         CashFlowApp.instance?.applicationContext?.apply {
             val key = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
             this@AndroidPreferencesProvider.preferences = EncryptedSharedPreferences.create(
@@ -48,7 +47,6 @@ class AndroidPreferencesProvider: IPreferencesProvider {
     }
 
     override fun readSettings(): CashFlowSettings {
-        println("EEEEEEEE ${this.preferences.all} ${Json.encodeToString(CashFlowSettings())}")
         return Json.decodeFromString(this.preferences.getString("config",
             Json.encodeToString(CashFlowSettings()))!!)
     }
