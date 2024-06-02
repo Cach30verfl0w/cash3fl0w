@@ -16,6 +16,7 @@
 
 package de.cacheoverflow.cashflow.utils
 
+import de.cacheoverflow.cashflow.utils.DefaultTranslation.translatesTo
 import de.cacheoverflow.cashflow.utils.EnumLanguage.*
 import org.koin.mp.KoinPlatformTools
 
@@ -64,4 +65,29 @@ fun unlockAccountInfoSubtitle() = translate {
 fun awaitingAuthentication() = translate {
     DE translatesTo "Warte auf Authentifizierung"
     EN translatesTo "Awaiting authentication"
+}
+
+fun authenticationNotPossible() = translate {
+    DE translatesTo "Authentifizierung nicht möglich"
+    EN translatesTo "Authentication not possible"
+}
+
+fun noAuthenticationMethodsFound() = translate {
+    DE translatesTo "Keine Authentifizierungsoptionen gefunden"
+    EN translatesTo "No authentication options found"
+}
+
+fun hardwareNotPresent() = translate {
+    DE translatesTo "Dieses Gerät besitzt nicht die Hardware"
+    EN translatesTo "This device does not have the hardware"
+}
+
+fun unknownError() = translate {
+    DE translatesTo "Unbekannter Fehler"
+    EN translatesTo "Unknown error"
+}
+
+fun authenticationCancelled() = translate {
+    DE translatesTo "Authentifizierung abgebrochen"
+    EN translatesTo "Authentication cancelled"
 }
