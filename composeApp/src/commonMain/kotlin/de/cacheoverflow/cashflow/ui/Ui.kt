@@ -49,7 +49,7 @@ fun DefaultAuthNotPossible(message: String) {
             fontSize = 4.5.em,
             color = MaterialTheme.colorScheme.onSecondary
         )
-        Text(message)
+        Text(message, color = MaterialTheme.colorScheme.onSecondary)
         Spacer(Modifier.height(20.dp))
         Icon(
             Icons.Filled.Error,
