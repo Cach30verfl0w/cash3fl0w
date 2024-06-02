@@ -46,7 +46,7 @@ fun main() = application {
     }
 
     val root = remember { RootComponent(DefaultComponentContext(LifecycleRegistry())) }
-    Window(onCloseRequest = ::exitApplication) {
+    Window(onCloseRequest = ::exitApplication, title = "Cash3Fl0w") {
         App(root)
     }
 }

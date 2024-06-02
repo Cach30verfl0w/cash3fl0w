@@ -52,16 +52,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import org.lighthousegames.logging.KmLog
-import org.lighthousegames.logging.logging
 
 // TODO: Implement facade over dependency injection to disable screenshots
 
 val sharedModule = module {
     single<ICashFlowSettingsHolder> { DefaultCashFlowSettingsHolder() }
     singleOf(::DefaultCashFlowSettingsHolder)
-
-    single<KmLog> { logging("Cash3Fl0w") }
 }
 
 class MainMenuComponent(context: ComponentContext): ComponentContext by context {

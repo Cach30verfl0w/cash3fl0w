@@ -58,7 +58,6 @@ kotlin {
 
             // Other
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.logging)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -110,4 +109,9 @@ android {
     dependencies {
         debugImplementation(libs.androidx.compose.ui.tooling)
     }
+}
+
+tasks.register("runDesktop") {
+    description = "Run app for desktop"
+    dependsOn("run")
 }

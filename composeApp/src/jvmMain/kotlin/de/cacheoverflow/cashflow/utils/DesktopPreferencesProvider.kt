@@ -16,7 +16,6 @@
 
 package de.cacheoverflow.cashflow.utils
 
-import org.lighthousegames.logging.KmLog
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.div
@@ -26,7 +25,6 @@ class DesktopPreferencesProvider: IPreferencesProvider {
 
     init {
         if (!Files.exists(path)) {
-            injectKoin<KmLog>().warn { "Application directory not found, creating it..." }
             Files.createDirectory(path)
         }
     }
