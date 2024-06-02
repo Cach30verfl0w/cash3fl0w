@@ -16,7 +16,6 @@
 
 package de.cacheoverflow.cashflow.ui.components
 
-
 import androidx.compose.runtime.Composable
 import de.cacheoverflow.cashflow.ui.AwaitAuth
 import de.cacheoverflow.cashflow.ui.DefaultAuthNotPossible
