@@ -167,15 +167,12 @@ fun ColumnScope.ClickSetting(
 @Composable
 fun ToggleSetting(
     name: String,
-    onToggle: (Boolean) -> Unit = {},
-    state: MutableState<Boolean>
+    onToggle: () -> Unit = {},
+    checked: Boolean
 ) {
     Surface(
         color = Color.Transparent,
-        onClick = {
-            state.value = !state.value
-            onToggle(state.value)
-        }
+        onClick = { onToggle() }
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(50.dp)) {
             Text(
@@ -184,11 +181,8 @@ fun ToggleSetting(
             )
             Spacer(Modifier.weight(1.0f))
             Switch(
-                checked = state.value,
-                onCheckedChange = {
-                    state.value = it
-                    onToggle(it)
-                }
+                checked = checked,
+                onCheckedChange = { onToggle() }
             )
         }
     }

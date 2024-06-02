@@ -29,9 +29,10 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.security.crypto)
+            implementation(libs.androidx.biometric)
             implementation(libs.decompose)
             implementation(libs.koin.android)
-            implementation(libs.biometric)
         }
         iosMain.dependencies {
         }

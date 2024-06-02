@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.cacheoverflow.cashflow.security
+package de.cacheoverflow.cashflow.utils
 
 import android.app.KeyguardManager
 import de.cacheoverflow.cashflow.MainActivity
@@ -23,6 +23,8 @@ import java.security.KeyStore
 class AndroidSecurityProvider: ISecurityProvider {
 
     private val defaultKeyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+
+    // TODO: Use BiometricManager.from
 
     /**
      * This method checks whether the device has authentication methods like PIN etc. This check is

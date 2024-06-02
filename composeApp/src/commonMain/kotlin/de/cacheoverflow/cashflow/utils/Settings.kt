@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.Serializable
 
 val defaultCoroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -35,6 +36,7 @@ val defaultCoroutineScope = CoroutineScope(Dispatchers.Default)
  * @author Cedric Hammes
  * @since  01/06/2024
  */
+@Serializable
 enum class EnumTheme {
     SYSTEM,
     LIGHT,
@@ -49,6 +51,7 @@ enum class EnumTheme {
  * @author Cedric Hammes
  * @since  01/06/2024
  */
+@Serializable
 enum class EnumLanguage {
     DE,
     EN
@@ -64,11 +67,12 @@ enum class EnumLanguage {
  * @author Cedric Hammes
  * @since  01/06/2024
  */
+@Serializable
 data class CashFlowSettings(
     val theme: EnumTheme = EnumTheme.SYSTEM,
     val language: EnumLanguage = EnumLanguage.entries
         .firstOrNull { it.name == Locale.current.language.uppercase() } ?: EnumLanguage.EN,
-    val screenshotsEnabled: Boolean = false
+    val screenshotsDisabled: Boolean = false
 )
 
 /**
@@ -91,7 +95,9 @@ interface ICashFlowSettingsHolder: StateFlow<CashFlowSettings> {
  * @since  01/06/2024
  */
 class DefaultCashFlowSettingsHolder(
-    private val flow: MutableStateFlow<CashFlowSettings> = MutableStateFlow(CashFlowSettings())
+    private val flow: MutableStateFlow<CashFlowSettings> = MutableStateFlow(
+        injectKoin<IPreferencesProvider>().readSettings()
+    )
 ): ICashFlowSettingsHolder {
     private val updateMutex = Mutex()
 
@@ -102,7 +108,10 @@ class DefaultCashFlowSettingsHolder(
     override fun update(updater: (CashFlowSettings) -> CashFlowSettings) {
         defaultCoroutineScope.launch {
             updateMutex.withLock(this) {
-                flow.emit(updater(flow.value))
+                val settings = updater(flow.value)
+                println(settings)
+                injectKoin<IPreferencesProvider>().writeSettings(settings)
+                flow.emit(settings)
             }
         }
     }

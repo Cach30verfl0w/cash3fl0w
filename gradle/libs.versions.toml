@@ -9,13 +9,16 @@ kotlin = "1.9.23"
 decompose = "2.2.0-alpha03"
 extensionsComposeJetbrains = "2.1.4-compose-experimental"
 kotlinxSerializationJson = "1.6.1"
-biometric = "1.1.0"
 okio = "3.9.0"
+android-biometric = "1.1.0"
+android-security-crypto = "1.0.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-ui-tooling" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidx-ui-tooling" }
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "android-biometric" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "android-security-crypto" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin_android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose" }
@@ -23,7 +26,6 @@ decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decom
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "extensionsComposeJetbrains" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

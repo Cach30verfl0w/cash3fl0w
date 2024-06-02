@@ -16,9 +16,7 @@
 
 package de.cacheoverflow.cashflow.utils
 
-import de.cacheoverflow.cashflow.utils.DefaultTranslation.translatesTo
 import de.cacheoverflow.cashflow.utils.EnumLanguage.*
-import org.koin.mp.KoinPlatformTools
 
 interface ITranslation {
     infix fun EnumLanguage.translatesTo(message: String)
@@ -32,7 +30,7 @@ object DefaultTranslation: ITranslation {
 }
 
 fun translate(closure: ITranslation.() -> Unit): String {
-    val settings = KoinPlatformTools.defaultContext().get().get<ICashFlowSettingsHolder>()
+    val settings = injectKoin<ICashFlowSettingsHolder>()
     DefaultTranslation.apply(closure)
     return DefaultTranslation.languages[settings.value.language]?: "Unable"
 }

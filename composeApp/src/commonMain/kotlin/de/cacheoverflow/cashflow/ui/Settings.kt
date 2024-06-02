@@ -29,6 +29,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -70,8 +72,8 @@ fun Settings() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainSettings() {
-    val boolState = remember { mutableStateOf(true) }
     val settings = getKoin().get<ICashFlowSettingsHolder>()
+    val settingsState by settings.collectAsState()
 
     Scaffold(
         topBar = {
@@ -91,22 +93,17 @@ fun MainSettings() {
             SettingsGroup(icon = Icons.Filled.Security, name = security()) {
                 ToggleSetting(
                     name = disableScreenshots(),
-                    state = boolState,
+                    checked = settingsState.screenshotsDisabled,
                     onToggle = {
-                        settings.update { settings -> settings.copy(screenshotsEnabled = !it) }
+                        settings.update { settings ->
+                            settings.copy(screenshotsDisabled = !settings.screenshotsDisabled)
+                        }
                     }
                 )
                 CollapsableSetting(name = disableScreenshots()) {
                     RadioCheckSetting("A", true, onClick = {})
                     RadioCheckSetting("B", true, onClick = {})
                     RadioCheckSetting("C", true, onClick = {})
-                    ToggleSetting(
-                        name = disableScreenshots(),
-                        state = boolState,
-                        onToggle = {
-                            settings.update { settings -> settings.copy(screenshotsEnabled = !it) }
-                        }
-                    )
                 }
             }
         }

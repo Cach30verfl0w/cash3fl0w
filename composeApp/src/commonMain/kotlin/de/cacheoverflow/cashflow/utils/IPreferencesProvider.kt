@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package de.cacheoverflow.cashflow.security
+package de.cacheoverflow.cashflow.utils
 
-interface ISecurityProvider {
+interface IPreferencesProvider {
 
-    /**
-     * This method checks whether the device has authentication methods like PIN etc. This check is
-     * done by the system-specific component of the application.
-     *
-     * @author Cedric Hammes
-     * @since  02/06/2024
-     */
-    fun areAuthenticationMethodsAvailable(): Boolean
+    fun writeSettings(settings: CashFlowSettings)
 
+    fun readSettings(): CashFlowSettings
+    
 }
