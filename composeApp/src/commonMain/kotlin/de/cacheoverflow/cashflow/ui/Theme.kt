@@ -16,8 +16,6 @@
 
 package de.cacheoverflow.cashflow.ui
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
@@ -25,7 +23,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import de.cacheoverflow.cashflow.utils.EnumTheme
 import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
