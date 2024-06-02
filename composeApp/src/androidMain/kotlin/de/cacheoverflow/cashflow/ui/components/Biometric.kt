@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.core.content.ContextCompat
 import de.cacheoverflow.cashflow.MainActivity
+import de.cacheoverflow.cashflow.utils.awaitingAuthentication
 
 enum class EnumAuthState {
     AUTHENTICATED,
@@ -82,7 +83,7 @@ actual fun BiometricAuthLock(title: String, subtitle: String, content: @Composab
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text("Awaiting authentication", fontSize = 4.5.em)
+                Text(awaitingAuthentication(), fontSize = 4.5.em)
                 Spacer(Modifier.height(20.dp))
                 CircularProgressIndicator(modifier = Modifier.size(100.dp), strokeWidth = 10.dp)
             }
