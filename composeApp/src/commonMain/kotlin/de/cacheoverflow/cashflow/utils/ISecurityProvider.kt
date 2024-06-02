@@ -19,6 +19,16 @@ package de.cacheoverflow.cashflow.utils
 interface ISecurityProvider {
 
     /**
+     * This method toggles the policy of disabling screenshots for this app. This is used to provide
+     * more security to the financial information of the user against many forms of information
+     * leakage.
+     *
+     * @author Cedric Hammes
+     * @since  02/06/2024
+     */
+    fun toggleScreenshotPolicy()
+
+    /**
      * This method checks whether the device has authentication methods like PIN etc. This check is
      * done by the system-specific component of the application.
      *

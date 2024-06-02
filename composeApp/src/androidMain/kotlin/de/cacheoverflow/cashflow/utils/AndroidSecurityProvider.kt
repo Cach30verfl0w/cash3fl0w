@@ -17,12 +17,33 @@
 package de.cacheoverflow.cashflow.utils
 
 import android.app.KeyguardManager
+import android.view.WindowManager.LayoutParams
 import de.cacheoverflow.cashflow.MainActivity
 import java.security.KeyStore
 
 class AndroidSecurityProvider: ISecurityProvider {
 
     private val defaultKeyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+    private var screenshotDisabled = false
+
+    /**
+     * This method toggles the policy of disabling screenshots for this app. This is used to provide
+     * more security to the financial information of the user against many forms of information
+     * leakage.
+     *
+     * @author Cedric Hammes
+     * @since  02/06/2024
+     */
+    override fun toggleScreenshotPolicy() {
+        val window = MainActivity.instance?.window
+        if (window != null) {
+            screenshotDisabled = !screenshotDisabled
+            when (screenshotDisabled) {
+                true -> window.setFlags(LayoutParams.FLAG_SECURE, LayoutParams.FLAG_SECURE)
+                false -> window.clearFlags(LayoutParams.FLAG_SECURE)
+            }
+        }
+    }
 
     /**
      * This method checks whether the device has authentication methods like PIN etc. This check is
