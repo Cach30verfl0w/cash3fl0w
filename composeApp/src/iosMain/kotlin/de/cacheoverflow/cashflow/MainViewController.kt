@@ -16,8 +16,13 @@
 
 package de.cacheoverflow.cashflow
 
+import androidx.compose.runtime.remember
 import androidx.compose.ui.window.ComposeUIViewController
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import de.cacheoverflow.cashflow.ui.components.RootComponent
 
 fun MainViewController() = ComposeUIViewController {
-    App()
+    val root = remember { RootComponent(DefaultComponentContext(LifecycleRegistry())) }
+    App(root)
 }

@@ -43,9 +43,29 @@ import de.cacheoverflow.cashflow.utils.security
 import de.cacheoverflow.cashflow.utils.settings
 import org.koin.compose.getKoin
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * This function represents the view of the settings available. This composable is based on the
+ * router to make navigation through the settings possible.
+ *
+ * @author Cedric Hammes
+ * @since  01/06/2024
+ */
 @Composable
 fun Settings() {
+    MainSettings()
+}
+
+/**
+ * This function represents the main display that provides an oversight of all categories of
+ * settings available in the CashFlow app/application. This menu is the first shown to the user in
+ * the settings category of the application.
+ *
+ * @author Cedric Hammes
+ * @since  01/06/2024
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainSettings() {
     val boolState = remember { mutableStateOf(true) }
     val settings = getKoin().get<ICashFlowSettingsHolder>()
 
