@@ -8,9 +8,11 @@
         android:allowBackup="true"
         android:name=".CashFlowApp"
         android:supportsRtl="true"
+        android:icon="@mipmap/ic_launcher"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:exported="true"
+            android:label="Cash3Fl0w"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
             android:name=".MainActivity"
             android:theme="@style/Theme.App">
