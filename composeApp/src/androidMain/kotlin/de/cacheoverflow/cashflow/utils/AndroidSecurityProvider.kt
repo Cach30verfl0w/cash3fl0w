@@ -100,6 +100,10 @@ class AndroidSecurityProvider: ISecurityProvider {
      * configuration and generates a key. That key pair is stored in the keystore and is returned
      * to the user.
      *
+     * @param name         The name of the keypair in the keystore
+     * @param padding      Use encryption padding or not
+     * @param needUserAuth Whether user authentication is required to unlock keypair
+     *
      * @author Cedric Hammes
      * @since  03/06/2024
      */
@@ -135,6 +139,10 @@ class AndroidSecurityProvider: ISecurityProvider {
      * This method queries the AES key by the name specified. If the RSA key is present, the key is
      * returned. Otherwise this method creates a key generator with the specified configuration and
      * generates a key. That key is stored in the keystore and is returned to the user.
+     *
+     * @param name         The name of the key in the keystore
+     * @param padding      Use encryption padding or not
+     * @param needUserAuth Whether user authentication is required to unlock key
      *
      * @author Cedric Hammes
      * @since  03/04/2024
