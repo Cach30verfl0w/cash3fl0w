@@ -41,7 +41,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import de.cacheoverflow.cashflow.ui.DefaultColorScheme
 import de.cacheoverflow.cashflow.ui.Settings
-import de.cacheoverflow.cashflow.ui.components.BiometricAuthLock
+import de.cacheoverflow.cashflow.ui.components.OptionalAuthLock
 import de.cacheoverflow.cashflow.ui.components.RootComponent
 import de.cacheoverflow.cashflow.utils.DefaultCashFlowSettingsHolder
 import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
@@ -131,7 +131,7 @@ fun MainMenu(component: MainMenuComponent) {
 fun App(root: RootComponent) {
     MaterialTheme(colorScheme = DefaultColorScheme) {
         val childStack by root.childStack.subscribeAsState()
-        BiometricAuthLock(title = unlockAccountInfo(), subtitle = unlockAccountInfoSubtitle()) {
+        OptionalAuthLock(title = unlockAccountInfo(), subtitle = unlockAccountInfoSubtitle()) {
             Children(stack = childStack, animation = stackAnimation(slide())) {
                 when(val instance = it.instance) {
                     is RootComponent.Child.MainMenu -> MainMenu(instance.component)

@@ -26,11 +26,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,8 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.core.content.ContextCompat
 import de.cacheoverflow.cashflow.MainActivity
-import de.cacheoverflow.cashflow.utils.authenticationCancelled
-import de.cacheoverflow.cashflow.utils.authenticationNotPossible
 import de.cacheoverflow.cashflow.utils.awaitingAuthentication
 import de.cacheoverflow.cashflow.utils.hardwareNotPresent
 import de.cacheoverflow.cashflow.utils.noAuthenticationMethodsFound
@@ -54,13 +48,29 @@ import de.cacheoverflow.cashflow.utils.unknownError
 sealed class AuthState {
     data object Authenticated : AuthState()
     data object AwaitingAuth: AuthState()
+    data object AuthCancelled: AuthState()
     data class AuthNotPossible(val code: Int): AuthState()
 }
 
 @Composable
-actual fun BiometricAuthLock(title: String, subtitle: String, content: @Composable () -> Unit) {
-    var authStateState by remember { mutableStateOf<AuthState>(AuthState.AwaitingAuth) }
+actual fun OptionalAuthLock(
+    enabled: Boolean,
+    title: String,
+    subtitle: String,
+    authNotPossible: @Composable (String) -> Unit,
+    authCancelled: @Composable () -> Unit,
+    content: @Composable () -> Unit
+) {
+    var authStateState by remember {
+        mutableStateOf(
+            if (enabled)
+                AuthState.AwaitingAuth
+            else
+                AuthState.Authenticated
+        )
+    }
     when(val authState = authStateState) {
+        is AuthState.AuthCancelled -> authCancelled()
         is AuthState.Authenticated -> content()
         is AuthState.AuthNotPossible -> {
             Column(
@@ -68,21 +78,12 @@ actual fun BiometricAuthLock(title: String, subtitle: String, content: @Composab
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(authenticationNotPossible(), fontSize = 4.5.em)
-                Text(when(authState.code) {
+                authNotPossible(when(authState.code) {
                     BiometricPrompt.ERROR_NO_BIOMETRICS -> noAuthenticationMethodsFound()
                     BiometricPrompt.ERROR_HW_NOT_PRESENT -> hardwareNotPresent()
                     BiometricPrompt.ERROR_HW_UNAVAILABLE -> hardwareNotPresent()
-                    BiometricPrompt.ERROR_USER_CANCELED -> authenticationCancelled()
                     else -> unknownError()
                 })
-                Spacer(Modifier.height(20.dp))
-                Icon(
-                    Icons.Filled.Error,
-                    modifier = Modifier.size(100.dp),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error
-                )
             }
         }
         is AuthState.AwaitingAuth -> {
@@ -96,7 +97,10 @@ actual fun BiometricAuthLock(title: String, subtitle: String, content: @Composab
                     .build()
                 BiometricPrompt(this, executor, object : AuthenticationCallback() {
                     override fun onAuthenticationError(code: Int, errString: CharSequence) {
-                        authStateState = AuthState.AuthNotPossible(code)
+                        authStateState = when(code) {
+                            BiometricPrompt.ERROR_USER_CANCELED -> AuthState.AuthCancelled
+                            else -> AuthState.AuthNotPossible(code)
+                        }
                     }
 
                     override fun onAuthenticationSucceeded(result: AuthenticationResult) {

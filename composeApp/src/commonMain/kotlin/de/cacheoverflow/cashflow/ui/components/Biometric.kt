@@ -16,7 +16,26 @@
 
 package de.cacheoverflow.cashflow.ui.components
 
-import androidx.compose.runtime.Composable
 
+import androidx.compose.runtime.Composable
+import de.cacheoverflow.cashflow.ui.DefaultAuthNotPossible
+import de.cacheoverflow.cashflow.utils.authenticationCancelled
+
+/**
+ * This composable represents the optional authentication lock. This makes it possible to lock the
+ * specified content behind PIN or biometric authentication. This component also automatically
+ * handles failed authentication like missing hardware or interrupted authentication. The
+ * presentation of the error is by default defined.
+ *
+ * @author Cedric Hammes
+ * @since  02/06/2024
+ */
 @Composable
-expect fun BiometricAuthLock(title: String, subtitle: String, content: @Composable () -> Unit)
+expect fun OptionalAuthLock(
+    enabled: Boolean = true,
+    title: String,
+    subtitle: String,
+    authNotPossible: @Composable (String) -> Unit = { DefaultAuthNotPossible(it) },
+    authCancelled: @Composable () -> Unit = { authNotPossible(authenticationCancelled()) },
+    content: @Composable () -> Unit
+)
