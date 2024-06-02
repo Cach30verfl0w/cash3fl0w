@@ -60,6 +60,10 @@ fun Settings() {
  * settings available in the CashFlow app/application. This menu is the first shown to the user in
  * the settings category of the application.
  *
+ * TODO: Add clickable setting for theme and then redirect to extra window
+ * TODO: Add clickable setting for security settings with screenshot restriction etc.
+ * TODO: Add clickable setting for software information with credits
+ *
  * @author Cedric Hammes
  * @since  01/06/2024
  */

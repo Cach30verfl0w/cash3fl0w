@@ -32,9 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ComponentContext
@@ -52,6 +49,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+
+// TODO: Look to the DataStore API and implement it if the security is good enough
+// TODO: Look to the Android Crypto Stuff like Keyring and implement it
+// TODO: Implement facade over dependency injection to disable screenshots
 
 val settingsModule = module {
     single<ICashFlowSettingsHolder> { DefaultCashFlowSettingsHolder() }
