@@ -30,6 +30,8 @@ import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
+// TODO: Redesign app for both desktop and mobile
+
 val compatibilityModule = module {
     single<ISecurityProvider> { DesktopSecurityProvider() }
     singleOf(::DesktopSecurityProvider)
@@ -40,7 +42,7 @@ val compatibilityModule = module {
 
 fun main() = application {
     startKoin {
-        modules(compatibilityModule, settingsModule)
+        modules(compatibilityModule, sharedModule)
     }
 
     val root = remember { RootComponent(DefaultComponentContext(LifecycleRegistry())) }

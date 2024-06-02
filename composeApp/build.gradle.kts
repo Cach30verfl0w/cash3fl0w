@@ -41,6 +41,7 @@ kotlin {
         iosMain.dependencies {
         }
         commonMain.dependencies {
+            // Compose and decompose
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -48,12 +49,16 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.decompose)
+            implementation(libs.decompose.jetbrains)
+
+            // Koin
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
 
-            implementation(libs.decompose)
-            implementation(libs.decompose.jetbrains)
+            // Other
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.logging)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

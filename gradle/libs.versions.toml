@@ -20,6 +20,9 @@ compose-plugin = "1.6.2"
 decompose = "2.2.0-alpha03"
 extensionsComposeJetbrains = "2.1.4-compose-experimental"
 
+# Other
+logging = "1.4.2"
+
 [libraries]
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
@@ -38,6 +41,9 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-com
 # Compose and Decompose
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "extensionsComposeJetbrains" }
+
+# Other
+logging = { module = "org.lighthousegames:logging", version.ref = "logging" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

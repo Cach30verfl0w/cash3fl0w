@@ -28,5 +28,6 @@ actual fun OptionalAuthLock(
     authCancelled: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
+    // TODO: Implement support for password or biometric authentication
     content()
 }

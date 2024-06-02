@@ -16,7 +16,20 @@
 
 package de.cacheoverflow.cashflow.utils
 
+import org.lighthousegames.logging.KmLog
+import java.nio.file.Files
+import java.nio.file.Path
+import kotlin.io.path.div
+
 class DesktopPreferencesProvider: IPreferencesProvider {
+    private val path: Path = Path.of(System.getProperty("user.home")) / ".Cash3Fl0w"
+
+    init {
+        if (!Files.exists(path)) {
+            injectKoin<KmLog>().warn { "Application directory not found, creating it..." }
+            Files.createDirectory(path)
+        }
+    }
 
     override fun writeSettings(settings: CashFlowSettings) {
     }

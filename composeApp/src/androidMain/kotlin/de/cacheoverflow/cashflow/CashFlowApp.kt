@@ -25,7 +25,7 @@ class CashFlowApp : Application() {
         instance = this
         startKoin {
             androidContext(this@CashFlowApp)
-            modules(settingsModule, compatibilityModule)
+            modules(sharedModule, compatibilityModule)
         }
     }
 
