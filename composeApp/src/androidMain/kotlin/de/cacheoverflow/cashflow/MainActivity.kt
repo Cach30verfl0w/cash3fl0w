@@ -1,5 +1,6 @@
 package de.cacheoverflow.cashflow
 
+import android.app.KeyguardManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.fragment.app.FragmentActivity
@@ -17,6 +18,7 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         instance = this
         val root = retainedComponent { RootComponent(it) }
+        val manager = getSystemService(KeyguardManager::class.java).isDeviceSecure
         setContent {
             App(root)
         }
