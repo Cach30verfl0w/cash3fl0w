@@ -16,6 +16,17 @@
 
 package de.cacheoverflow.cashflow.utils
 
+/**
+ * This interface is the implementation templates for the security and cryptography architecture of
+ * the Cash3Fl0w finance app. This provider is used to acquire security-related information or
+ * change security-related configuration.
+ *
+ * Also this interface provides a platform-independent wrapper for cryptographic operations like
+ * encrypt and decrypt content etc.
+ *
+ * @author Cedric Hammes
+ * @since  02/06/2024
+ */
 interface ISecurityProvider {
 
     /**
