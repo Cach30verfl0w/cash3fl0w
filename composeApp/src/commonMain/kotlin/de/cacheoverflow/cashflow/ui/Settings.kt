@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Screenshot
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -34,13 +33,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import de.cacheoverflow.cashflow.ui.components.RadioCheckSetting
 import de.cacheoverflow.cashflow.ui.components.CollapsableSetting
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.ui.components.ToggleSetting
-import de.cacheoverflow.cashflow.utils.EnumLanguage
 import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
 import de.cacheoverflow.cashflow.utils.disableScreenshots
-import de.cacheoverflow.cashflow.utils.disableScreenshotsDescription
 import de.cacheoverflow.cashflow.utils.security
 import de.cacheoverflow.cashflow.utils.settings
 import org.koin.compose.getKoin
@@ -69,35 +67,17 @@ fun Settings() {
             SettingsGroup(icon = Icons.Filled.Security, name = security()) {
                 ToggleSetting(
                     name = disableScreenshots(),
-                    description = disableScreenshotsDescription(),
                     state = boolState,
                     onToggle = {
                         settings.update { settings -> settings.copy(screenshotsEnabled = !it) }
                     }
                 )
-                CollapsableSetting(
-                    name = disableScreenshots(),
-                    description = disableScreenshotsDescription()
-                ) {
+                CollapsableSetting(name = disableScreenshots()) {
+                    RadioCheckSetting("A", true, onClick = {})
+                    RadioCheckSetting("B", true, onClick = {})
+                    RadioCheckSetting("C", true, onClick = {})
                     ToggleSetting(
                         name = disableScreenshots(),
-                        description = disableScreenshotsDescription(),
-                        state = boolState,
-                        onToggle = {
-                            settings.update { settings -> settings.copy(screenshotsEnabled = !it) }
-                        }
-                    )
-                    ToggleSetting(
-                        name = disableScreenshots(),
-                        description = disableScreenshotsDescription(),
-                        state = boolState,
-                        onToggle = {
-                            settings.update { settings -> settings.copy(screenshotsEnabled = !it) }
-                        }
-                    )
-                    ToggleSetting(
-                        name = disableScreenshots(),
-                        description = disableScreenshotsDescription(),
                         state = boolState,
                         onToggle = {
                             settings.update { settings -> settings.copy(screenshotsEnabled = !it) }

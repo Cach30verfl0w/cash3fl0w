@@ -30,11 +30,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowRight
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -84,35 +84,17 @@ fun ColumnScope.SettingsGroup(
 @Composable
 fun ColumnScope.CollapsableSetting(
     name: String,
-    description: String? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     var isVisible by remember { mutableStateOf(false) }
-    val showModal = remember { mutableStateOf(false) }
     Surface(
         color = Color.Transparent
     ) {
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { isVisible = !isVisible }
+                modifier = Modifier.clickable { isVisible = !isVisible }.height(50.dp)
             ) {
-                if (description != null) {
-                    IconButton(
-                        onClick = {
-                            showModal.value = !showModal.value
-                        }
-                    ) {
-                        Icon(
-                            Icons.Filled.Info,
-                            "Information",
-                            tint = MaterialTheme.colorScheme.onSecondary
-                        )
-                    }
-                    Modal(title = name, type = ModalType.INFO, visible = showModal) {
-                        Text(description)
-                    }
-                }
                 Text(
                     text = name,
                     color = MaterialTheme.colorScheme.onSecondary
@@ -126,7 +108,7 @@ fun ColumnScope.CollapsableSetting(
                         RoundedCornerShape(5.dp)
                     )
                 ) {
-                    Column(modifier = Modifier.padding(start = 8.dp, end = 8.dp)) {
+                    Column(modifier = Modifier.padding(start = 15.dp, end = 15.dp)) {
                         content()
                     }
                 }
@@ -136,39 +118,44 @@ fun ColumnScope.CollapsableSetting(
 }
 
 @Composable
-fun ColumnScope.ClickSetting(
+fun ColumnScope.RadioCheckSetting(
     name: String,
-    description: String? = null,
+    checked: Boolean,
     onClick: () -> Unit
 ) {
-    val showModal = remember { mutableStateOf(false) }
     Surface(
         color = Color.Transparent,
         onClick = onClick
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Row(Modifier.weight(1.0f), verticalAlignment = Alignment.CenterVertically) {
-                if (description != null) {
-                    IconButton(
-                        onClick = {
-                            showModal.value = !showModal.value
-                        }
-                    ) {
-                        Icon(
-                            Icons.Filled.Info,
-                            "Information",
-                            tint = MaterialTheme.colorScheme.onSecondary
-                        )
-                    }
-                    Modal(title = name, type = ModalType.INFO, visible = showModal) {
-                        Text(description)
-                    }
-                }
-                Text(
-                    text = name,
-                    color = MaterialTheme.colorScheme.onSecondary
-                )
-            }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.weight(1f).height(50.dp)
+        ) {
+            Text(
+                text = name,
+                color = MaterialTheme.colorScheme.onSecondary
+            )
+            Spacer(Modifier.weight(1.0f))
+            RadioButton(checked, onClick = { onClick() })
+        }
+    }
+}
+
+@Composable
+fun ColumnScope.ClickSetting(
+    name: String,
+    onClick: () -> Unit
+) {
+    Surface(
+        color = Color.Transparent,
+        onClick = onClick
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(50.dp)) {
+            Text(
+                text = name,
+                color = MaterialTheme.colorScheme.onSecondary
+            )
+            Spacer(Modifier.weight(1.0f))
             Icon(
                 Icons.Rounded.KeyboardDoubleArrowRight,
                 tint = MaterialTheme.colorScheme.onSecondary,
@@ -181,11 +168,9 @@ fun ColumnScope.ClickSetting(
 @Composable
 fun ToggleSetting(
     name: String,
-    description: String? = null,
     onToggle: (Boolean) -> Unit = {},
     state: MutableState<Boolean>
 ) {
-    val showModal = remember { mutableStateOf(false) }
     Surface(
         color = Color.Transparent,
         onClick = {
@@ -193,29 +178,12 @@ fun ToggleSetting(
             onToggle(state.value)
         }
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Row(Modifier.weight(1.0f), verticalAlignment = Alignment.CenterVertically) {
-                if (description != null) {
-                    IconButton(
-                        onClick = {
-                            showModal.value = !showModal.value
-                        }
-                    ) {
-                        Icon(
-                            Icons.Filled.Info,
-                            "Information",
-                            tint = MaterialTheme.colorScheme.onSecondary
-                        )
-                    }
-                    Modal(title = name, type = ModalType.INFO, visible = showModal) {
-                        Text(description)
-                    }
-                }
-                Text(
-                    text = name,
-                    color = MaterialTheme.colorScheme.onSecondary
-                )
-            }
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(50.dp)) {
+            Text(
+                text = name,
+                color = MaterialTheme.colorScheme.onSecondary
+            )
+            Spacer(Modifier.weight(1.0f))
             Switch(
                 checked = state.value,
                 onCheckedChange = {

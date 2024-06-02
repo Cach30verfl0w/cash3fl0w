@@ -50,10 +50,3 @@ fun disableScreenshots() = translate {
     DE translatesTo "Screenshots verbieten"
     EN translatesTo "Disable screenshots"
 }
-
-fun disableScreenshotsDescription() = translate {
-    DE translatesTo "Verbiete in-app screenshots um Bank- oder Finanzinformationen zu schützen. " +
-            "Diese Funktion funktioniert nur auf mobilen Geräten."
-    EN translatesTo "Disable in-app screenshot to protect bank/financial information. This " +
-            "feature is only working on mobile devices."
-}
