@@ -164,6 +164,11 @@ class AndroidSecurityProvider: ISecurityProvider {
     }
 
     companion object {
+        /**
+         * This is the name of the keystore used by default to store keys and key-pairs of the
+         * application. This mechanism of Android provides a higher security of critical info
+         * like financial data.
+         */
         private const val DEFAULT_KEY_STORE = "AndroidKeyStore"
     }
 
