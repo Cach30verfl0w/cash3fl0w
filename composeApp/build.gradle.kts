@@ -31,6 +31,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.decompose)
             implementation(libs.koin.android)
+            implementation(libs.biometric)
         }
         iosMain.dependencies {
         }
@@ -63,7 +64,7 @@ android {
 
     defaultConfig {
         applicationId = "de.cacheoverflow.cashflow"
-        minSdk = 24
+        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

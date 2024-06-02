@@ -9,6 +9,7 @@ kotlin = "1.9.23"
 decompose = "2.2.0-alpha03"
 extensionsComposeJetbrains = "2.1.4-compose-experimental"
 kotlinxSerializationJson = "1.6.1"
+biometric = "1.1.0"
 okio = "3.9.0"
 
 [libraries]
@@ -22,6 +23,7 @@ decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decom
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "extensionsComposeJetbrains" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

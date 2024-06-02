@@ -50,3 +50,18 @@ fun disableScreenshots() = translate {
     DE translatesTo "Screenshots verbieten"
     EN translatesTo "Disable screenshots"
 }
+
+fun unlockAccountInfo() = translate {
+    DE translatesTo "Kontoinformationen freischalten"
+    EN translatesTo "Unlock account information"
+}
+
+fun unlockAccountInfoSubtitle() = translate {
+    DE translatesTo "Bestätige deine Identität um deine Kontoinformationen freizuschalten"
+    EN translatesTo "Confirm your identity to unlock your account information"
+}
+
+fun awaitingAuthentication() = translate {
+    DE translatesTo "Warte auf Authentifizierung"
+    EN translatesTo "Awaiting authentication"
+}

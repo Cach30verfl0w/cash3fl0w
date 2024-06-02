@@ -41,10 +41,13 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import de.cacheoverflow.cashflow.ui.DefaultColorScheme
 import de.cacheoverflow.cashflow.ui.Settings
+import de.cacheoverflow.cashflow.ui.components.BiometricAuthLock
 import de.cacheoverflow.cashflow.ui.components.RootComponent
 import de.cacheoverflow.cashflow.utils.DefaultCashFlowSettingsHolder
 import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
 import de.cacheoverflow.cashflow.utils.defaultCoroutineScope
+import de.cacheoverflow.cashflow.utils.unlockAccountInfo
+import de.cacheoverflow.cashflow.utils.unlockAccountInfoSubtitle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.module.dsl.singleOf
@@ -128,9 +131,11 @@ fun MainMenu(component: MainMenuComponent) {
 fun App(root: RootComponent) {
     MaterialTheme(colorScheme = DefaultColorScheme) {
         val childStack by root.childStack.subscribeAsState()
-        Children(stack = childStack, animation = stackAnimation(slide())) {
-            when(val instance = it.instance) {
-                is RootComponent.Child.MainMenu -> MainMenu(instance.component)
+        BiometricAuthLock(title = unlockAccountInfo(), subtitle = unlockAccountInfoSubtitle()) {
+            Children(stack = childStack, animation = stackAnimation(slide())) {
+                when(val instance = it.instance) {
+                    is RootComponent.Child.MainMenu -> MainMenu(instance.component)
+                }
             }
         }
     }
