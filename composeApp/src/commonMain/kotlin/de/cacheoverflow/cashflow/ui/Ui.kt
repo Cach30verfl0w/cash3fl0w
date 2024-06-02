@@ -16,6 +16,7 @@
 
 package de.cacheoverflow.cashflow.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -39,11 +40,15 @@ import de.cacheoverflow.cashflow.utils.awaitingAuthentication
 @Composable
 fun DefaultAuthNotPossible(message: String) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.secondary),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(authenticationNotPossible(), fontSize = 4.5.em)
+        Text(
+            authenticationNotPossible(),
+            fontSize = 4.5.em,
+            color = MaterialTheme.colorScheme.onSecondary
+        )
         Text(message)
         Spacer(Modifier.height(20.dp))
         Icon(
@@ -58,11 +63,15 @@ fun DefaultAuthNotPossible(message: String) {
 @Composable
 fun AwaitAuth() {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.secondary),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(awaitingAuthentication(), fontSize = 4.5.em)
+        Text(
+            awaitingAuthentication(),
+            fontSize = 4.5.em,
+            color = MaterialTheme.colorScheme.onSecondary
+        )
         Spacer(Modifier.height(20.dp))
         CircularProgressIndicator(modifier = Modifier.size(100.dp), strokeWidth = 10.dp)
     }
