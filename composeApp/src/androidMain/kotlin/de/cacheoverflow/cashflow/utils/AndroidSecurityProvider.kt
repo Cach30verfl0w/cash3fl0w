@@ -24,8 +24,6 @@ class AndroidSecurityProvider: ISecurityProvider {
 
     private val defaultKeyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
 
-    // TODO: Use BiometricManager.from
-
     /**
      * This method checks whether the device has authentication methods like PIN etc. This check is
      * done by the system-specific component of the application.

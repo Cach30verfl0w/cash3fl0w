@@ -53,8 +53,6 @@ import kotlinx.coroutines.launch
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-// TODO: Look to the DataStore API and implement it if the security is good enough
-// TODO: Look to the Android Crypto Stuff like Keyring and implement it
 // TODO: Implement facade over dependency injection to disable screenshots
 
 val settingsModule = module {
