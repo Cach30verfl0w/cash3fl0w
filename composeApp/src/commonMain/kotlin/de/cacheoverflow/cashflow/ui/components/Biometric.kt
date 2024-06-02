@@ -18,6 +18,7 @@ package de.cacheoverflow.cashflow.ui.components
 
 
 import androidx.compose.runtime.Composable
+import de.cacheoverflow.cashflow.ui.AwaitAuth
 import de.cacheoverflow.cashflow.ui.DefaultAuthNotPossible
 import de.cacheoverflow.cashflow.utils.authenticationCancelled
 
@@ -27,6 +28,13 @@ import de.cacheoverflow.cashflow.utils.authenticationCancelled
  * handles failed authentication like missing hardware or interrupted authentication. The
  * presentation of the error is by default defined.
  *
+ * @param title           The title of the authentication prompt
+ * @param subtitle        The subtitle of the authentication prompt
+ * @param awaitAuth       The content to show while awaiting authentication form the user
+ * @param authNotPossible The content to show if the authentication process throw's an error
+ * @param authCancelled   The content to show if the authentication process was cancelled
+ * @param content         The content to show after a successful authentication
+ *
  * @author Cedric Hammes
  * @since  02/06/2024
  */
@@ -35,6 +43,7 @@ expect fun OptionalAuthLock(
     enabled: Boolean = true,
     title: String,
     subtitle: String,
+    awaitAuth: @Composable () -> Unit = { AwaitAuth() },
     authNotPossible: @Composable (String) -> Unit = { DefaultAuthNotPossible(it) },
     authCancelled: @Composable () -> Unit = { authNotPossible(authenticationCancelled()) },
     content: @Composable () -> Unit

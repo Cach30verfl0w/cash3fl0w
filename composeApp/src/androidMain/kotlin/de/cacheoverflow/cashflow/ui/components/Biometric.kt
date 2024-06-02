@@ -57,6 +57,7 @@ actual fun OptionalAuthLock(
     enabled: Boolean,
     title: String,
     subtitle: String,
+    awaitAuth: @Composable () -> Unit,
     authNotPossible: @Composable (String) -> Unit,
     authCancelled: @Composable () -> Unit,
     content: @Composable () -> Unit
@@ -73,18 +74,12 @@ actual fun OptionalAuthLock(
         is AuthState.AuthCancelled -> authCancelled()
         is AuthState.Authenticated -> content()
         is AuthState.AuthNotPossible -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                authNotPossible(when(authState.code) {
-                    BiometricPrompt.ERROR_NO_BIOMETRICS -> noAuthenticationMethodsFound()
-                    BiometricPrompt.ERROR_HW_NOT_PRESENT -> hardwareNotPresent()
-                    BiometricPrompt.ERROR_HW_UNAVAILABLE -> hardwareNotPresent()
-                    else -> unknownError()
-                })
-            }
+            authNotPossible(when(authState.code) {
+                BiometricPrompt.ERROR_NO_BIOMETRICS -> noAuthenticationMethodsFound()
+                BiometricPrompt.ERROR_HW_NOT_PRESENT -> hardwareNotPresent()
+                BiometricPrompt.ERROR_HW_UNAVAILABLE -> hardwareNotPresent()
+                else -> unknownError()
+            })
         }
         is AuthState.AwaitingAuth -> {
             MainActivity.instance?.apply {
@@ -112,15 +107,7 @@ actual fun OptionalAuthLock(
                     }
                 }).authenticate(promptInfo)
             }
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(awaitingAuthentication(), fontSize = 4.5.em)
-                Spacer(Modifier.height(20.dp))
-                CircularProgressIndicator(modifier = Modifier.size(100.dp), strokeWidth = 10.dp)
-            }
+            awaitAuth()
         }
     }
 }

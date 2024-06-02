@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,9 +34,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import de.cacheoverflow.cashflow.utils.authenticationNotPossible
+import de.cacheoverflow.cashflow.utils.awaitingAuthentication
 
 @Composable
-internal fun DefaultAuthNotPossible(message: String) {
+fun DefaultAuthNotPossible(message: String) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -50,5 +52,18 @@ internal fun DefaultAuthNotPossible(message: String) {
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error
         )
+    }
+}
+
+@Composable
+fun AwaitAuth() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(awaitingAuthentication(), fontSize = 4.5.em)
+        Spacer(Modifier.height(20.dp))
+        CircularProgressIndicator(modifier = Modifier.size(100.dp), strokeWidth = 10.dp)
     }
 }
