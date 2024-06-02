@@ -48,4 +48,13 @@ interface ISecurityProvider {
      */
     fun areAuthenticationMethodsAvailable(): Boolean
 
+    /**
+     * This method returns whether the screenshot policy setting is supported or not. If not, the
+     * 'disable screenshots' setting is grayed out.
+     *
+     * @author Cedric Hammes
+     * @since  02/06/2024
+     */
+    fun isScreenshotPolicySupported(): Boolean
+
 }

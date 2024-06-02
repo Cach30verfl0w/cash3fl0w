@@ -16,15 +16,18 @@
 
 package de.cacheoverflow.cashflow.utils
 
-import de.cacheoverflow.cashflow.utils.ISecurityProvider
-
 class DesktopSecurityProvider: ISecurityProvider {
 
     override fun toggleScreenshotPolicy() {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException("You can't toggle screenshot policy on Desktop")
     }
 
     override fun areAuthenticationMethodsAvailable(): Boolean {
-        return false
+        return true // Authentication like passwords are always available
     }
+
+    override fun isScreenshotPolicySupported(): Boolean {
+        return false // Blocking screenshots for an application is not possible on desktop
+    }
+
 }
