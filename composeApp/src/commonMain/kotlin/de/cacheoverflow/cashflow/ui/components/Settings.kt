@@ -16,7 +16,12 @@
 
 package de.cacheoverflow.cashflow.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -35,8 +40,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +52,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SettingsGroup(icon: ImageVector? = null, name: String, content: @Composable () -> Unit) {
+fun ColumnScope.SettingsGroup(
+    icon: ImageVector? = null,
+    name: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
         Row {
             if (icon != null) {
@@ -71,12 +82,64 @@ fun SettingsGroup(icon: ImageVector? = null, name: String, content: @Composable 
 }
 
 @Composable
-fun ClickSetting(
+fun ColumnScope.CollapsableSetting(
     name: String,
     description: String? = null,
-    onClick: () -> Unit,
-    icon: ImageVector? = null,
-    iconDescription: String? = null
+    content: @Composable ColumnScope.() -> Unit
+) {
+    var isVisible by remember { mutableStateOf(false) }
+    val showModal = remember { mutableStateOf(false) }
+    Surface(
+        color = Color.Transparent
+    ) {
+        Column {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable { isVisible = !isVisible }
+            ) {
+                if (description != null) {
+                    IconButton(
+                        onClick = {
+                            showModal.value = !showModal.value
+                        }
+                    ) {
+                        Icon(
+                            Icons.Filled.Info,
+                            "Information",
+                            tint = MaterialTheme.colorScheme.onSecondary
+                        )
+                    }
+                    Modal(title = name, type = ModalType.INFO, visible = showModal) {
+                        Text(description)
+                    }
+                }
+                Text(
+                    text = name,
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
+                Spacer(Modifier.weight(1f))
+            }
+            AnimatedVisibility(visible = isVisible) {
+                Box(
+                    modifier = Modifier.background(
+                        MaterialTheme.colorScheme.tertiary,
+                        RoundedCornerShape(5.dp)
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(start = 8.dp, end = 8.dp)) {
+                        content()
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ColumnScope.ClickSetting(
+    name: String,
+    description: String? = null,
+    onClick: () -> Unit
 ) {
     val showModal = remember { mutableStateOf(false) }
     Surface(

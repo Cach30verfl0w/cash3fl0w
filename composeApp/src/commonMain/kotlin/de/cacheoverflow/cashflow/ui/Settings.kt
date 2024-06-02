@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import de.cacheoverflow.cashflow.ui.components.CollapsableSetting
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.ui.components.ToggleSetting
 import de.cacheoverflow.cashflow.utils.EnumLanguage
@@ -74,7 +75,35 @@ fun Settings() {
                         settings.update { settings -> settings.copy(screenshotsEnabled = !it) }
                     }
                 )
-
+                CollapsableSetting(
+                    name = disableScreenshots(),
+                    description = disableScreenshotsDescription()
+                ) {
+                    ToggleSetting(
+                        name = disableScreenshots(),
+                        description = disableScreenshotsDescription(),
+                        state = boolState,
+                        onToggle = {
+                            settings.update { settings -> settings.copy(screenshotsEnabled = !it) }
+                        }
+                    )
+                    ToggleSetting(
+                        name = disableScreenshots(),
+                        description = disableScreenshotsDescription(),
+                        state = boolState,
+                        onToggle = {
+                            settings.update { settings -> settings.copy(screenshotsEnabled = !it) }
+                        }
+                    )
+                    ToggleSetting(
+                        name = disableScreenshots(),
+                        description = disableScreenshotsDescription(),
+                        state = boolState,
+                        onToggle = {
+                            settings.update { settings -> settings.copy(screenshotsEnabled = !it) }
+                        }
+                    )
+                }
             }
         }
     }
