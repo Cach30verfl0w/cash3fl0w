@@ -19,7 +19,6 @@ package de.cacheoverflow.cashflow.ui.components
 import androidx.compose.runtime.Composable
 import de.cacheoverflow.cashflow.ui.AwaitAuth
 import de.cacheoverflow.cashflow.ui.DefaultAuthNotPossible
-import de.cacheoverflow.cashflow.utils.authenticationCancelled
 
 /**
  * This composable represents the optional authentication lock. This makes it possible to lock the
@@ -44,6 +43,6 @@ expect fun OptionalAuthLock(
     subtitle: String,
     awaitAuth: @Composable () -> Unit = { AwaitAuth() },
     authNotPossible: @Composable (String) -> Unit = { DefaultAuthNotPossible(it) },
-    authCancelled: @Composable () -> Unit = { authNotPossible(authenticationCancelled()) },
+    authCancelled: @Composable () -> Unit,
     content: @Composable () -> Unit
 )

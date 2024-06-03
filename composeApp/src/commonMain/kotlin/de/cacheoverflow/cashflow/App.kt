@@ -18,11 +18,13 @@ package de.cacheoverflow.cashflow
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.router.stack.ChildStack
 import de.cacheoverflow.cashflow.ui.DefaultColorScheme
 import de.cacheoverflow.cashflow.ui.HomeScreen
 import de.cacheoverflow.cashflow.ui.Settings
@@ -49,16 +51,27 @@ val sharedModule = module {
 }
 
 @Composable
+fun AppView(
+    childStack: ChildStack<RootComponent.Configuration, RootComponent.Child>
+) {
+    Children(childStack, animation = stackAnimation(slide())) {
+        when (val instance = it.instance) {
+            is RootComponent.Child.MainMenu -> HomeScreen(instance.component)
+            is RootComponent.Child.Settings -> Settings(instance.component)
+        }
+    }
+}
+
+@Composable
 fun App(root: RootComponent) {
     MaterialTheme(colorScheme = DefaultColorScheme) {
         val childStack by root.childStack.subscribeAsState()
-        OptionalAuthLock(title = unlockAccountInfo(), subtitle = unlockAccountInfoSubtitle()) {
-            Children(childStack, animation = stackAnimation(slide())) {
-                when (val instance = it.instance) {
-                    is RootComponent.Child.MainMenu -> HomeScreen(instance.component)
-                    is RootComponent.Child.Settings -> Settings(instance.component)
-                }
-            }
+        OptionalAuthLock(
+            title = unlockAccountInfo(),
+            subtitle = unlockAccountInfoSubtitle(),
+            authCancelled = { AppView(childStack) }
+        ) {
+            AppView(childStack)
         }
     }
 }

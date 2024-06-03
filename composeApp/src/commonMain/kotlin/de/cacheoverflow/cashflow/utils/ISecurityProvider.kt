@@ -73,6 +73,16 @@ interface ISecurityProvider {
     fun isBiometricAuthenticationAvailable(): Boolean
 
     /**
+     * This method returns whether the user was successfully authenticated or not. This is mainly
+     * used for visual effects and some load logic. The keys are not locked behind this simple
+     * boolean so the app provides more security for the credentials than a simple lock.
+     *
+     * @author Cedric Hammes
+     * @since  03/06/2024
+     */
+    fun wasAuthenticated(): Boolean
+
+    /**
      * This method returns whether the screenshot policy setting is supported or not. If not, the
      * 'disable screenshots' setting is grayed out.
      *

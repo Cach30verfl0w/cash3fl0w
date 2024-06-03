@@ -40,6 +40,18 @@ fun settings() = translate {
     EN translatesTo "Settings"
 }
 
+// Main Menu
+fun keyringNotUnlocked() = translate {
+    DE translatesTo "Der Schlüsselspeicher wurde nicht entsperrt"
+    EN translatesTo "The key memory has not been unlocked"
+}
+
+fun loadingAccounts() = translate {
+    DE translatesTo "Entschlüssele und lade Konten"
+    EN translatesTo "Decrypt and load accounts"
+}
+
+// Acount unlock
 fun unlockAccountInfo() = translate {
     DE translatesTo "Kontoinformationen freischalten"
     EN translatesTo "Unlock account information"
@@ -50,6 +62,7 @@ fun unlockAccountInfoSubtitle() = translate {
     EN translatesTo "Confirm your identity to unlock your account information"
 }
 
+// Generic authentication messages
 fun awaitingAuthentication() = translate {
     DE translatesTo "Warte auf Authentifizierung"
     EN translatesTo "Awaiting authentication"
@@ -73,9 +86,4 @@ fun hardwareNotPresent() = translate {
 fun unknownError() = translate {
     DE translatesTo "Unbekannter Fehler"
     EN translatesTo "Unknown error"
-}
-
-fun authenticationCancelled() = translate {
-    DE translatesTo "Authentifizierung abgebrochen"
-    EN translatesTo "Authentication cancelled"
 }

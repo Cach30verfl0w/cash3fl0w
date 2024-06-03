@@ -128,6 +128,10 @@ class AndroidSecurityProvider: ISecurityProvider {
             .canAuthenticate(Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
     }
 
+    override fun wasAuthenticated(): Boolean {
+        return this.isAuthenticated.value
+    }
+
     /**
      * This method returns whether the screenshot policy setting is supported or not. If not, the
      * 'disable screenshots' setting is grayed out.
