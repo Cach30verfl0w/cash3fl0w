@@ -21,6 +21,8 @@ import android.app.KeyguardManager
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.view.WindowManager.LayoutParams
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators
 import de.cacheoverflow.cashflow.MainActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.security.KeyPair
@@ -112,6 +114,18 @@ class AndroidSecurityProvider: ISecurityProvider {
     override fun areAuthenticationMethodsAvailable(): Boolean {
         return MainActivity.instance?.getSystemService(KeyguardManager::class.java)?.isKeyguardSecure
             ?: false
+    }
+
+    /**
+     * This method returns whether the current environment supports biometric authentication. This
+     * is mainly used by the cryptographic and authentication infrastructure of this app.
+     *
+     * @author Cedric Hammes
+     * @since  02/06/2024
+     */
+    override fun isBiometricAuthenticationAvailable(): Boolean {
+        return BiometricManager.from(MainActivity.instance?.applicationContext!!)
+            .canAuthenticate(Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
     }
 
     /**

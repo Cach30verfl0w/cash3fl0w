@@ -64,6 +64,15 @@ interface ISecurityProvider {
     fun areAuthenticationMethodsAvailable(): Boolean
 
     /**
+     * This method returns whether the current environment supports biometric authentication. This
+     * is mainly used by the cryptographic and authentication infrastructure of this app.
+     *
+     * @author Cedric Hammes
+     * @since  02/06/2024
+     */
+    fun isBiometricAuthenticationAvailable(): Boolean
+
+    /**
      * This method returns whether the screenshot policy setting is supported or not. If not, the
      * 'disable screenshots' setting is grayed out.
      *
