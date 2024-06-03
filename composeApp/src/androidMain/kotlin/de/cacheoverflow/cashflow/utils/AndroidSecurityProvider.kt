@@ -145,7 +145,7 @@ class AndroidSecurityProvider: ISecurityProvider {
      * @param needUserAuth Whether user authentication is required to unlock key
      *
      * @author Cedric Hammes
-     * @since  03/04/2024
+     * @since  03/06/2024
      */
     private fun getOrCreateAESKey(
         name: String,
