@@ -40,6 +40,10 @@ class DesktopSecurityProvider: ISecurityProvider {
         TODO("Not yet implemented")
     }
 
+    override fun wasAuthenticated(): Boolean {
+        return true // TODO: Lock behind authentication
+    }
+
     override fun isScreenshotPolicySupported(): Boolean {
         return false // Blocking screenshots for an application is not possible on desktop
     }

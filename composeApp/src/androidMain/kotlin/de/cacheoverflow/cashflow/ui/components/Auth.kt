@@ -95,6 +95,7 @@ actual fun OptionalAuthLock(
                         authStateState = AuthState.Authenticated
                         (DI.inject<ISecurityProvider>() as AndroidSecurityProvider)
                             .isAuthenticated.value = true
+                        DI.inject<ISecurityProvider>().getOrCreateKey("TestAESKey", IKey.EnumAlgorithm.AES)
                     }
 
                     override fun onAuthenticationFailed() {
