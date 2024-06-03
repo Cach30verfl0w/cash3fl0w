@@ -40,16 +40,6 @@ fun settings() = translate {
     EN translatesTo "Settings"
 }
 
-fun security() = translate {
-    DE translatesTo "Sicherheit"
-    EN translatesTo "Security"
-}
-
-fun disableScreenshots() = translate {
-    DE translatesTo "Screenshots verbieten"
-    EN translatesTo "Disable screenshots"
-}
-
 fun unlockAccountInfo() = translate {
     DE translatesTo "Kontoinformationen freischalten"
     EN translatesTo "Unlock account information"

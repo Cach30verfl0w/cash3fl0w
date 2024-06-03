@@ -18,16 +18,15 @@ package de.cacheoverflow.cashflow.ui
 
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
-import de.cacheoverflow.cashflow.ui.components.RootComponent
+import de.cacheoverflow.cashflow.utils.settings
 
 class SettingsComponent(
     private val context: ComponentContext,
-    internal val onBack: () -> Unit,
-    internal val root: RootComponent
+    internal val onBack: () -> Unit
 ): ComponentContext by context
 
 @Composable
 fun Settings(component: SettingsComponent) {
-    View("Settings", component.root, onButton = component.onBack) {
+    View(settings(), onButton = component.onBack) {
     }
 }

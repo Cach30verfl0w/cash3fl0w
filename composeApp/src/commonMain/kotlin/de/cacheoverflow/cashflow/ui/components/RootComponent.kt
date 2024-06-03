@@ -37,12 +37,12 @@ class RootComponent(componentContext: ComponentContext): ComponentContext by com
 
     private fun createChild(config: Configuration, context: ComponentContext): Child {
         return when(config) {
-            is Configuration.MainMenu -> Child.MainMenu(HomeScreenComponent(context, {
+            is Configuration.MainMenu -> Child.MainMenu(HomeScreenComponent(context) {
                 navigation.push(Configuration.Settings)
-            }, this))
-            is Configuration.Settings -> Child.Settings(SettingsComponent(context, {
+            })
+            is Configuration.Settings -> Child.Settings(SettingsComponent(context) {
                 navigation.pop()
-            }, this))
+            })
         }
     }
 

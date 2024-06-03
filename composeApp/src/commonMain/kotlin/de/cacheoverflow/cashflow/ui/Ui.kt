@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowLeft
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
@@ -43,20 +42,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.arkivanov.decompose.router.stack.pop
-import de.cacheoverflow.cashflow.ui.components.RootComponent
 import de.cacheoverflow.cashflow.utils.authenticationNotPossible
 import de.cacheoverflow.cashflow.utils.awaitingAuthentication
 
 @Composable
 fun View(
     title: String,
-    root: RootComponent,
     canGoBack: Boolean = true,
     onButton: () -> Unit = {},
     content: @Composable RowScope.() -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -66,14 +62,30 @@ fun View(
         ) {
             if (canGoBack) {
                 IconButton(onClick = onButton) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondary
+                    )
                 }
             }
-            Text(title, fontSize = 30.sp, modifier = Modifier.padding(start = 10.dp))
+            Text(
+                title,
+                fontSize = 25.sp, modifier = if (canGoBack) {
+                    Modifier
+                } else {
+                    Modifier.padding(start = 10.dp)
+                       },
+                color = MaterialTheme.colorScheme.onSecondary
+            )
             if (!canGoBack) {
                 Spacer(Modifier.weight(1.0f))
                 IconButton(onClick = onButton) {
-                    Icon(Icons.Filled.Menu, contentDescription = null)
+                    Icon(
+                        Icons.Filled.Menu,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondary
+                    )
                 }
             }
 

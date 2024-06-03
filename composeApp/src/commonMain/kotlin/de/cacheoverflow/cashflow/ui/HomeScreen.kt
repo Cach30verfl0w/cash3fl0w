@@ -18,16 +18,14 @@ package de.cacheoverflow.cashflow.ui
 
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
-import de.cacheoverflow.cashflow.ui.components.RootComponent
 
 class HomeScreenComponent(
     private val context: ComponentContext,
-    internal val onButton: () -> Unit,
-    internal val root: RootComponent
+    internal val onButton: () -> Unit
 ): ComponentContext by context
 
 @Composable
 fun HomeScreen(component: HomeScreenComponent) {
-    View("Home", component.root, false, onButton = component.onButton) {
+    View("Home", false, onButton = component.onButton) {
     }
 }
