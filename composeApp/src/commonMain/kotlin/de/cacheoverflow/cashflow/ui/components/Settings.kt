@@ -29,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,17 +38,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.cacheoverflow.cashflow.utils.grayOutIfDisabled
 
 @Composable
 fun SwitchSetting(name: String, enabled: Boolean = true, value: Boolean, onSwitch: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(name, fontSize = 22.sp)
+        Column {
+            Text(name, fontSize = 22.sp)
+        }
         Spacer(Modifier.weight(1.0f))
         Switch(checked = value, onCheckedChange = {
             if (enabled) {
                 onSwitch()
             }
-        })
+        }, colors = SwitchDefaults.colors().grayOutIfDisabled(enabled))
     }
 }
 
@@ -80,9 +84,7 @@ fun SettingsGroup(name: String, icon: ImageVector, content: @Composable ColumnSc
                 .background(MaterialTheme.colorScheme.secondary)
                 .fillMaxWidth()
         ) {
-            Column(
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
-            ) {
+            Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 12.dp, bottom = 12.dp)) {
                 content()
             }
         }
