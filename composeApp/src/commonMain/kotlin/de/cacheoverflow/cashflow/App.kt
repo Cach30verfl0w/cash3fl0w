@@ -16,40 +16,23 @@
 
 package de.cacheoverflow.cashflow
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import de.cacheoverflow.cashflow.ui.DefaultColorScheme
+import de.cacheoverflow.cashflow.ui.HomeScreen
 import de.cacheoverflow.cashflow.ui.Settings
 import de.cacheoverflow.cashflow.ui.components.OptionalAuthLock
 import de.cacheoverflow.cashflow.ui.components.RootComponent
 import de.cacheoverflow.cashflow.utils.DefaultCashFlowSettingsHolder
 import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
-import de.cacheoverflow.cashflow.utils.defaultCoroutineScope
 import de.cacheoverflow.cashflow.utils.unlockAccountInfo
 import de.cacheoverflow.cashflow.utils.unlockAccountInfoSubtitle
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import org.koin.dsl.module
 
 interface IErrorHandler {
@@ -65,79 +48,15 @@ val sharedModule = module {
     }
 }
 
-class MainMenuComponent(context: ComponentContext): ComponentContext by context {
-    val menu = MutableStateFlow(EnumMenu.HOME)
-
-    fun changeMenuTo(newMenu: EnumMenu) {
-        defaultCoroutineScope.launch {
-            menu.emit(newMenu)
-        }
-    }
-
-    enum class EnumMenu {
-        HOME,
-        ACCOUNTS,
-        SETTINGS
-    }
-}
-
-@Composable
-fun MainMenu(component: MainMenuComponent) {
-    val currentMenu by component.menu.collectAsState()
-    Box {
-        // TODO: Add Home and Accounts
-        when(currentMenu) {
-            MainMenuComponent.EnumMenu.SETTINGS -> Settings()
-            else -> {}
-        }
-    }
-    Box(contentAlignment = Alignment.BottomStart, modifier = Modifier.fillMaxSize()) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondary)
-        ) {
-            IconButton(
-                onClick = { component.changeMenuTo(MainMenuComponent.EnumMenu.HOME) },
-                modifier = Modifier.weight(1.0f),
-                enabled = currentMenu != MainMenuComponent.EnumMenu.HOME
-            ) {
-                Icon(
-                    Icons.Filled.Home,
-                    "Home"
-                )
-            }
-            IconButton(
-                onClick = { component.changeMenuTo(MainMenuComponent.EnumMenu.ACCOUNTS) },
-                modifier = Modifier.weight(1.0f),
-                enabled = currentMenu != MainMenuComponent.EnumMenu.ACCOUNTS
-            ) {
-                Icon(
-                    Icons.Filled.AccountBox,
-                    "Accounts"
-                )
-            }
-            IconButton(
-                onClick = { component.changeMenuTo(MainMenuComponent.EnumMenu.SETTINGS) },
-                modifier = Modifier.weight(1.0f),
-                enabled = currentMenu != MainMenuComponent.EnumMenu.SETTINGS
-            ) {
-                Icon(
-                    Icons.Filled.Settings,
-                    "Settings"
-                )
-            }
-        }
-    }
-}
-
 @Composable
 fun App(root: RootComponent) {
     MaterialTheme(colorScheme = DefaultColorScheme) {
         val childStack by root.childStack.subscribeAsState()
         OptionalAuthLock(title = unlockAccountInfo(), subtitle = unlockAccountInfoSubtitle()) {
-            Children(stack = childStack, animation = stackAnimation(slide())) {
-                when(val instance = it.instance) {
-                    is RootComponent.Child.MainMenu -> MainMenu(instance.component)
+            Children(childStack, animation = stackAnimation(slide())) {
+                when (val instance = it.instance) {
+                    is RootComponent.Child.MainMenu -> HomeScreen(instance.component)
+                    is RootComponent.Child.Settings -> Settings(instance.component)
                 }
             }
         }

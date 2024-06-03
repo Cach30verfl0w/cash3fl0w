@@ -19,7 +19,10 @@ package de.cacheoverflow.cashflow.ui.components
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import de.cacheoverflow.cashflow.MainMenuComponent
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
+import de.cacheoverflow.cashflow.ui.HomeScreenComponent
+import de.cacheoverflow.cashflow.ui.SettingsComponent
 import kotlinx.serialization.Serializable
 
 class RootComponent(componentContext: ComponentContext): ComponentContext by componentContext {
@@ -34,17 +37,24 @@ class RootComponent(componentContext: ComponentContext): ComponentContext by com
 
     private fun createChild(config: Configuration, context: ComponentContext): Child {
         return when(config) {
-            Configuration.MainMenu -> Child.MainMenu(MainMenuComponent(context))
+            is Configuration.MainMenu -> Child.MainMenu(HomeScreenComponent(context, {
+                navigation.push(Configuration.Settings)
+            }, this))
+            is Configuration.Settings -> Child.Settings(SettingsComponent(context, {
+                navigation.pop()
+            }, this))
         }
     }
 
     sealed class Child {
-        data class MainMenu(val component: MainMenuComponent): Child()
+        data class MainMenu(val component: HomeScreenComponent) : Child()
+        data class Settings(val component: SettingsComponent) : Child()
     }
 
     @Serializable
     sealed class Configuration {
         @Serializable
         data object MainMenu: Configuration()
+        data object Settings: Configuration()
     }
 }

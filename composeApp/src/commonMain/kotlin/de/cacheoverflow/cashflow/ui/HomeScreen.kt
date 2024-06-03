@@ -20,14 +20,14 @@ import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import de.cacheoverflow.cashflow.ui.components.RootComponent
 
-class SettingsComponent(
+class HomeScreenComponent(
     private val context: ComponentContext,
-    internal val onBack: () -> Unit,
+    internal val onButton: () -> Unit,
     internal val root: RootComponent
 ): ComponentContext by context
 
 @Composable
-fun Settings(component: SettingsComponent) {
-    View("Settings", component.root, onButton = component.onBack) {
+fun HomeScreen(component: HomeScreenComponent) {
+    View("Home", component.root, false, onButton = component.onButton) {
     }
 }

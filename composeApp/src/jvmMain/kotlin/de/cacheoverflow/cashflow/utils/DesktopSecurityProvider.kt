@@ -18,12 +18,26 @@ package de.cacheoverflow.cashflow.utils
 
 class DesktopSecurityProvider: ISecurityProvider {
 
+    override fun getOrCreateKey(
+        name: String,
+        algorithm: IKey.EnumAlgorithm,
+        padding: Boolean,
+        needUserAuth: Boolean,
+        privateKey: Boolean
+    ): IKey {
+        TODO()
+    }
+
     override fun toggleScreenshotPolicy() {
         throw UnsupportedOperationException("You can't toggle screenshot policy on Desktop")
     }
 
     override fun areAuthenticationMethodsAvailable(): Boolean {
         return true // Authentication like passwords are always available
+    }
+
+    override fun isBiometricAuthenticationAvailable(): Boolean {
+        TODO("Not yet implemented")
     }
 
     override fun isScreenshotPolicySupported(): Boolean {
