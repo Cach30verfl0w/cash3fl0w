@@ -121,7 +121,7 @@ class AndroidSecurityProvider: ISecurityProvider {
      * is mainly used by the cryptographic and authentication infrastructure of this app.
      *
      * @author Cedric Hammes
-     * @since  02/06/2024
+     * @since  03/06/2024
      */
     override fun isBiometricAuthenticationAvailable(): Boolean {
         return BiometricManager.from(MainActivity.instance?.applicationContext!!)

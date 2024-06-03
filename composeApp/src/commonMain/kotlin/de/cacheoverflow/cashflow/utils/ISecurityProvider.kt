@@ -68,7 +68,7 @@ interface ISecurityProvider {
      * is mainly used by the cryptographic and authentication infrastructure of this app.
      *
      * @author Cedric Hammes
-     * @since  02/06/2024
+     * @since  03/06/2024
      */
     fun isBiometricAuthenticationAvailable(): Boolean
 
