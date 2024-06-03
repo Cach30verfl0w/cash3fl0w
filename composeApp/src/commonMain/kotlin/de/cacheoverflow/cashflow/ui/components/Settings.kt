@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,6 +39,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
+fun SwitchSetting(name: String, enabled: Boolean = true, value: Boolean, onSwitch: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(name, fontSize = 22.sp)
+        Spacer(Modifier.weight(1.0f))
+        Switch(checked = value, onCheckedChange = {
+            if (enabled) {
+                onSwitch()
+            }
+        })
+    }
+}
+
+/**
+ * This component represents a group of settings in a settings menu of this application. The
+ * settings are grouped to provide a better oversight over all settings available.
+ *
+ * @param name    The name of the settings group
+ * @param icon    The icon of the settings group
+ * @param content The content of the settings group
+ *
+ * @author Cedric Hammes
+ * @since  03/06/2024
+ */
+@Composable
 fun SettingsGroup(name: String, icon: ImageVector, content: @Composable ColumnScope.() -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -46,7 +71,7 @@ fun SettingsGroup(name: String, icon: ImageVector, content: @Composable ColumnSc
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(icon, contentDescription = null)
             Spacer(Modifier.width(5.dp))
-            Text(name, fontSize = 20.sp)
+            Text(name, fontSize = 30.sp)
         }
         Spacer(Modifier.height(5.dp))
         Column(
@@ -55,7 +80,9 @@ fun SettingsGroup(name: String, icon: ImageVector, content: @Composable ColumnSc
                 .background(MaterialTheme.colorScheme.secondary)
                 .fillMaxWidth()
         ) {
-            Column(modifier = Modifier.padding(5.dp)) {
+            Column(
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+            ) {
                 content()
             }
         }

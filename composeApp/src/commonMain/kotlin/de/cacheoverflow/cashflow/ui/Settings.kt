@@ -19,12 +19,16 @@ package de.cacheoverflow.cashflow.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DisplaySettings
-import androidx.compose.material.icons.filled.Security
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
-import de.cacheoverflow.cashflow.utils.appearance
+import de.cacheoverflow.cashflow.ui.components.SwitchSetting
+import de.cacheoverflow.cashflow.utils.DI
+import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
+import de.cacheoverflow.cashflow.utils.ISecurityProvider
+import de.cacheoverflow.cashflow.utils.disableScreenshots
 import de.cacheoverflow.cashflow.utils.security
 import de.cacheoverflow.cashflow.utils.settings
 
@@ -35,13 +39,22 @@ class SettingsComponent(
 
 @Composable
 fun Settings(component: SettingsComponent) {
+    val securityProvider = DI.inject<ISecurityProvider>()
+    val settings = DI.inject<ICashFlowSettingsHolder>()
+    val settingsState by settings.collectAsState()
     View(settings(), onButton = component.onBack) {
         Column {
-            SettingsGroup(appearance(), Icons.Filled.DisplaySettings) {
-                Text("Das hier ist ein Text")
-            }
-            SettingsGroup(security(), Icons.Filled.Security) {
-                Text("Das hier ist ein Text")
+            SettingsGroup(security(), Icons.Filled.DisplaySettings) {
+                SwitchSetting(
+                    disableScreenshots(),
+                    enabled = securityProvider.isScreenshotPolicySupported(),
+                    value = settingsState.screenshotsDisabled
+                ) {
+                    securityProvider.toggleScreenshotPolicy()
+                    settings.update {
+                        it.copy(screenshotsDisabled = securityProvider.areScreenshotsDisallowed())
+                    }
+                }
             }
         }
     }

@@ -68,7 +68,7 @@ interface ISecurityProvider {
      * is mainly used by the cryptographic and authentication infrastructure of this app.
      *
      * @author Cedric Hammes
-     * @since  03/06/2024
+     * @since  04/06/2024
      */
     fun isBiometricAuthenticationAvailable(): Boolean
 
@@ -78,7 +78,7 @@ interface ISecurityProvider {
      * boolean so the app provides more security for the credentials than a simple lock.
      *
      * @author Cedric Hammes
-     * @since  03/06/2024
+     * @since  04/06/2024
      */
     fun wasAuthenticated(): Boolean
 
@@ -90,5 +90,14 @@ interface ISecurityProvider {
      * @since  02/06/2024
      */
     fun isScreenshotPolicySupported(): Boolean
+
+    /**
+     * This method returns whether screenshots are allowed or not. This is used for the settings
+     * component display.
+     *
+     * @author Cedric Hammes
+     * @since  04/06/2024
+     */
+    fun areScreenshotsDisallowed(): Boolean
 
 }

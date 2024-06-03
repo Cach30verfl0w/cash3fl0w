@@ -48,4 +48,8 @@ class DesktopSecurityProvider: ISecurityProvider {
         return false // Blocking screenshots for an application is not possible on desktop
     }
 
+    override fun areScreenshotsDisallowed(): Boolean {
+        return false // Disallowing screenshots is not possible
+    }
+
 }

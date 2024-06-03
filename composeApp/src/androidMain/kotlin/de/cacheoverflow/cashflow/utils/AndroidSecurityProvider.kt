@@ -121,13 +121,21 @@ class AndroidSecurityProvider: ISecurityProvider {
      * is mainly used by the cryptographic and authentication infrastructure of this app.
      *
      * @author Cedric Hammes
-     * @since  03/06/2024
+     * @since  04/06/2024
      */
     override fun isBiometricAuthenticationAvailable(): Boolean {
         return BiometricManager.from(MainActivity.instance?.applicationContext!!)
             .canAuthenticate(Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
     }
 
+    /**
+     * This method returns whether the user was successfully authenticated or not. This is mainly
+     * used for visual effects and some load logic. The keys are not locked behind this simple
+     * boolean so the app provides more security for the credentials than a simple lock.
+     *
+     * @author Cedric Hammes
+     * @since  04/06/2024
+     */
     override fun wasAuthenticated(): Boolean {
         return this.isAuthenticated.value
     }
@@ -142,6 +150,17 @@ class AndroidSecurityProvider: ISecurityProvider {
     @SuppressLint("ObsoleteSdkInt")
     override fun isScreenshotPolicySupported(): Boolean {
         return true // This feature was added in API level 1 so it's supported
+    }
+
+    /**
+     * This method returns whether screenshots are allowed or not. This is used for the settings
+     * component display.
+     *
+     * @author Cedric Hammes
+     * @since  04/06/2024
+     */
+    override fun areScreenshotsDisallowed(): Boolean {
+        return this.screenshotDisabled
     }
 
     /**
