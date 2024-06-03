@@ -50,14 +50,19 @@ import de.cacheoverflow.cashflow.utils.unlockAccountInfo
 import de.cacheoverflow.cashflow.utils.unlockAccountInfoSubtitle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-// TODO: Implement facade over dependency injection to disable screenshots
+interface IErrorHandler {
+    val error: MutableStateFlow<Exception?>
+}
 
 val sharedModule = module {
     single<ICashFlowSettingsHolder> { DefaultCashFlowSettingsHolder() }
-    singleOf(::DefaultCashFlowSettingsHolder)
+    single<IErrorHandler> {
+        object: IErrorHandler {
+            override val error: MutableStateFlow<Exception?> = MutableStateFlow(null)
+        }
+    }
 }
 
 class MainMenuComponent(context: ComponentContext): ComponentContext by context {

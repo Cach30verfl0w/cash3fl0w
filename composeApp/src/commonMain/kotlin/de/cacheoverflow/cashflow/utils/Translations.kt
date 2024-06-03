@@ -30,7 +30,7 @@ object DefaultTranslation: ITranslation {
 }
 
 fun translate(closure: ITranslation.() -> Unit): String {
-    val settings = injectKoin<ICashFlowSettingsHolder>()
+    val settings = DI.inject<ICashFlowSettingsHolder>()
     DefaultTranslation.apply(closure)
     return DefaultTranslation.languages[settings.value.language]?: "Unable"
 }

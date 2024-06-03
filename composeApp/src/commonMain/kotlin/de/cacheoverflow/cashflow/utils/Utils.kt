@@ -16,6 +16,18 @@
 
 package de.cacheoverflow.cashflow.utils
 
+import de.cacheoverflow.cashflow.IErrorHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.mp.KoinPlatformTools
 
-inline fun <reified T: Any> injectKoin(): T = KoinPlatformTools.defaultContext().get().get<T>()
+val defaultCoroutineScope = CoroutineScope(Dispatchers.Default)
+
+object DI {
+    inline fun <reified T: Any> inject(): T = KoinPlatformTools.defaultContext().get().get<T>()
+
+    inline fun error(exception: Exception) = defaultCoroutineScope.launch {
+        inject<IErrorHandler>().error.emit(exception)
+    }
+}

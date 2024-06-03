@@ -22,6 +22,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.view.WindowManager.LayoutParams
 import de.cacheoverflow.cashflow.MainActivity
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.KeyStore
@@ -48,8 +49,39 @@ import javax.crypto.SecretKey
  */
 class AndroidSecurityProvider: ISecurityProvider {
 
-    private val defaultKeyStore = KeyStore.getInstance(DEFAULT_KEY_STORE).apply { load(null) }
     private var screenshotDisabled = false
+    private val defaultKeyStore = KeyStore.getInstance(KEY_STORE).apply { load(null) }
+    val isAuthenticated = MutableStateFlow(false)
+
+    /**
+     * This method creates acquires key with the specified parameters from the keystore or if no key
+     * found, the security manager creates a new key and stores it in the keystore of the target
+     * system.
+     *
+     * @author Cedric Hammes
+     * @since  03/04/2024
+     */
+    override fun getOrCreateKey(
+        name: String,
+        algorithm: IKey.EnumAlgorithm,
+        padding: Boolean,
+        needUserAuth: Boolean,
+        privateKey: Boolean
+    ): IKey {
+        return AndroidKey(name, algorithm, padding) {
+            when(algorithm) {
+                IKey.EnumAlgorithm.AES -> getOrCreateAESKey(name, padding, needUserAuth)
+                IKey.EnumAlgorithm.RSA -> {
+                    val keyPair = getOrCreateRSAKey(name, padding, needUserAuth)
+                    if (privateKey) {
+                        return@AndroidKey keyPair.private
+                    } else {
+                        return@AndroidKey keyPair.public
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * This method toggles the policy of disabling screenshots for this app. This is used to provide
@@ -120,18 +152,18 @@ class AndroidSecurityProvider: ISecurityProvider {
 
         val keyPurpose = KeyProperties.PURPOSE_DECRYPT
         val keyGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
-        keyGenerator.initialize(KeyGenParameterSpec.Builder(DEFAULT_KEY_STORE, keyPurpose)
-            .setUserAuthenticationRequired(needUserAuth)
-            .setEncryptionPaddings(if (padding) {
+        keyGenerator.initialize(KeyGenParameterSpec.Builder(KEY_STORE, keyPurpose).run {
+            setUserAuthenticationRequired(needUserAuth)
+            setEncryptionPaddings(if (padding) {
                 KeyProperties.ENCRYPTION_PADDING_RSA_OAEP
             } else {
                 KeyProperties.ENCRYPTION_PADDING_NONE
-            }).apply {
-                if (padding) {
-                    setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-                }
+            })
+            if (padding) {
+                setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
             }
-            .build())
+            build()
+        })
         return keyGenerator.generateKeyPair()
     }
 
@@ -158,17 +190,19 @@ class AndroidSecurityProvider: ISecurityProvider {
         }
 
         val keyPurpose = KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-        val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES)
-        keyGenerator.init(KeyGenParameterSpec.Builder(DEFAULT_KEY_STORE, keyPurpose)
-            .setUserAuthenticationRequired(needUserAuth)
-            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-            .setEncryptionPaddings(if (padding) {
-                KeyProperties.ENCRYPTION_PADDING_PKCS7
-            } else {
-                KeyProperties.ENCRYPTION_PADDING_NONE
-            })
-            .build())
-        return keyGenerator.generateKey()
+        val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, KEY_STORE)
+        keyGenerator.init(KeyGenParameterSpec.Builder(name, keyPurpose).run {
+            setKeySize(256)
+            // TODO: Need user auth can only be used with biometric authentication
+            setUserAuthenticationRequired(needUserAuth)
+            setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            build()
+        })
+        println("Test")
+        val key = keyGenerator.generateKey()
+        println(key)
+        return key
     }
 
     companion object {
@@ -177,7 +211,7 @@ class AndroidSecurityProvider: ISecurityProvider {
          * application. This mechanism of Android provides a higher security of critical info
          * like financial data.
          */
-        private const val DEFAULT_KEY_STORE = "AndroidKeyStore"
+        const val KEY_STORE = "AndroidKeyStore"
     }
 
 }

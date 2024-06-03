@@ -28,6 +28,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import de.cacheoverflow.cashflow.MainActivity
+import de.cacheoverflow.cashflow.utils.AndroidSecurityProvider
+import de.cacheoverflow.cashflow.utils.DI
+import de.cacheoverflow.cashflow.utils.IKey
+import de.cacheoverflow.cashflow.utils.ISecurityProvider
 import de.cacheoverflow.cashflow.utils.hardwareNotPresent
 import de.cacheoverflow.cashflow.utils.noAuthenticationMethodsFound
 import de.cacheoverflow.cashflow.utils.unknownError
@@ -59,7 +63,10 @@ actual fun OptionalAuthLock(
     }
     when(val authState = authStateState) {
         is AuthState.AuthCancelled -> authCancelled()
-        is AuthState.Authenticated -> content()
+        is AuthState.Authenticated -> {
+            val key = DI.inject<ISecurityProvider>().getOrCreateKey("EEEEEE", IKey.EnumAlgorithm.AES)
+            content()
+        }
         is AuthState.AuthNotPossible -> {
             authNotPossible(when(authState.code) {
                 BiometricPrompt.ERROR_NO_BIOMETRICS -> noAuthenticationMethodsFound()
@@ -87,6 +94,8 @@ actual fun OptionalAuthLock(
 
                     override fun onAuthenticationSucceeded(result: AuthenticationResult) {
                         authStateState = AuthState.Authenticated
+                        (DI.inject<ISecurityProvider>() as AndroidSecurityProvider)
+                            .isAuthenticated.value = true
                     }
 
                     override fun onAuthenticationFailed() {

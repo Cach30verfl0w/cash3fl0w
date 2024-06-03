@@ -30,6 +30,21 @@ package de.cacheoverflow.cashflow.utils
 interface ISecurityProvider {
 
     /**
+     * This method creates acquires key with the specified parameters from the keystore or if no key
+     * found, the security manager creates a new key and stores it in the keystore of the target
+     * system.
+     *
+     * @author Cedric Hammes
+     * @since  03/04/2024
+     */
+    fun getOrCreateKey(name: String,
+        algorithm: IKey.EnumAlgorithm,
+        padding: Boolean = true,
+        needUserAuth: Boolean = true,
+        privateKey: Boolean = false
+    ): IKey
+
+    /**
      * This method toggles the policy of disabling screenshots for this app. This is used to provide
      * more security to the financial information of the user against many forms of information
      * leakage.

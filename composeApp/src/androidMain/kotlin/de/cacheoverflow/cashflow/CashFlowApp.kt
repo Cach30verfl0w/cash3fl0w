@@ -7,17 +7,12 @@ import de.cacheoverflow.cashflow.utils.IPreferencesProvider
 import de.cacheoverflow.cashflow.utils.ISecurityProvider
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val compatibilityModule = module {
     single<ISecurityProvider> { AndroidSecurityProvider() }
-    singleOf(::AndroidSecurityProvider)
-
     single<IPreferencesProvider> { AndroidPreferencesProvider() }
-    singleOf(::AndroidPreferencesProvider)
 }
-
 
 class CashFlowApp : Application() {
     override fun onCreate() {

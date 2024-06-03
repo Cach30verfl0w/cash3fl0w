@@ -17,8 +17,6 @@
 package de.cacheoverflow.cashflow.utils
 
 import androidx.compose.ui.text.intl.Locale
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,8 +24,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.Serializable
-
-val defaultCoroutineScope = CoroutineScope(Dispatchers.Default)
 
 /**
  * This enum represents the theme used by the application. The user can use whether system to adopt
@@ -96,7 +92,7 @@ interface ICashFlowSettingsHolder: StateFlow<CashFlowSettings> {
  */
 class DefaultCashFlowSettingsHolder(
     private val flow: MutableStateFlow<CashFlowSettings> = MutableStateFlow(
-        injectKoin<IPreferencesProvider>().readSettings()
+        DI.inject<IPreferencesProvider>().readSettings()
     )
 ): ICashFlowSettingsHolder {
     private val updateMutex = Mutex()
@@ -109,7 +105,7 @@ class DefaultCashFlowSettingsHolder(
         defaultCoroutineScope.launch {
             updateMutex.withLock(this) {
                 val settings = updater(flow.value)
-                injectKoin<IPreferencesProvider>().writeSettings(settings)
+                DI.inject<IPreferencesProvider>().writeSettings(settings)
                 flow.emit(settings)
             }
         }
