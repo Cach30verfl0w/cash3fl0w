@@ -18,9 +18,10 @@ package de.cacheoverflow.cashflow.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,7 +51,7 @@ fun View(
     title: String,
     canGoBack: Boolean = true,
     onButton: () -> Unit = {},
-    content: @Composable RowScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Row(
@@ -90,7 +91,7 @@ fun View(
             }
 
         }
-        Row(modifier = Modifier.padding(top = 10.dp)) {
+        Box(modifier = Modifier.padding(top = 10.dp).fillMaxSize()) {
             content()
         }
     }

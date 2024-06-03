@@ -15,6 +15,7 @@ class MainActivity : FragmentActivity() {
     @OptIn(ExperimentalDecomposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        instance = this
         val root = retainedComponent { RootComponent(it) }
         setContent {
             App(root)

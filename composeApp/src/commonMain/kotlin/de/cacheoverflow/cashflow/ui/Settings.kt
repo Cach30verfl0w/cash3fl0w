@@ -16,12 +16,16 @@
 
 package de.cacheoverflow.cashflow.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DisplaySettings
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
+import de.cacheoverflow.cashflow.utils.appearance
+import de.cacheoverflow.cashflow.utils.security
 import de.cacheoverflow.cashflow.utils.settings
 
 class SettingsComponent(
@@ -32,8 +36,13 @@ class SettingsComponent(
 @Composable
 fun Settings(component: SettingsComponent) {
     View(settings(), onButton = component.onBack) {
-        SettingsGroup("Sicherheit", Icons.Filled.Security) {
-            Text("Das hier ist ein Text")
+        Column {
+            SettingsGroup(appearance(), Icons.Filled.DisplaySettings) {
+                Text("Das hier ist ein Text")
+            }
+            SettingsGroup(security(), Icons.Filled.Security) {
+                Text("Das hier ist ein Text")
+            }
         }
     }
 }

@@ -40,6 +40,16 @@ fun settings() = translate {
     EN translatesTo "Settings"
 }
 
+fun security() = translate {
+    DE translatesTo "Sicherheit"
+    EN translatesTo "Security"
+}
+
+fun appearance() = translate {
+    DE translatesTo "Aussehen"
+    EN translatesTo "Appearance"
+}
+
 // Main Menu
 fun keyringNotUnlocked() = translate {
     DE translatesTo "Der Schlüsselspeicher wurde nicht entsperrt"

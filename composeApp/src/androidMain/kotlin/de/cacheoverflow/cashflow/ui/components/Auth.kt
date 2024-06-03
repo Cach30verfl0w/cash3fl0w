@@ -30,7 +30,6 @@ import androidx.core.content.ContextCompat
 import de.cacheoverflow.cashflow.MainActivity
 import de.cacheoverflow.cashflow.utils.AndroidSecurityProvider
 import de.cacheoverflow.cashflow.utils.DI
-import de.cacheoverflow.cashflow.utils.IKey
 import de.cacheoverflow.cashflow.utils.ISecurityProvider
 import de.cacheoverflow.cashflow.utils.hardwareNotPresent
 import de.cacheoverflow.cashflow.utils.noAuthenticationMethodsFound
@@ -95,7 +94,6 @@ actual fun OptionalAuthLock(
                         authStateState = AuthState.Authenticated
                         (DI.inject<ISecurityProvider>() as AndroidSecurityProvider)
                             .isAuthenticated.value = true
-                        DI.inject<ISecurityProvider>().getOrCreateKey("TestAESKey", IKey.EnumAlgorithm.AES)
                     }
 
                     override fun onAuthenticationFailed() {
