@@ -64,7 +64,6 @@ actual fun OptionalAuthLock(
     when(val authState = authStateState) {
         is AuthState.AuthCancelled -> authCancelled()
         is AuthState.Authenticated -> {
-            val key = DI.inject<ISecurityProvider>().getOrCreateKey("EEEEEE", IKey.EnumAlgorithm.AES)
             content()
         }
         is AuthState.AuthNotPossible -> {

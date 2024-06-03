@@ -196,13 +196,14 @@ class AndroidSecurityProvider: ISecurityProvider {
             // TODO: Need user auth can only be used with biometric authentication
             setUserAuthenticationRequired(needUserAuth)
             setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-            setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            setEncryptionPaddings(if (padding) {
+                KeyProperties.ENCRYPTION_PADDING_RSA_OAEP
+            } else {
+                KeyProperties.ENCRYPTION_PADDING_NONE
+            })
             build()
         })
-        println("Test")
-        val key = keyGenerator.generateKey()
-        println(key)
-        return key
+        return keyGenerator.generateKey()
     }
 
     companion object {

@@ -23,6 +23,7 @@ class MainActivity : FragmentActivity() {
         setContent {
             App(root)
         }
+        val key = DI.inject<ISecurityProvider>().getOrCreateKey("EEEEEE", IKey.EnumAlgorithm.AES)
     }
 }
 
