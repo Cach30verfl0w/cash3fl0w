@@ -53,11 +53,9 @@ import javax.crypto.SecretKey
  */
 class AndroidSecurityProvider: AbstractSecurityProvider() {
 
-    // TODO: Probably locking isAuthenticated behind the key flow of the cryptographically-secured
-    //   settings
-
     private var screenshotDisabled = false
     private val defaultKeyStore = KeyStore.getInstance(KEY_STORE).apply { load(null) }
+    // TODO: Set true if no authentication must be done (Idk how now)
     val isAuthenticated = MutableStateFlow(false)
 
     /**

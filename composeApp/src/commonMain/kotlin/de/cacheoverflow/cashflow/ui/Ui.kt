@@ -72,7 +72,7 @@ fun View(
             }
             Text(
                 title,
-                fontSize = 25.sp, modifier = if (canGoBack) {
+                fontSize = 23.sp, modifier = if (canGoBack) {
                     Modifier
                 } else {
                     Modifier.padding(start = 10.dp)

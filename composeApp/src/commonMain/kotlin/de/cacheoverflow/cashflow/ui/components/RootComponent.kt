@@ -22,7 +22,8 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import de.cacheoverflow.cashflow.ui.HomeScreenComponent
-import de.cacheoverflow.cashflow.ui.SettingsComponent
+import de.cacheoverflow.cashflow.ui.settings.AuthSettingsComponent
+import de.cacheoverflow.cashflow.ui.settings.SettingsComponent
 import kotlinx.serialization.Serializable
 
 class RootComponent(componentContext: ComponentContext): ComponentContext by componentContext {
@@ -37,24 +38,35 @@ class RootComponent(componentContext: ComponentContext): ComponentContext by com
 
     private fun createChild(config: Configuration, context: ComponentContext): Child {
         return when(config) {
-            is Configuration.MainMenu -> Child.MainMenu(HomeScreenComponent(context) {
-                navigation.push(Configuration.Settings)
-            })
-            is Configuration.Settings -> Child.Settings(SettingsComponent(context) {
-                navigation.pop()
-            })
+            is Configuration.MainMenu -> Child.MainMenu(HomeScreenComponent(
+                context,
+                onButton = { navigation.push(Configuration.Settings) }
+            ))
+            is Configuration.Settings -> Child.Settings(SettingsComponent(
+                context,
+                onBack = { navigation.pop() },
+                changeToAuthSettings = { navigation.push(Configuration.AuthSettings) }
+            ))
+            is Configuration.AuthSettings -> Child.AuthSettings(AuthSettingsComponent(
+                context,
+                onBack = { navigation.pop() }
+            ))
         }
     }
 
     sealed class Child {
         data class MainMenu(val component: HomeScreenComponent) : Child()
         data class Settings(val component: SettingsComponent) : Child()
+        data class AuthSettings(val component: AuthSettingsComponent) : Child()
     }
 
     @Serializable
     sealed class Configuration {
         @Serializable
         data object MainMenu: Configuration()
+        @Serializable
         data object Settings: Configuration()
+        @Serializable
+        data object AuthSettings: Configuration()
     }
 }

@@ -50,17 +50,12 @@ fun disableScreenshots() = translate {
     EN translatesTo "Disable screenshots"
 }
 
-fun appearance() = translate {
-    DE translatesTo "Aussehen"
-    EN translatesTo "Appearance"
+fun authenticationSettings() = translate {
+    DE translatesTo "Authentifizierungseinstellungen"
+    EN translatesTo "Authentication settings"
 }
 
 // Main Menu
-fun keyringNotUnlocked() = translate {
-    DE translatesTo "Der Schlüsselspeicher wurde nicht entsperrt"
-    EN translatesTo "The key memory has not been unlocked"
-}
-
 fun loadingAccounts() = translate {
     DE translatesTo "Entschlüssele und lade Konten"
     EN translatesTo "Decrypt and load accounts"
@@ -101,4 +96,25 @@ fun hardwareNotPresent() = translate {
 fun unknownError() = translate {
     DE translatesTo "Unbekannter Fehler"
     EN translatesTo "Unknown error"
+}
+
+// Authentication information
+fun keyringNotUnlocked() = translate {
+    DE translatesTo "Der Schlüsselspeicher wurde nicht entsperrt"
+    EN translatesTo "The key store has not been unlocked"
+}
+
+fun keyringUnlocked() = translate {
+    DE translatesTo "Der Schlüsselspeicher wurde entsperrt"
+    EN translatesTo "The key store has been unlocked"
+}
+
+fun keyringNotSecured() = translate {
+    DE translatesTo "Der Schlüsselspeicher ist nicht gesichert"
+    EN translatesTo "The key store is not secured"
+}
+
+fun keyringSecured() = translate {
+    DE translatesTo "Der Schlüsselspeicher ist gesichert"
+    EN translatesTo "The key store is secured"
 }

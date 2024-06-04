@@ -44,6 +44,9 @@ enum class EnumTheme {
  * German. By default, the language configured for the system (if not available, english is used as
  * fallback) is being configured.
  *
+ * TODO: Add system setting to inherit language from system and make it with a flow to detect
+ *   changes in language setting
+ *
  * @author Cedric Hammes
  * @since  01/06/2024
  */

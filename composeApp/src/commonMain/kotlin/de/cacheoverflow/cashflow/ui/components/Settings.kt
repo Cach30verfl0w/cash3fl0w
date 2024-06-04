@@ -204,6 +204,7 @@ fun SettingsGroupScope.SwitchSetting(
 fun SettingsGroup(
     name: String,
     icon: ImageVector,
+    innerModifier: Modifier = Modifier,
     content: @Composable SettingsGroupScope.() -> Unit
 ) {
     Column(
@@ -222,7 +223,7 @@ fun SettingsGroup(
                 .background(MaterialTheme.colorScheme.secondary)
                 .fillMaxWidth()
         ) {
-            Column(modifier = Modifier.padding(top = 12.dp, bottom = 12.dp)) {
+            Column(modifier = innerModifier.padding(top = 12.dp, bottom = 12.dp)) {
                 content(SettingsGroupScope)
             }
         }

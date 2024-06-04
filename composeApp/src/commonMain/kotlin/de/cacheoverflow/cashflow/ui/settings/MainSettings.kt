@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.cacheoverflow.cashflow.ui
+package de.cacheoverflow.cashflow.ui.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
@@ -23,18 +23,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
+import de.cacheoverflow.cashflow.ui.View
+import de.cacheoverflow.cashflow.ui.components.ClickSetting
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.ui.components.SwitchSetting
 import de.cacheoverflow.cashflow.utils.DI
 import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
 import de.cacheoverflow.cashflow.utils.AbstractSecurityProvider
+import de.cacheoverflow.cashflow.utils.authenticationSettings
 import de.cacheoverflow.cashflow.utils.disableScreenshots
 import de.cacheoverflow.cashflow.utils.security
 import de.cacheoverflow.cashflow.utils.settings
 
 class SettingsComponent(
     private val context: ComponentContext,
-    internal val onBack: () -> Unit
+    internal val onBack: () -> Unit,
+    internal val changeToAuthSettings: () -> Unit
 ): ComponentContext by context
 
 @Composable
@@ -54,6 +58,9 @@ fun Settings(component: SettingsComponent) {
                     settings.update {
                         it.copy(screenshotsDisabled = securityProvider.areScreenshotsDisallowed())
                     }
+                }
+                ClickSetting(authenticationSettings()) {
+                    component.changeToAuthSettings()
                 }
             }
         }
