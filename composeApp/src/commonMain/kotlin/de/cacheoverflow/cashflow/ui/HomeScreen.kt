@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.ComponentContext
 import de.cacheoverflow.cashflow.utils.DI
-import de.cacheoverflow.cashflow.utils.ISecurityProvider
+import de.cacheoverflow.cashflow.utils.AbstractSecurityProvider
 import de.cacheoverflow.cashflow.utils.keyringNotUnlocked
 import de.cacheoverflow.cashflow.utils.loadingAccounts
 
@@ -47,7 +47,7 @@ class HomeScreenComponent(
 fun HomeScreen(component: HomeScreenComponent) {
     View("Home", false, onButton = component.onButton) {
             Column(modifier = Modifier.fillMaxSize()) {
-                if (!DI.inject<ISecurityProvider>().wasAuthenticated()) {
+                if (!DI.inject<AbstractSecurityProvider>().wasAuthenticated()) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()

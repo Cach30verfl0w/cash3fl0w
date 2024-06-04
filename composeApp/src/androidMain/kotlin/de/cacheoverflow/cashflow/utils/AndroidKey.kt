@@ -30,7 +30,7 @@ class AndroidKey(
 
     init {
         defaultCoroutineScope.launch {
-            (DI.inject<ISecurityProvider>() as AndroidSecurityProvider).isAuthenticated.collect {
+            (DI.inject<AbstractSecurityProvider>() as AndroidSecurityProvider).isAuthenticated.collect {
                 if (it) {
                     // TODO: Check if key can be invalidated through re-unlock of device
                     keyFlow.emit(updateKey())

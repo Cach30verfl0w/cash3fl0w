@@ -16,7 +16,7 @@
 
 package de.cacheoverflow.cashflow.utils
 
-class DesktopSecurityProvider: ISecurityProvider {
+class DesktopSecurityProvider: AbstractSecurityProvider {
 
     override fun getOrCreateKey(
         name: String,

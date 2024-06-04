@@ -27,10 +27,19 @@ package de.cacheoverflow.cashflow.utils
  * @author Cedric Hammes
  * @since  02/06/2024
  */
-interface ISecurityProvider {
+abstract class AbstractSecurityProvider(
+    initialSettings: CashFlowSettings = DI.inject<ICashFlowSettingsHolder>().value
+) {
 
     // TODO: Add functionality to migrate keys from auth-locked to unlocked and unlocked to
     //   auth-locked (Require re-authentication on key migration)
+
+    init {
+        // Disable screenshots if setting 'Disable screenshots' was enabled
+        if (initialSettings.screenshotsDisabled) {
+            this.toggleScreenshotPolicy()
+        }
+    }
 
     /**
      * This method creates acquires key with the specified parameters from the keystore or if no key
@@ -40,7 +49,7 @@ interface ISecurityProvider {
      * @author Cedric Hammes
      * @since  03/04/2024
      */
-    fun getOrCreateKey(name: String,
+    abstract fun getOrCreateKey(name: String,
         algorithm: IKey.EnumAlgorithm,
         padding: Boolean = true,
         needUserAuth: Boolean = true,
@@ -55,7 +64,7 @@ interface ISecurityProvider {
      * @author Cedric Hammes
      * @since  02/06/2024
      */
-    fun toggleScreenshotPolicy()
+    abstract fun toggleScreenshotPolicy()
 
     /**
      * This method checks whether the device has authentication methods like PIN etc. This check is
@@ -64,7 +73,7 @@ interface ISecurityProvider {
      * @author Cedric Hammes
      * @since  02/06/2024
      */
-    fun areAuthenticationMethodsAvailable(): Boolean
+    abstract fun areAuthenticationMethodsAvailable(): Boolean
 
     /**
      * This method returns whether the current environment supports biometric authentication. This
@@ -73,7 +82,7 @@ interface ISecurityProvider {
      * @author Cedric Hammes
      * @since  04/06/2024
      */
-    fun isBiometricAuthenticationAvailable(): Boolean
+    abstract fun isBiometricAuthenticationAvailable(): Boolean
 
     /**
      * This method returns whether the user was successfully authenticated or not. This is mainly
@@ -83,7 +92,7 @@ interface ISecurityProvider {
      * @author Cedric Hammes
      * @since  04/06/2024
      */
-    fun wasAuthenticated(): Boolean
+    abstract fun wasAuthenticated(): Boolean
 
     /**
      * This method returns whether the screenshot policy setting is supported or not. If not, the
@@ -92,7 +101,7 @@ interface ISecurityProvider {
      * @author Cedric Hammes
      * @since  02/06/2024
      */
-    fun isScreenshotPolicySupported(): Boolean
+    abstract fun isScreenshotPolicySupported(): Boolean
 
     /**
      * This method returns whether screenshots are allowed or not. This is used for the settings
@@ -101,6 +110,6 @@ interface ISecurityProvider {
      * @author Cedric Hammes
      * @since  04/06/2024
      */
-    fun areScreenshotsDisallowed(): Boolean
+    abstract fun areScreenshotsDisallowed(): Boolean
 
 }

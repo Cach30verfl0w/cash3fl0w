@@ -30,7 +30,7 @@ import androidx.core.content.ContextCompat
 import de.cacheoverflow.cashflow.MainActivity
 import de.cacheoverflow.cashflow.utils.AndroidSecurityProvider
 import de.cacheoverflow.cashflow.utils.DI
-import de.cacheoverflow.cashflow.utils.ISecurityProvider
+import de.cacheoverflow.cashflow.utils.AbstractSecurityProvider
 import de.cacheoverflow.cashflow.utils.hardwareNotPresent
 import de.cacheoverflow.cashflow.utils.noAuthenticationMethodsFound
 import de.cacheoverflow.cashflow.utils.unknownError
@@ -93,7 +93,7 @@ actual fun OptionalAuthLock(
 
                     override fun onAuthenticationSucceeded(result: AuthenticationResult) {
                         authStateState = AuthState.Authenticated
-                        (DI.inject<ISecurityProvider>() as AndroidSecurityProvider)
+                        (DI.inject<AbstractSecurityProvider>() as AndroidSecurityProvider)
                             .isAuthenticated.value = true
                     }
 

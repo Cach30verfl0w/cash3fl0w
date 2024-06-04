@@ -49,7 +49,7 @@ import javax.crypto.SecretKey
  * @see LayoutParams
  * @see KeyguardManager
  */
-class AndroidSecurityProvider: ISecurityProvider {
+class AndroidSecurityProvider: AbstractSecurityProvider() {
 
     // TODO: Migrate key from RSA to XDH if API level is higher than 33 but last start API level
     //   was lower than 33. Also use XDH over RSA if API level is higher than 33 while asymmetric

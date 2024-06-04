@@ -27,7 +27,7 @@ import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.ui.components.SwitchSetting
 import de.cacheoverflow.cashflow.utils.DI
 import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
-import de.cacheoverflow.cashflow.utils.ISecurityProvider
+import de.cacheoverflow.cashflow.utils.AbstractSecurityProvider
 import de.cacheoverflow.cashflow.utils.disableScreenshots
 import de.cacheoverflow.cashflow.utils.security
 import de.cacheoverflow.cashflow.utils.settings
@@ -39,7 +39,7 @@ class SettingsComponent(
 
 @Composable
 fun Settings(component: SettingsComponent) {
-    val securityProvider = DI.inject<ISecurityProvider>()
+    val securityProvider = DI.inject<AbstractSecurityProvider>()
     val settings = DI.inject<ICashFlowSettingsHolder>()
     val settingsState by settings.collectAsState()
     View(settings(), onButton = component.onBack) {
