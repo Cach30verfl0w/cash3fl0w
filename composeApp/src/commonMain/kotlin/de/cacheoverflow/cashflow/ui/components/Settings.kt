@@ -17,6 +17,7 @@
 package de.cacheoverflow.cashflow.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -40,9 +41,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.cacheoverflow.cashflow.utils.grayOutIfDisabled
 
+/**
+ * This components represents a setting that an be toggled and the state is represented through a
+ * switch.
+ * 
+ * @param name     The name of the setting
+ * @param enabled  Whether the setting is enabled (toggleable) or not
+ * @param value    The value of the setting (is the setting toggled or not)
+ * @param onSwitch Function called on switching state
+ *
+ * @author Cedric Hammes
+ * @since  04/06/2024
+ */
 @Composable
 fun SwitchSetting(name: String, enabled: Boolean = true, value: Boolean, onSwitch: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
+        if (enabled) {
+            onSwitch()
+        }
+    }.padding(start = 10.dp, end = 10.dp)) {
         Column {
             Text(name, fontSize = 22.sp)
         }
@@ -84,7 +101,7 @@ fun SettingsGroup(name: String, icon: ImageVector, content: @Composable ColumnSc
                 .background(MaterialTheme.colorScheme.secondary)
                 .fillMaxWidth()
         ) {
-            Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 12.dp, bottom = 12.dp)) {
+            Column(modifier = Modifier.padding(top = 12.dp, bottom = 12.dp)) {
                 content()
             }
         }
