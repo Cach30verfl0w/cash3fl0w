@@ -51,7 +51,7 @@ class PreferencesProvider(
         // Update private key and update public key if public key doesn't need to be created before
         securityProvider.wasAuthenticated().collectAsync { isAuthenticated ->
             if (isAuthenticated) {
-                if (publicKeyFlow.value != null) {
+                if (publicKeyFlow.value == null) {
                     securityProvider
                         .getOrCreateKey(KEY_NAME, IKey.EnumAlgorithm.RSA).collect {
                             fileSystem.write(pubkeyFile) {
