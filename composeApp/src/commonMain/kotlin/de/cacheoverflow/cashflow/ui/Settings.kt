@@ -47,7 +47,7 @@ fun Settings(component: SettingsComponent) {
             SettingsGroup(security(), Icons.Filled.DisplaySettings) {
                 SwitchSetting(
                     disableScreenshots(),
-                    enabled = false,
+                    enabled = securityProvider.isScreenshotPolicySupported(),
                     value = settingsState.screenshotsDisabled
                 ) {
                     securityProvider.toggleScreenshotPolicy()
