@@ -19,7 +19,6 @@ package de.cacheoverflow.cashflow.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.cacheoverflow.cashflow.utils.grayOutIfDisabled
 
+object SettingsGroupScope
+
 /**
  * This component represents a setting that can be clicked to switch the menu etc.
  *
@@ -57,7 +58,11 @@ import de.cacheoverflow.cashflow.utils.grayOutIfDisabled
  * @since  04/06/2024
  */
 @Composable
-fun ClickSetting(name: String, enabled: Boolean = true, onClick: () -> Unit) {
+fun SettingsGroupScope.ClickSetting(
+    name: String,
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
         if (enabled) {
             onClick()
@@ -90,7 +95,12 @@ fun ClickSetting(name: String, enabled: Boolean = true, onClick: () -> Unit) {
  * @since  04/06/2024
  */
 @Composable
-fun RadioSetting(name: String, enabled: Boolean = true, value: Boolean, onToggle: () -> Unit) {
+fun SettingsGroupScope.RadioSetting(
+    name: String,
+    enabled: Boolean = true,
+    value: Boolean,
+    onToggle: () -> Unit
+) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
         if (enabled) {
             onToggle()
@@ -121,7 +131,12 @@ fun RadioSetting(name: String, enabled: Boolean = true, value: Boolean, onToggle
  * @since  04/06/2024
  */
 @Composable
-fun SwitchSetting(name: String, enabled: Boolean = true, value: Boolean, onToggle: () -> Unit) {
+fun SettingsGroupScope.SwitchSetting(
+    name: String,
+    enabled: Boolean = true,
+    value: Boolean,
+    onToggle: () -> Unit
+) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
         if (enabled) {
             onToggle()
@@ -151,7 +166,11 @@ fun SwitchSetting(name: String, enabled: Boolean = true, value: Boolean, onToggl
  * @since  03/06/2024
  */
 @Composable
-fun SettingsGroup(name: String, icon: ImageVector, content: @Composable ColumnScope.() -> Unit) {
+fun SettingsGroup(
+    name: String,
+    icon: ImageVector,
+    content: @Composable SettingsGroupScope.() -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
@@ -169,7 +188,7 @@ fun SettingsGroup(name: String, icon: ImageVector, content: @Composable ColumnSc
                 .fillMaxWidth()
         ) {
             Column(modifier = Modifier.padding(top = 12.dp, bottom = 12.dp)) {
-                content()
+                content(SettingsGroupScope)
             }
         }
     }
