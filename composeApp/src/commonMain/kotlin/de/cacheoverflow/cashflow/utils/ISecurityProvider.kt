@@ -30,7 +30,7 @@ package de.cacheoverflow.cashflow.utils
 interface ISecurityProvider {
 
     // TODO: Add functionality to migrate keys from auth-locked to unlocked and unlocked to
-    //   auth-locked with authentication requirement
+    //   auth-locked (Require re-authentication on key migration)
 
     /**
      * This method creates acquires key with the specified parameters from the keystore or if no key
