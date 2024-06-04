@@ -54,6 +54,8 @@ class AndroidSecurityProvider: ISecurityProvider {
     // TODO: Migrate key from RSA to XDH if API level is higher than 33 but last start API level
     //   was lower than 33. Also use XDH over RSA if API level is higher than 33 while asymmetric
     //   key generation.
+    // TODO: Probably locking isAuthenticated behind the key flow of the cryptographically-secured
+    //   settings
 
     private var screenshotDisabled = false
     private val defaultKeyStore = KeyStore.getInstance(KEY_STORE).apply { load(null) }
@@ -74,11 +76,18 @@ class AndroidSecurityProvider: ISecurityProvider {
         needUserAuth: Boolean,
         privateKey: Boolean
     ): IKey {
+        // TODO: Inform the user about keys are not locked behind authentication if biometric auth
+        //   is not enabled in the prompt shown if the user enables the 'Enable Auth' settings.
+
+        // Biometric authentication required to unlock keystore. Looking into the documentation of
+        // setUserAuthenticationRequired of KeyGenParameterSpec.Builder, the device needs at least
+        // one biometric authentication feature enabled.
+        val userAuthRequired: Boolean = this.isBiometricAuthenticationAvailable() && needUserAuth
         return AndroidKey(name, algorithm, padding) {
             when(algorithm) {
-                IKey.EnumAlgorithm.AES -> getOrCreateAESKey(name, padding, needUserAuth)
+                IKey.EnumAlgorithm.AES -> getOrCreateAESKey(name, padding, userAuthRequired)
                 IKey.EnumAlgorithm.RSA -> {
-                    val keyPair = getOrCreateRSAKey(name, padding, needUserAuth)
+                    val keyPair = getOrCreateRSAKey(name, padding, userAuthRequired)
                     if (privateKey) {
                         return@AndroidKey keyPair.private
                     } else {
@@ -116,7 +125,7 @@ class AndroidSecurityProvider: ISecurityProvider {
      * @since  02/06/2024
      */
     override fun areAuthenticationMethodsAvailable(): Boolean {
-        return MainActivity.instance?.getSystemService(KeyguardManager::class.java)?.isKeyguardSecure
+        return MainActivity.instance?.getSystemService(KeyguardManager::class.java)?.isDeviceSecure
             ?: false
     }
 
@@ -234,7 +243,6 @@ class AndroidSecurityProvider: ISecurityProvider {
         val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, KEY_STORE)
         keyGenerator.init(KeyGenParameterSpec.Builder(name, keyPurpose).run {
             setKeySize(256)
-            // TODO: Need user auth can only be used with biometric authentication
             setUserAuthenticationRequired(needUserAuth)
             setBlockModes(KeyProperties.BLOCK_MODE_GCM)
             setEncryptionPaddings(if (padding) {
