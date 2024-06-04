@@ -1,7 +1,6 @@
 [versions]
 agp = "8.2.2"
 okio = "3.9.0"
-accompanist-permissions = "0.35.1-alpha"
 
 # Kotlin
 kotlin = "1.9.23"
@@ -25,7 +24,6 @@ extensionsComposeJetbrains = "2.1.4-compose-experimental"
 [libraries]
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist-permissions" }
 
 # Androidx
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
