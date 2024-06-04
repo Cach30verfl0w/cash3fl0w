@@ -82,14 +82,14 @@ fun SwitchColors.grayOutIfDisabled(enabled: Boolean): SwitchColors = if (enabled
         this.uncheckedTrackColor.deriveHSL(saturation = 0.2f),
         this.uncheckedBorderColor.deriveHSL(saturation = 0.2f),
         this.uncheckedIconColor.deriveHSL(saturation = 0.2f),
-        this.disabledCheckedThumbColor.deriveHSL(saturation = 0.2f),
-        this.disabledCheckedTrackColor.deriveHSL(saturation = 0.2f),
-        this.disabledCheckedBorderColor.deriveHSL(saturation = 0.2f),
-        this.disabledCheckedIconColor.deriveHSL(saturation = 0.2f),
-        this.disabledUncheckedThumbColor.deriveHSL(saturation = 0.2f),
-        this.disabledUncheckedTrackColor.deriveHSL(saturation = 0.2f),
-        this.disabledUncheckedBorderColor.deriveHSL(saturation = 0.2f),
-        this.disabledUncheckedIconColor.deriveHSL(saturation = 0.2f)
+        this.checkedThumbColor.deriveHSL(saturation = 0.0f),
+        this.checkedTrackColor.deriveHSL(saturation = 0.0f),
+        this.checkedBorderColor.deriveHSL(saturation = 0.0f),
+        this.checkedIconColor.deriveHSL(saturation = 0.0f),
+        this.uncheckedThumbColor.deriveHSL(saturation = 0.0f),
+        this.uncheckedTrackColor.deriveHSL(saturation = 0.0f),
+        this.uncheckedBorderColor.deriveHSL(saturation = 0.0f),
+        this.uncheckedIconColor.deriveHSL(saturation = 0.0f)
     )
 }
 
@@ -102,6 +102,18 @@ fun RadioButtonColors.grayOutIfDisabled(enabled: Boolean): RadioButtonColors = i
         this.disabledSelectedColor.deriveHSL(saturation = 0.2f),
         this.disabledUnselectedColor.deriveHSL(saturation = 0.2f)
     )
+}
+
+fun Color.deriveHSLIf(
+    derive: Boolean,
+    hue: Float = this.hue,
+    saturation: Float = this.saturation,
+    lightness: Float = this.lightness,
+    alpha: Float = this.alpha
+): Color = if (derive) {
+    this.deriveHSL(hue, saturation, lightness, alpha)
+} else {
+    this
 }
 
 fun Color.deriveHSL(

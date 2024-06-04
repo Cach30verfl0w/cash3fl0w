@@ -18,6 +18,7 @@ package de.cacheoverflow.cashflow.utils
 
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
+import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.view.WindowManager.LayoutParams
@@ -29,6 +30,7 @@ import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.PrivateKey
+import java.security.spec.NamedParameterSpec
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
@@ -51,9 +53,6 @@ import javax.crypto.SecretKey
  */
 class AndroidSecurityProvider: AbstractSecurityProvider() {
 
-    // TODO: Migrate key from RSA to XDH if API level is higher than 33 but last start API level
-    //   was lower than 33. Also use XDH over RSA if API level is higher than 33 while asymmetric
-    //   key generation.
     // TODO: Probably locking isAuthenticated behind the key flow of the cryptographically-secured
     //   settings
 

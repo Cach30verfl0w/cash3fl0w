@@ -43,6 +43,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.cacheoverflow.cashflow.utils.deriveHSLIf
 import de.cacheoverflow.cashflow.utils.grayOutIfDisabled
 
 object SettingsGroupScope
@@ -63,13 +64,23 @@ fun SettingsGroupScope.ClickSetting(
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-        if (enabled) {
-            onClick()
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(start = 10.dp, end = 10.dp).run {
+            if (enabled) {
+                this.clickable { onClick() }
+            } else {
+                this
+            }
         }
-    }.padding(start = 10.dp, end = 10.dp)) {
+    ) {
         Column {
-            Text(name, fontSize = 22.sp)
+            Text(
+                name,
+                fontSize = 22.sp,
+                color = MaterialTheme.colorScheme.onSecondary
+                    .deriveHSLIf(!enabled, lightness = 0.5f)
+            )
         }
         Spacer(Modifier.weight(1.0f))
         IconButton(onClick = {
@@ -77,7 +88,11 @@ fun SettingsGroupScope.ClickSetting(
                 onClick()
             }
         }) {
-            Icon(Icons.Filled.KeyboardDoubleArrowRight, null)
+            Icon(
+                Icons.Filled.KeyboardDoubleArrowRight,
+                null,
+                tint = MaterialTheme.colorScheme.onSecondary.deriveHSLIf(!enabled, lightness = 0.5f)
+            )
         }
     }
 }
@@ -101,13 +116,23 @@ fun SettingsGroupScope.RadioSetting(
     value: Boolean,
     onToggle: () -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-        if (enabled) {
-            onToggle()
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(start = 10.dp, end = 10.dp).run {
+            if (enabled) {
+                this.clickable { onToggle() }
+            } else {
+                this
+            }
         }
-    }.padding(start = 10.dp, end = 10.dp)) {
+    ) {
         Column {
-            Text(name, fontSize = 22.sp)
+            Text(
+                name,
+                fontSize = 22.sp,
+                color = MaterialTheme.colorScheme.onSecondary
+                    .deriveHSLIf(!enabled, lightness = 0.5f)
+            )
         }
         Spacer(Modifier.weight(1.0f))
         RadioButton(selected = value, onClick = {
@@ -137,16 +162,26 @@ fun SettingsGroupScope.SwitchSetting(
     value: Boolean,
     onToggle: () -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-        if (enabled) {
-            onToggle()
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(start = 10.dp, end = 10.dp).run {
+            if (enabled) {
+                this.clickable { onToggle() }
+            } else {
+                this
+            }
         }
-    }.padding(start = 10.dp, end = 10.dp)) {
+    ) {
         Column {
-            Text(name, fontSize = 22.sp)
+            Text(
+                name,
+                fontSize = 22.sp,
+                color = MaterialTheme.colorScheme.onSecondary
+                    .deriveHSLIf(!enabled, lightness = 0.5f)
+            )
         }
         Spacer(Modifier.weight(1.0f))
-        Switch(checked = value, onCheckedChange = {
+        Switch(enabled = enabled, checked = value, onCheckedChange = {
             if (enabled) {
                 onToggle()
             }
@@ -176,9 +211,9 @@ fun SettingsGroup(
             .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, contentDescription = null)
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.width(5.dp))
-            Text(name, fontSize = 30.sp)
+            Text(name, fontSize = 30.sp, color = MaterialTheme.colorScheme.onBackground)
         }
         Spacer(Modifier.height(5.dp))
         Column(
