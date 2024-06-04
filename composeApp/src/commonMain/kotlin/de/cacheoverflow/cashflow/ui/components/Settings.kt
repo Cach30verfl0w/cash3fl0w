@@ -27,7 +27,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -44,13 +47,44 @@ import androidx.compose.ui.unit.sp
 import de.cacheoverflow.cashflow.utils.grayOutIfDisabled
 
 /**
- * This components represents a setting that an be toggled and the state is represented through a
+ * This component represents a setting that can be clicked to switch the menu etc.
+ *
+ * @param name    The name of the setting
+ * @param enabled Whether this setting is enabled (clickable or not)
+ * @param onClick Function called when element gets clicked
+ *
+ * @author Cedric Hammes
+ * @since  04/06/2024
+ */
+@Composable
+fun ClickSetting(name: String, enabled: Boolean = true, onClick: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
+        if (enabled) {
+            onClick()
+        }
+    }.padding(start = 10.dp, end = 10.dp)) {
+        Column {
+            Text(name, fontSize = 22.sp)
+        }
+        Spacer(Modifier.weight(1.0f))
+        IconButton(onClick = {
+            if (enabled) {
+                onClick()
+            }
+        }) {
+            Icon(Icons.Filled.KeyboardDoubleArrowRight, null)
+        }
+    }
+}
+
+/**
+ * This component represents a setting that can be toggled and the state is represented through a
  * radio button.
  *
  * @param name     The name of the setting
  * @param enabled  Whether the setting is enabled (toggleable) or not
  * @param value    The value of the setting (is the setting toggled or not)
- * @param onToggle Function called on switching state
+ * @param onToggle Function called when element gets clicked
  *
  * @author Cedric Hammes
  * @since  04/06/2024
@@ -75,13 +109,13 @@ fun RadioSetting(name: String, enabled: Boolean = true, value: Boolean, onToggle
 }
 
 /**
- * This components represents a setting that an be toggled and the state is represented through a
+ * This component represents a setting that can be toggled and the state is represented through a
  * switch.
  *
  * @param name     The name of the setting
  * @param enabled  Whether the setting is enabled (toggleable) or not
  * @param value    The value of the setting (is the setting toggled or not)
- * @param onToggle Function called on switching state
+ * @param onToggle Function called when element gets clicked
  *
  * @author Cedric Hammes
  * @since  04/06/2024
