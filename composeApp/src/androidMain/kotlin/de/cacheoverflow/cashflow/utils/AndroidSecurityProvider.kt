@@ -51,6 +51,10 @@ import javax.crypto.SecretKey
  */
 class AndroidSecurityProvider: ISecurityProvider {
 
+    // TODO: Migrate key from RSA to XDH if API level is higher than 33 but last start API level
+    //   was lower than 33. Also use XDH over RSA if API level is higher than 33 while asymmetric
+    //   key generation.
+
     private var screenshotDisabled = false
     private val defaultKeyStore = KeyStore.getInstance(KEY_STORE).apply { load(null) }
     val isAuthenticated = MutableStateFlow(false)
