@@ -29,7 +29,7 @@ import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.ui.components.SwitchSetting
 import de.cacheoverflow.cashflow.utils.DI
 import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
-import de.cacheoverflow.cashflow.utils.AbstractSecurityProvider
+import de.cacheoverflow.cashflow.utils.security.AbstractSecurityProvider
 import de.cacheoverflow.cashflow.utils.authenticationSettings
 import de.cacheoverflow.cashflow.utils.disableScreenshots
 import de.cacheoverflow.cashflow.utils.security
@@ -39,7 +39,7 @@ class SettingsComponent(
     private val context: ComponentContext,
     internal val onBack: () -> Unit,
     internal val changeToAuthSettings: () -> Unit
-): ComponentContext by context
+) : ComponentContext by context
 
 @Composable
 fun Settings(component: SettingsComponent) {

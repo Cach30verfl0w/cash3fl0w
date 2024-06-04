@@ -28,9 +28,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import de.cacheoverflow.cashflow.MainActivity
-import de.cacheoverflow.cashflow.utils.AndroidSecurityProvider
+import de.cacheoverflow.cashflow.utils.security.AndroidSecurityProvider
 import de.cacheoverflow.cashflow.utils.DI
-import de.cacheoverflow.cashflow.utils.AbstractSecurityProvider
+import de.cacheoverflow.cashflow.utils.security.AbstractSecurityProvider
 import de.cacheoverflow.cashflow.utils.hardwareNotPresent
 import de.cacheoverflow.cashflow.utils.noAuthenticationMethodsFound
 import de.cacheoverflow.cashflow.utils.unknownError

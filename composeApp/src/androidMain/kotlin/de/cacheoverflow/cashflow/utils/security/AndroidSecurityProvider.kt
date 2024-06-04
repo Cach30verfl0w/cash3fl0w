@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-package de.cacheoverflow.cashflow.utils
+package de.cacheoverflow.cashflow.utils.security
 
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
-import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.view.WindowManager.LayoutParams
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators
 import de.cacheoverflow.cashflow.MainActivity
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
+import okio.FileSystem
+import okio.Path
+import java.security.KeyFactory
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.PrivateKey
-import java.security.spec.NamedParameterSpec
+import java.security.spec.X509EncodedKeySpec
+import java.util.Base64
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
@@ -52,7 +58,6 @@ import javax.crypto.SecretKey
  * @see KeyguardManager
  */
 class AndroidSecurityProvider: AbstractSecurityProvider() {
-
     private var screenshotDisabled = false
     private val defaultKeyStore = KeyStore.getInstance(KEY_STORE).apply { load(null) }
     // TODO: Set true if no authentication must be done (Idk how now)
@@ -72,26 +77,34 @@ class AndroidSecurityProvider: AbstractSecurityProvider() {
         padding: Boolean,
         needUserAuth: Boolean,
         privateKey: Boolean
-    ): IKey {
-        // TODO: Inform the user about keys are not locked behind authentication if biometric auth
-        //   is not enabled in the prompt shown if the user enables the 'Enable Auth' settings.
-
-        // Biometric authentication required to unlock keystore. Looking into the documentation of
-        // setUserAuthenticationRequired of KeyGenParameterSpec.Builder, the device needs at least
-        // one biometric authentication feature enabled.
-        val userAuthRequired: Boolean = this.isBiometricAuthenticationAvailable() && needUserAuth
-        return AndroidKey(name, algorithm, padding) {
-            when(algorithm) {
-                IKey.EnumAlgorithm.AES -> getOrCreateAESKey(name, padding, userAuthRequired)
-                IKey.EnumAlgorithm.RSA -> {
-                    val keyPair = getOrCreateRSAKey(name, padding, userAuthRequired)
-                    if (privateKey) {
-                        return@AndroidKey keyPair.private
-                    } else {
-                        return@AndroidKey keyPair.public
-                    }
+    ): Flow<IKey> = flow {
+        val userAuthRequired = isBiometricAuthenticationAvailable() && needUserAuth
+        while (!isAuthenticated.value && userAuthRequired);
+        emit(AndroidKey(when(algorithm) {
+            IKey.EnumAlgorithm.AES -> getOrCreateAESKey(name, padding, userAuthRequired)
+            IKey.EnumAlgorithm.RSA -> {
+                val keyPair = getOrCreateRSAKey(name, padding, userAuthRequired)
+                when(privateKey) {
+                    true -> keyPair.private
+                    false -> keyPair.public
                 }
             }
+        }, privateKey))
+    }
+
+    /**
+     * This method schedules a new flow and reads the key stored in the file. After the read, the
+     * key gets emitted to the flow and returned to the user.
+     *
+     * @author Cedric Hammes
+     * @since 02/06/2024
+     */
+    override fun readKey(fileSystem: FileSystem, file: Path): Flow<IKey> = flow {
+        fileSystem.read(file) {
+            val keyFactory = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
+            val publicKeySpec = X509EncodedKeySpec(readByteArray())
+            emit(AndroidKey(keyFactory.generatePublic(publicKeySpec), false))
+            close()
         }
     }
 
@@ -146,8 +159,8 @@ class AndroidSecurityProvider: AbstractSecurityProvider() {
      * @author Cedric Hammes
      * @since  04/06/2024
      */
-    override fun wasAuthenticated(): Boolean {
-        return this.isAuthenticated.value
+    override fun wasAuthenticated(): StateFlow<Boolean> {
+        return this.isAuthenticated
     }
 
     /**
@@ -192,9 +205,9 @@ class AndroidSecurityProvider: AbstractSecurityProvider() {
         needUserAuth: Boolean = true
     ): KeyPair {
         val queriedPrivateKey = this.defaultKeyStore.getKey(name, null) as PrivateKey?
-        val queriedPublicKey = this.defaultKeyStore.getCertificate(name).publicKey
-        if (queriedPrivateKey == null || queriedPublicKey == null) {
-            return KeyPair(queriedPublicKey, queriedPrivateKey)
+        val queriedCertificate = this.defaultKeyStore.getCertificate(name)
+        if (queriedPrivateKey != null && queriedCertificate != null) {
+            return KeyPair(queriedCertificate.publicKey, queriedPrivateKey)
         }
 
         val keyPurpose = KeyProperties.PURPOSE_DECRYPT

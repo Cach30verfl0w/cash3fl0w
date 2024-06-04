@@ -22,4 +22,3 @@ class MainActivity : FragmentActivity() {
         }
     }
 }
-

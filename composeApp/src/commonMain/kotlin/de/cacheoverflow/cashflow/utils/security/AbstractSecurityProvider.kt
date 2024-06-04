@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-package de.cacheoverflow.cashflow.utils
+package de.cacheoverflow.cashflow.utils.security
+
+import de.cacheoverflow.cashflow.utils.CashFlowSettings
+import de.cacheoverflow.cashflow.utils.DI
+import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import okio.FileSystem
+import okio.Path
 
 /**
  * This interface is the implementation templates for the security and cryptography architecture of
@@ -49,12 +57,22 @@ abstract class AbstractSecurityProvider(
      * @author Cedric Hammes
      * @since  03/04/2024
      */
-    abstract fun getOrCreateKey(name: String,
+    abstract fun getOrCreateKey(
+        name: String,
         algorithm: IKey.EnumAlgorithm,
         padding: Boolean = true,
         needUserAuth: Boolean = true,
         privateKey: Boolean = false
-    ): IKey
+    ): Flow<IKey>
+
+    /**
+     * This method schedules a new flow and reads the key stored in the file. After the read, the
+     * key gets emitted to the flow and returned to the user.
+     *
+     * @author Cedric Hammes
+     * @since 02/06/2024
+     */
+    abstract fun readKey(fileSystem: FileSystem, file: Path): Flow<IKey>
 
     /**
      * This method toggles the policy of disabling screenshots for this app. This is used to provide
@@ -92,7 +110,7 @@ abstract class AbstractSecurityProvider(
      * @author Cedric Hammes
      * @since  04/06/2024
      */
-    abstract fun wasAuthenticated(): Boolean
+    abstract fun wasAuthenticated(): StateFlow<Boolean>
 
     /**
      * This method returns whether the screenshot policy setting is supported or not. If not, the
