@@ -42,6 +42,7 @@ sealed class AuthState {
     data class AuthNotPossible(val code: Int): AuthState()
 }
 
+// TODO: Require re-authentication after phone lock and unlock
 @Composable
 actual fun OptionalAuthLock(
     enabled: Boolean,

@@ -29,6 +29,9 @@ package de.cacheoverflow.cashflow.utils
  */
 interface ISecurityProvider {
 
+    // TODO: Add functionality to migrate keys from auth-locked to unlocked and unlocked to
+    //   auth-locked with authentication requirement
+
     /**
      * This method creates acquires key with the specified parameters from the keystore or if no key
      * found, the security manager creates a new key and stores it in the keystore of the target

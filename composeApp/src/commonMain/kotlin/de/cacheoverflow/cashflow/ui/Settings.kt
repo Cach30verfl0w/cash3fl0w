@@ -55,10 +55,6 @@ fun Settings(component: SettingsComponent) {
                         it.copy(screenshotsDisabled = securityProvider.areScreenshotsDisallowed())
                     }
                 }
-                SwitchSetting(
-                    "Test",
-                    value = true
-                ) {}
             }
         }
     }

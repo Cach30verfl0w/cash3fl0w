@@ -16,6 +16,7 @@
 
 package de.cacheoverflow.cashflow.utils
 
+import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.ui.graphics.Color
@@ -89,6 +90,17 @@ fun SwitchColors.grayOutIfDisabled(enabled: Boolean): SwitchColors = if (enabled
         this.disabledUncheckedTrackColor.deriveHSL(saturation = 0.2f),
         this.disabledUncheckedBorderColor.deriveHSL(saturation = 0.2f),
         this.disabledUncheckedIconColor.deriveHSL(saturation = 0.2f)
+    )
+}
+
+fun RadioButtonColors.grayOutIfDisabled(enabled: Boolean): RadioButtonColors = if (enabled) {
+    this
+} else {
+    RadioButtonColors(
+        this.selectedColor.deriveHSL(saturation = 0.2f),
+        this.unselectedColor.deriveHSL(saturation = 0.2f),
+        this.disabledSelectedColor.deriveHSL(saturation = 0.2f),
+        this.disabledUnselectedColor.deriveHSL(saturation = 0.2f)
     )
 }
 

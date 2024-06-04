@@ -29,6 +29,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -43,21 +45,52 @@ import de.cacheoverflow.cashflow.utils.grayOutIfDisabled
 
 /**
  * This components represents a setting that an be toggled and the state is represented through a
- * switch.
- * 
+ * radio button.
+ *
  * @param name     The name of the setting
  * @param enabled  Whether the setting is enabled (toggleable) or not
  * @param value    The value of the setting (is the setting toggled or not)
- * @param onSwitch Function called on switching state
+ * @param onToggle Function called on switching state
  *
  * @author Cedric Hammes
  * @since  04/06/2024
  */
 @Composable
-fun SwitchSetting(name: String, enabled: Boolean = true, value: Boolean, onSwitch: () -> Unit) {
+fun RadioSetting(name: String, enabled: Boolean = true, value: Boolean, onToggle: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
         if (enabled) {
-            onSwitch()
+            onToggle()
+        }
+    }.padding(start = 10.dp, end = 10.dp)) {
+        Column {
+            Text(name, fontSize = 22.sp)
+        }
+        Spacer(Modifier.weight(1.0f))
+        RadioButton(selected = value, onClick = {
+            if (enabled) {
+                onToggle()
+            }
+        }, colors = RadioButtonDefaults.colors().grayOutIfDisabled(enabled))
+    }
+}
+
+/**
+ * This components represents a setting that an be toggled and the state is represented through a
+ * switch.
+ *
+ * @param name     The name of the setting
+ * @param enabled  Whether the setting is enabled (toggleable) or not
+ * @param value    The value of the setting (is the setting toggled or not)
+ * @param onToggle Function called on switching state
+ *
+ * @author Cedric Hammes
+ * @since  04/06/2024
+ */
+@Composable
+fun SwitchSetting(name: String, enabled: Boolean = true, value: Boolean, onToggle: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
+        if (enabled) {
+            onToggle()
         }
     }.padding(start = 10.dp, end = 10.dp)) {
         Column {
@@ -66,7 +99,7 @@ fun SwitchSetting(name: String, enabled: Boolean = true, value: Boolean, onSwitc
         Spacer(Modifier.weight(1.0f))
         Switch(checked = value, onCheckedChange = {
             if (enabled) {
-                onSwitch()
+                onToggle()
             }
         }, colors = SwitchDefaults.colors().grayOutIfDisabled(enabled))
     }
