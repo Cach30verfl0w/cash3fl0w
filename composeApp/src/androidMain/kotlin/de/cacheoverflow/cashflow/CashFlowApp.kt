@@ -3,8 +3,6 @@ package de.cacheoverflow.cashflow
 import android.app.Application
 import de.cacheoverflow.cashflow.security.AndroidSecurityProvider
 import de.cacheoverflow.cashflow.security.ISecurityProvider
-import de.cacheoverflow.cashflow.utils.AndroidPreferencesProvider
-import de.cacheoverflow.cashflow.utils.IPreferencesProvider
 import de.cacheoverflow.cashflow.utils.settings.PreferencesProvider
 import okio.Path
 import okio.Path.Companion.toPath
@@ -16,7 +14,6 @@ val defaultFileProvider: (Path) -> Path = {
 }
 
 val compatibilityModule = module {
-    single<IPreferencesProvider> { AndroidPreferencesProvider() }
     single<ISecurityProvider> { AndroidSecurityProvider(defaultFileProvider) }
     single<PreferencesProvider> { PreferencesProvider(defaultFileProvider) }
 }

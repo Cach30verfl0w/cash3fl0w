@@ -71,7 +71,7 @@ class AESCryptoProvider(
     }
 
     override fun generateKey(alias: String, requireAuth: Boolean): Flow<IKey> = flow {
-        val authPossible = securityProvider.isBiometricAuthenticationAvailable() && requireAuth
+        val authPossible = securityProvider.areAuthenticationMethodsAvailable() && requireAuth
         val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES,
             AndroidSecurityProvider.KEY_STORE)
         val purpose = KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT

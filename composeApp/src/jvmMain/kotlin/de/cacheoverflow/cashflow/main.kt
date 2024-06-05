@@ -24,7 +24,6 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import de.cacheoverflow.cashflow.ui.components.RootComponent
 import de.cacheoverflow.cashflow.utils.DesktopPreferencesProvider
 import de.cacheoverflow.cashflow.utils.DesktopSecurityProvider
-import de.cacheoverflow.cashflow.utils.IPreferencesProvider
 import de.cacheoverflow.cashflow.utils.security.AbstractSecurityProvider
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf

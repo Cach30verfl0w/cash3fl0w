@@ -30,8 +30,6 @@ import de.cacheoverflow.cashflow.ui.settings.Settings
 import de.cacheoverflow.cashflow.ui.components.OptionalAuthLock
 import de.cacheoverflow.cashflow.ui.components.RootComponent
 import de.cacheoverflow.cashflow.ui.settings.AuthSettings
-import de.cacheoverflow.cashflow.utils.DefaultCashFlowSettingsHolder
-import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
 import de.cacheoverflow.cashflow.utils.unlockAccountInfo
 import de.cacheoverflow.cashflow.utils.unlockAccountInfoSubtitle
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +40,6 @@ interface IErrorHandler {
 }
 
 val sharedModule = module {
-    single<ICashFlowSettingsHolder> { DefaultCashFlowSettingsHolder() }
     single<IErrorHandler> {
         object: IErrorHandler {
             override val error: MutableStateFlow<Exception?> = MutableStateFlow(null)

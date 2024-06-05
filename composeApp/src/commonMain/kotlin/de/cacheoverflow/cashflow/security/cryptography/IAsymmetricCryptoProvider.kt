@@ -40,13 +40,18 @@ interface IAsymmetricCryptoProvider {
 
     fun getOrCreatePublicKey(alias: String, requireAuth: Boolean = true): Flow<IKey>
 
+    fun createSignature(key: IKey, message: ByteArray): Flow<ByteArray>
+
+    fun verifySignature(key: IKey, signature: ByteArray, original: ByteArray): Boolean
+
     fun encrypt(key: IKey, message: ByteArray): Flow<ByteArray>
 
     fun decrypt(key: IKey, message: ByteArray): Flow<ByteArray>
 
     fun generateKeyPair(
         alias: String,
-        requireAuth: Boolean = true
+        requireAuth: Boolean = true,
+        signingKeys: Boolean = true
     ): Flow<KeyPair>
 
     /**

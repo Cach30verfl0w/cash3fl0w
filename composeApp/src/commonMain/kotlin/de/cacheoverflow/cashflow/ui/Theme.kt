@@ -24,8 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
-import de.cacheoverflow.cashflow.utils.EnumTheme
-import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
+import de.cacheoverflow.cashflow.utils.settings.AppSettings
+import de.cacheoverflow.cashflow.utils.settings.PreferencesProvider
 import org.koin.compose.getKoin
 
 val LightColorScheme: ColorScheme
@@ -94,10 +94,13 @@ val DarkColorScheme: ColorScheme
 val DefaultColorScheme: ColorScheme
     @Composable
     get() {
-        val settings by getKoin().get<ICashFlowSettingsHolder>().collectAsState()
+        val settings by getKoin().get<PreferencesProvider>().collectAsState()
         return when (settings.theme) {
-            EnumTheme.SYSTEM -> if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme
-            EnumTheme.LIGHT -> LightColorScheme
-            EnumTheme.DARK -> DarkColorScheme
+            AppSettings.EnumTheme.SYSTEM -> if (isSystemInDarkTheme())
+                DarkColorScheme
+            else
+                LightColorScheme
+            AppSettings.EnumTheme.LIGHT -> LightColorScheme
+            AppSettings.EnumTheme.DARK -> DarkColorScheme
         }
     }

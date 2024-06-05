@@ -6,8 +6,6 @@ import androidx.fragment.app.FragmentActivity
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.retainedComponent
 import de.cacheoverflow.cashflow.ui.components.RootComponent
-import de.cacheoverflow.cashflow.utils.DI
-import de.cacheoverflow.cashflow.utils.settings.PreferencesProvider
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -25,9 +23,9 @@ class MainActivity : FragmentActivity() {
             androidContext(this@MainActivity)
             modules(sharedModule, compatibilityModule)
         }
-        println("This is just a debug message ${DI.inject<PreferencesProvider>()}")
         setContent {
             App(root)
         }
+
     }
 }

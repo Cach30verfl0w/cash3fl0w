@@ -84,11 +84,11 @@ class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecuri
     override fun readKeyFromFile(
         file: Path,
         algorithm: ISecurityProvider.EnumAlgorithm,
-        privateKey: Boolean
+        privateKey: Boolean,
+        usePadding: Boolean
     ): Flow<IKey> = flow {
-        KeyProperties.KEY_ALGORITHM_AES
         FileSystem.SYSTEM.read(pathProvider(file)) {
-            when(algorithm) {
+            emit(AndroidKey(when(algorithm) {
                 ISecurityProvider.EnumAlgorithm.AES -> SecretKeySpec(readByteArray(), "AES")
                 ISecurityProvider.EnumAlgorithm.RSA -> {
                     val keyFactory = KeyFactory.getInstance("RSA")
@@ -97,7 +97,7 @@ class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecuri
                         true -> keyFactory.generatePublic(X509EncodedKeySpec(readByteArray()))
                     }
                 }
-            }
+            }!!, usePadding))
             close()
         }
     }

@@ -29,11 +29,11 @@ import de.cacheoverflow.cashflow.ui.components.ClickSetting
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.ui.components.SwitchSetting
 import de.cacheoverflow.cashflow.utils.DI
-import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
 import de.cacheoverflow.cashflow.utils.authenticationSettings
 import de.cacheoverflow.cashflow.utils.disableScreenshots
 import de.cacheoverflow.cashflow.utils.security
 import de.cacheoverflow.cashflow.utils.settings
+import de.cacheoverflow.cashflow.utils.settings.PreferencesProvider
 
 class SettingsComponent(
     private val context: ComponentContext,
@@ -44,7 +44,7 @@ class SettingsComponent(
 @Composable
 fun Settings(component: SettingsComponent) {
     val securityProvider = DI.inject<ISecurityProvider>()
-    val settings = DI.inject<ICashFlowSettingsHolder>()
+    val settings = DI.inject<PreferencesProvider>()
     val settingsState by settings.collectAsState()
     View(settings(), onButton = component.onBack) {
         Column {

@@ -16,7 +16,9 @@
 
 package de.cacheoverflow.cashflow.utils
 
-import de.cacheoverflow.cashflow.utils.EnumLanguage.*
+import de.cacheoverflow.cashflow.utils.settings.AppSettings.EnumLanguage.*
+import de.cacheoverflow.cashflow.utils.settings.AppSettings.EnumLanguage
+import de.cacheoverflow.cashflow.utils.settings.PreferencesProvider
 
 interface ITranslation {
     infix fun EnumLanguage.translatesTo(message: String)
@@ -30,7 +32,7 @@ object DefaultTranslation: ITranslation {
 }
 
 fun translate(closure: ITranslation.() -> Unit): String {
-    val settings = DI.inject<ICashFlowSettingsHolder>()
+    val settings = DI.inject<PreferencesProvider>()
     DefaultTranslation.apply(closure)
     return DefaultTranslation.languages[settings.value.language]?: "Unable"
 }

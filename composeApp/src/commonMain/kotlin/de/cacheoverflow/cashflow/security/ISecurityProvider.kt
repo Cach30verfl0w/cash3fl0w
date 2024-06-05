@@ -53,7 +53,8 @@ interface ISecurityProvider {
     fun readKeyFromFile(
         file: Path,
         algorithm: EnumAlgorithm,
-        privateKey: Boolean = true
+        privateKey: Boolean = true,
+        usePadding: Boolean = true
     ): Flow<IKey>
 
     /**
