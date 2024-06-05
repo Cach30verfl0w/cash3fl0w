@@ -51,6 +51,11 @@ class PreferencesProvider(
     init {
         // Await public key if settings exists and decrypt them
         if (fileSystem.exists(configFile) && fileSystem.exists(signatureFile)) {
+            // This mechanism is here to improve the security of the settings file against simple
+            // attacks but if the attacker modifies the key, signature and settings file, this
+            // protection is broken but the application can be broken by this. So idk why I
+            // implemented this mechanism but it was a good test for my security provider
+            // infrastructure. ~ Cach30verfl0w, 05/06/2024 18:20
             defaultCoroutineScope.launch {
                 while (publicKeyFlow.value == null);
                 fileSystem.read(signatureFile) {

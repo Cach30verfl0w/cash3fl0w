@@ -20,7 +20,6 @@ import de.cacheoverflow.cashflow.security.IKey
 import de.cacheoverflow.cashflow.security.KeyPair
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
 
 /**
  * This interface provides the implementation of symmetric cryptography algorithms like AES-256 in
