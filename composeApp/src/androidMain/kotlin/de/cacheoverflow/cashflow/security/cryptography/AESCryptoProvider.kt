@@ -97,5 +97,5 @@ class AESCryptoProvider(
     } else {
         "${KeyProperties.BLOCK_MODE_GCM}/${KeyProperties.ENCRYPTION_PADDING_NONE}"
     }}"
-    override fun getName(): String = "AES"
+    override fun getName(): String = "AES-256"
 }

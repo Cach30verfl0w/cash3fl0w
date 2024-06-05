@@ -108,6 +108,6 @@ class RSACryptoProvider(
 
     override fun getAlgorithm(): String = "RSA/${KeyProperties.BLOCK_MODE_ECB}/${KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1}"
 
-    override fun getName(): String = "RSA"
+    override fun getName(): String = "RSA-4096"
 
 }
