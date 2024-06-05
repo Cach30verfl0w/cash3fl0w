@@ -18,12 +18,14 @@ package de.cacheoverflow.cashflow.security.cryptography
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import androidx.biometric.BiometricManager.Authenticators
 import de.cacheoverflow.cashflow.security.AndroidKey
 import de.cacheoverflow.cashflow.security.AndroidSecurityProvider
 import de.cacheoverflow.cashflow.security.IKey
 import de.cacheoverflow.cashflow.security.KeyPair
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import java.security.KeyPairGenerator
 import javax.crypto.Cipher
 
@@ -31,6 +33,40 @@ class RSACryptoProvider(
     private val securityProvider: AndroidSecurityProvider,
     private val usePadding: Boolean = true
 ): IAsymmetricCryptoProvider {
+
+    override fun getOrCreatePrivateKey(alias: String, requireAuth: Boolean): Flow<IKey> = flow {
+        val authPossible = securityProvider.isBiometricAuthenticationAvailable() && requireAuth
+        if (authPossible) { securityProvider.wasAuthenticated() } else { flowOf(true) }.collect {
+            if (it) {
+                val privateKey = securityProvider.keyStore.getKey(alias, null)
+                if (privateKey != null) {
+                    this@flow.emit(AndroidKey(privateKey, usePadding))
+                    return@collect
+                }
+
+                generateKeyPair(alias, requireAuth).collect { keyPair ->
+                    emit(keyPair.privateKey)
+                }
+            }
+        }
+    }
+
+    override fun getOrCreatePublicKey(alias: String, requireAuth: Boolean): Flow<IKey> = flow {
+        val authPossible = securityProvider.isBiometricAuthenticationAvailable() && requireAuth
+        if (authPossible) { securityProvider.wasAuthenticated() } else { flowOf(true) }.collect {
+            if (it) {
+                val certificate = securityProvider.keyStore.getCertificate(alias)
+                if (certificate != null) {
+                    emit(AndroidKey(certificate.publicKey, usePadding))
+                    return@collect
+                }
+
+                generateKeyPair(alias, requireAuth).collect { keyPair ->
+                    emit(keyPair.publicKey)
+                }
+            }
+        }
+    }
 
     override fun encrypt(key: IKey, message: ByteArray): Flow<ByteArray> = flow {
         val cipher = Cipher.getInstance(this@RSACryptoProvider.getAlgorithm())
@@ -51,6 +87,8 @@ class RSACryptoProvider(
         val purpose = KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT
         keyPairGenerator.initialize(KeyGenParameterSpec.Builder(alias, purpose).run {
             setUserAuthenticationRequired(authPossible)
+            // TODO: Change
+            setUserAuthenticationParameters(1000000, KeyProperties.AUTH_BIOMETRIC_STRONG)
             setKeySize(4096)
             if (usePadding) {
                 setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)

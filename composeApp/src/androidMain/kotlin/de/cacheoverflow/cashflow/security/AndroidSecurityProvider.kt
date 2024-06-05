@@ -57,9 +57,9 @@ import javax.crypto.spec.SecretKeySpec
  * @see LayoutParams
  * @see KeyguardManager
  */
-class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecurityManager {
+class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecurityProvider {
     internal val keyStore = KeyStore.getInstance(KEY_STORE).apply { load(null) }
-    private val isAuthenticated = MutableStateFlow(false)
+    val isAuthenticated = MutableStateFlow(false)
     private var screenshotDisabled = false
 
     override fun getSymmetricCryptoProvider(usePadding: Boolean): ISymmetricCryptoProvider {
@@ -83,18 +83,18 @@ class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecuri
      */
     override fun readKeyFromFile(
         file: Path,
-        algorithm: ISecurityManager.EnumAlgorithm,
+        algorithm: ISecurityProvider.EnumAlgorithm,
         privateKey: Boolean
     ): Flow<IKey> = flow {
         KeyProperties.KEY_ALGORITHM_AES
         FileSystem.SYSTEM.read(pathProvider(file)) {
             when(algorithm) {
-                ISecurityManager.EnumAlgorithm.AES -> SecretKeySpec(readByteArray(), "AES")
-                ISecurityManager.EnumAlgorithm.RSA -> {
+                ISecurityProvider.EnumAlgorithm.AES -> SecretKeySpec(readByteArray(), "AES")
+                ISecurityProvider.EnumAlgorithm.RSA -> {
                     val keyFactory = KeyFactory.getInstance("RSA")
                     when(privateKey) {
-                        true -> keyFactory.generatePrivate(PKCS8EncodedKeySpec(readByteArray()))
-                        false -> keyFactory.generatePublic(X509EncodedKeySpec(readByteArray()))
+                        false -> keyFactory.generatePrivate(PKCS8EncodedKeySpec(readByteArray()))
+                        true -> keyFactory.generatePublic(X509EncodedKeySpec(readByteArray()))
                     }
                 }
             }

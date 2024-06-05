@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package de.cacheoverflow.cashflow.utils.security
+package de.cacheoverflow.cashflow.security
 
-import de.cacheoverflow.cashflow.utils.CashFlowSettings
-import de.cacheoverflow.cashflow.utils.DI
-import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
+import de.cacheoverflow.cashflow.security.cryptography.IAsymmetricCryptoProvider
+import de.cacheoverflow.cashflow.security.cryptography.ISymmetricCryptoProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import okio.FileSystem
 import okio.Path
 
 /**
@@ -35,44 +33,28 @@ import okio.Path
  * @author Cedric Hammes
  * @since  02/06/2024
  */
-abstract class AbstractSecurityProvider(
-    initialSettings: CashFlowSettings = DI.inject<ICashFlowSettingsHolder>().value
-) {
+interface ISecurityProvider {
 
-    // TODO: Add functionality to migrate keys from auth-locked to unlocked and unlocked to
-    //   auth-locked (Require re-authentication on key migration)
+    fun getSymmetricCryptoProvider(usePadding: Boolean = true): ISymmetricCryptoProvider
 
-    init {
-        // Disable screenshots if setting 'Disable screenshots' was enabled
-        if (initialSettings.screenshotsDisabled) {
-            this.toggleScreenshotPolicy()
-        }
-    }
+    fun getAsymmetricCryptoProvider(usePadding: Boolean = true): IAsymmetricCryptoProvider
 
     /**
-     * This method creates acquires key with the specified parameters from the keystore or if no key
-     * found, the security manager creates a new key and stores it in the keystore of the target
-     * system.
+     * This method reads the specified file from the file system specified in the constructor to
+     * extract a key from the file.
+     *
+     * @param file       The relative path to the file being read
+     * @param algorithm  The key's algorithm
+     * @param privateKey Whether the key is a private key or not (ignored on symmetric algorithms)
      *
      * @author Cedric Hammes
-     * @since  03/04/2024
+     * @since  05/06/2024
      */
-    abstract fun getOrCreateKey(
-        name: String,
-        algorithm: IKey.EnumAlgorithm,
-        padding: Boolean = true,
-        needUserAuth: Boolean = true,
-        privateKey: Boolean = false
+    fun readKeyFromFile(
+        file: Path,
+        algorithm: EnumAlgorithm,
+        privateKey: Boolean = true
     ): Flow<IKey>
-
-    /**
-     * This method schedules a new flow and reads the key stored in the file. After the read, the
-     * key gets emitted to the flow and returned to the user.
-     *
-     * @author Cedric Hammes
-     * @since 02/06/2024
-     */
-    abstract fun readKey(fileSystem: FileSystem, file: Path): Flow<IKey>
 
     /**
      * This method toggles the policy of disabling screenshots for this app. This is used to provide
@@ -82,7 +64,7 @@ abstract class AbstractSecurityProvider(
      * @author Cedric Hammes
      * @since  02/06/2024
      */
-    abstract fun toggleScreenshotPolicy()
+    fun toggleScreenshotPolicy()
 
     /**
      * This method checks whether the device has authentication methods like PIN etc. This check is
@@ -91,7 +73,7 @@ abstract class AbstractSecurityProvider(
      * @author Cedric Hammes
      * @since  02/06/2024
      */
-    abstract fun areAuthenticationMethodsAvailable(): Boolean
+    fun areAuthenticationMethodsAvailable(): Boolean
 
     /**
      * This method returns whether the current environment supports biometric authentication. This
@@ -100,7 +82,7 @@ abstract class AbstractSecurityProvider(
      * @author Cedric Hammes
      * @since  04/06/2024
      */
-    abstract fun isBiometricAuthenticationAvailable(): Boolean
+    fun isBiometricAuthenticationAvailable(): Boolean
 
     /**
      * This method returns whether the user was successfully authenticated or not. This is mainly
@@ -110,7 +92,7 @@ abstract class AbstractSecurityProvider(
      * @author Cedric Hammes
      * @since  04/06/2024
      */
-    abstract fun wasAuthenticated(): StateFlow<Boolean>
+    fun wasAuthenticated(): StateFlow<Boolean>
 
     /**
      * This method returns whether the screenshot policy setting is supported or not. If not, the
@@ -119,7 +101,7 @@ abstract class AbstractSecurityProvider(
      * @author Cedric Hammes
      * @since  02/06/2024
      */
-    abstract fun isScreenshotPolicySupported(): Boolean
+    fun isScreenshotPolicySupported(): Boolean
 
     /**
      * This method returns whether screenshots are allowed or not. This is used for the settings
@@ -128,6 +110,17 @@ abstract class AbstractSecurityProvider(
      * @author Cedric Hammes
      * @since  04/06/2024
      */
-    abstract fun areScreenshotsDisallowed(): Boolean
+    fun areScreenshotsDisallowed(): Boolean
+
+
+    /**
+     * This enum represents all algorithms supported by the crypto provider
+     * @author Cedric Hammes
+     * @since  05/06/2024
+     */
+    enum class EnumAlgorithm {
+        AES,
+        RSA
+    }
 
 }

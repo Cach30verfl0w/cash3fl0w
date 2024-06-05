@@ -23,13 +23,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
+import de.cacheoverflow.cashflow.security.ISecurityProvider
 import de.cacheoverflow.cashflow.ui.View
 import de.cacheoverflow.cashflow.ui.components.ClickSetting
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.ui.components.SwitchSetting
 import de.cacheoverflow.cashflow.utils.DI
 import de.cacheoverflow.cashflow.utils.ICashFlowSettingsHolder
-import de.cacheoverflow.cashflow.utils.security.AbstractSecurityProvider
 import de.cacheoverflow.cashflow.utils.authenticationSettings
 import de.cacheoverflow.cashflow.utils.disableScreenshots
 import de.cacheoverflow.cashflow.utils.security
@@ -43,7 +43,7 @@ class SettingsComponent(
 
 @Composable
 fun Settings(component: SettingsComponent) {
-    val securityProvider = DI.inject<AbstractSecurityProvider>()
+    val securityProvider = DI.inject<ISecurityProvider>()
     val settings = DI.inject<ICashFlowSettingsHolder>()
     val settingsState by settings.collectAsState()
     View(settings(), onButton = component.onBack) {

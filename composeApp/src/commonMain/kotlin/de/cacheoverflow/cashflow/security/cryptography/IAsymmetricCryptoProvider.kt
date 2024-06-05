@@ -19,6 +19,8 @@ package de.cacheoverflow.cashflow.security.cryptography
 import de.cacheoverflow.cashflow.security.IKey
 import de.cacheoverflow.cashflow.security.KeyPair
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 
 /**
  * This interface provides the implementation of symmetric cryptography algorithms like AES-256 in
@@ -29,7 +31,14 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IAsymmetricCryptoProvider {
 
-    // TODO: getOrGenerate
+    fun getOrCreateKeyPair(alias: String, requireAuth: Boolean = true): Flow<KeyPair> = combine(
+        getOrCreatePublicKey(alias, requireAuth),
+        getOrCreatePrivateKey(alias, requireAuth)
+    ) { publicKey, privateKey -> KeyPair(publicKey, privateKey) }
+
+    fun getOrCreatePrivateKey(alias: String, requireAuth: Boolean = true): Flow<IKey>
+
+    fun getOrCreatePublicKey(alias: String, requireAuth: Boolean = true): Flow<IKey>
 
     fun encrypt(key: IKey, message: ByteArray): Flow<ByteArray>
 

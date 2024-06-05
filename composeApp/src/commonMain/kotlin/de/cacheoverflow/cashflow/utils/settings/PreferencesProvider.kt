@@ -16,11 +16,11 @@
 
 package de.cacheoverflow.cashflow.utils.settings
 
-import de.cacheoverflow.cashflow.utils.security.AbstractSecurityProvider
+import de.cacheoverflow.cashflow.security.IKey
+import de.cacheoverflow.cashflow.security.ISecurityProvider
 import de.cacheoverflow.cashflow.utils.DI
 import de.cacheoverflow.cashflow.utils.collectAsync
 import de.cacheoverflow.cashflow.utils.defaultCoroutineScope
-import de.cacheoverflow.cashflow.utils.security.IKey
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,11 +29,12 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okio.FileSystem
 import okio.Path
+import okio.Path.Companion.toPath
 import okio.SYSTEM
 
 class PreferencesProvider(
-    pathProvider: (String) -> Path,
-    private val securityProvider: AbstractSecurityProvider = DI.inject(),
+    pathProvider: (Path) -> Path,
+    private val securityProvider: ISecurityProvider = DI.inject(),
     private val settingsFlow: MutableStateFlow<AppSettings> = MutableStateFlow(AppSettings()),
     private val publicKeyFlow: MutableStateFlow<IKey?> = MutableStateFlow(null),
     private val privateKeyFlow: MutableStateFlow<IKey?> = MutableStateFlow(null),
@@ -43,30 +44,29 @@ class PreferencesProvider(
 ): StateFlow<AppSettings> {
     init {
         if (fileSystem.exists(pubkeyFile)) {
-            securityProvider.readKey(fileSystem, pubkeyFile).collectAsync {
-                publicKeyFlow.emit(it)
-            }
+            securityProvider.readKeyFromFile(pubkeyFile, ISecurityProvider.EnumAlgorithm.RSA)
+                .collectAsync {
+                    publicKeyFlow.emit(it)
+                }
         }
 
         // Update private key and update public key if public key doesn't need to be created before
         securityProvider.wasAuthenticated().collectAsync { isAuthenticated ->
+            val cryptoProvider = securityProvider.getAsymmetricCryptoProvider()
             if (isAuthenticated) {
                 if (publicKeyFlow.value == null) {
-                    securityProvider
-                        .getOrCreateKey(KEY_NAME, IKey.EnumAlgorithm.RSA).collect {
-                            fileSystem.write(pubkeyFile) {
-                                write(it.raw())
-                                flush()
-                                close()
-                            }
-                            publicKeyFlow.emit(it)
+                    cryptoProvider.getOrCreatePublicKey(KEY_NAME).collectAsync { publicKey ->
+                        fileSystem.write(pubkeyFile) {
+                            write(publicKey.raw())
+                            flush()
+                            close()
                         }
-                }
-                securityProvider
-                    .getOrCreateKey(KEY_NAME, IKey.EnumAlgorithm.RSA, privateKey = true)
-                    .collect {
-                        privateKeyFlow.emit(it)
+                        publicKeyFlow.emit(publicKey)
                     }
+                }
+                cryptoProvider.getOrCreatePrivateKey(KEY_NAME).collectAsync { privateKey ->
+                    privateKeyFlow.emit(privateKey)
+                }
             }
         }
     }
@@ -92,6 +92,6 @@ class PreferencesProvider(
 
     companion object {
         private const val KEY_NAME = "app_preferences_lock"
-        private const val PUBKEY_FILE = "application_preferences.pubkey"
+        private val PUBKEY_FILE = "application_preferences.pubkey".toPath()
     }
 }
