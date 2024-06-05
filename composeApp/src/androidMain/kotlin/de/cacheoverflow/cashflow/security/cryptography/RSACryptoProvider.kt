@@ -87,8 +87,7 @@ class RSACryptoProvider(
         val purpose = KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT
         keyPairGenerator.initialize(KeyGenParameterSpec.Builder(alias, purpose).run {
             setUserAuthenticationRequired(authPossible)
-            // TODO: Change
-            setUserAuthenticationParameters(1000000, KeyProperties.AUTH_BIOMETRIC_STRONG)
+            setUserAuthenticationParameters(0, AndroidSecurityProvider.KEY_AUTH_REQUIRED)
             setKeySize(4096)
             if (usePadding) {
                 setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)

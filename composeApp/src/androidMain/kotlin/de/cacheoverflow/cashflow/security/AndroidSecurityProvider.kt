@@ -185,6 +185,13 @@ class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecuri
          * application. This mechanism of Android provides a higher security of critical info
          * like financial data.
          */
-        const val KEY_STORE = "AndroidKeyStore"
+        internal const val KEY_STORE = "AndroidKeyStore"
+
+        /**
+         * This is the flags of the authentication methods can be used to unlock the keys in the
+         * keystore.
+         */
+        internal const val KEY_AUTH_REQUIRED = KeyProperties.AUTH_BIOMETRIC_STRONG or
+                KeyProperties.AUTH_DEVICE_CREDENTIAL
     }
 }

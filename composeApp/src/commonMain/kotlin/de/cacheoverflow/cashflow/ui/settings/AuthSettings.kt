@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material3.Icon
@@ -34,7 +33,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -57,9 +55,6 @@ class AuthSettingsComponent(
     private val context: ComponentContext,
     internal val onBack: () -> Unit
 ): ComponentContext by context
-
-// TODO: Lock authentication settings behind asymmetric encryption. So the device can always access
-//   the settings but can only change them with legitimation through authentication.
 
 @Composable
 fun AutoInfo(text: String, modalTitle: String, modalContent: @Composable ColumnScope.() -> Unit) {
