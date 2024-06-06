@@ -8,7 +8,6 @@ import okio.Path
 import okio.Path.Companion.toPath
 import org.koin.dsl.module
 
-
 val defaultFileProvider: (Path) -> Path = {
     CashFlowApp.instance?.applicationContext?.filesDir.toString().toPath() / it
 }

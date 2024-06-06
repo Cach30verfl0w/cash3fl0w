@@ -58,6 +58,15 @@ interface ISecurityProvider {
     ): Flow<IKey>
 
     /**
+     * This method returns the status of the specified authentication method of this device. This
+     * can be used to check whether the respective authentication method is supported.
+     *
+     * @author Cedric Hammes
+     * @since  06/06/2024
+     */
+    fun isAuthenticationSupported(authScheme: EnumAuthScheme): EnumAuthStatus
+
+    /**
      * This method toggles the policy of disabling screenshots for this app. This is used to provide
      * more security to the financial information of the user against many forms of information
      * leakage.
@@ -75,15 +84,6 @@ interface ISecurityProvider {
      * @since  02/06/2024
      */
     fun areAuthenticationMethodsAvailable(): Boolean
-
-    /**
-     * This method returns whether the current environment supports biometric authentication. This
-     * is mainly used by the cryptographic and authentication infrastructure of this app.
-     *
-     * @author Cedric Hammes
-     * @since  04/06/2024
-     */
-    fun isBiometricAuthenticationAvailable(): Boolean
 
     /**
      * This method returns whether the user was successfully authenticated or not. This is mainly
@@ -112,7 +112,6 @@ interface ISecurityProvider {
      * @since  04/06/2024
      */
     fun areScreenshotsDisallowed(): Boolean
-
 
     /**
      * This enum represents all algorithms supported by the crypto provider

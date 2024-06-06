@@ -122,6 +122,25 @@ class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecuri
     }
 
     /**
+     * This method returns the status of the specified authentication method of this device. This
+     * can be used to check whether the respective authentication method is supported.
+     *
+     * @author Cedric Hammes
+     * @since  06/06/2024
+     */
+    override fun isAuthenticationSupported(authScheme: EnumAuthScheme): EnumAuthStatus {
+        return when (BiometricManager.from(DI.inject()).canAuthenticate(when(authScheme) {
+            EnumAuthScheme.BIOMETRIC -> Authenticators.BIOMETRIC_STRONG
+            EnumAuthScheme.CREDENTIAL -> Authenticators.DEVICE_CREDENTIAL
+        })) {
+            BiometricManager.BIOMETRIC_SUCCESS -> EnumAuthStatus.SUPPORTED
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> EnumAuthStatus.HARDWARE_MISSING
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> EnumAuthStatus.HARDWARE_MISSING
+            else -> EnumAuthStatus.UNSUPPORTED
+        }
+    }
+
+    /**
      * This method checks whether the device has authentication methods like PIN etc. This check is
      * done by the system-specific component of the application.
      *
@@ -131,18 +150,6 @@ class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecuri
     override fun areAuthenticationMethodsAvailable(): Boolean {
         return DI.inject<Context>().getSystemService(KeyguardManager::class.java)?.isDeviceSecure
             ?: false
-    }
-
-    /**
-     * This method returns whether the current environment supports biometric authentication. This
-     * is mainly used by the cryptographic and authentication infrastructure of this app.
-     *
-     * @author Cedric Hammes
-     * @since  04/06/2024
-     */
-    override fun isBiometricAuthenticationAvailable(): Boolean {
-        return BiometricManager.from(DI.inject<Context>())
-            .canAuthenticate(Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
     }
 
     /**
