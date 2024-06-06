@@ -10,14 +10,11 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 class MainActivity : FragmentActivity() {
-    companion object {
-        var instance: MainActivity? = null
-    }
-
     @OptIn(ExperimentalDecomposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         instance = this
+        println(stringFromJNI())
         val root = retainedComponent { RootComponent(it) }
         startKoin {
             androidContext(this@MainActivity)
@@ -27,5 +24,16 @@ class MainActivity : FragmentActivity() {
             App(root)
         }
 
+    }
+
+    private external fun stringFromJNI(): String
+
+    companion object {
+        var instance: MainActivity? = null
+
+        init {
+            // Load native interface for Android
+            System.loadLibrary("cashflow-android-native")
+        }
     }
 }
