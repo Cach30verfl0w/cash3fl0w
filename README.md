@@ -15,3 +15,4 @@ information to third party servers and only establishes connections to the serve
 - On JVM environments, the application checks whether a TPM is available or not. Without a TPM we store the data in a more insecure data store. With TPM, the keys are stored on the TPM itself and are generated with the key generator of the TPM itself
 - For the data transfer feature, the protocol **TLS 1.3**/**TLS 1.2** is used to transfer the data between the devices. This feature only works for devices in the same network
 - The user has the ability to lock the application behind an extra layer of authentication to prevent unauthorized access to the application and lock keys behind the authentication scheme
+- Cash3Fl0w implements support for [post-quantum cryptography (PQC)](https://en.wikipedia.org/wiki/Post-quantum_cryptography). These algorithms are considered secure against cryptanalytical attacks by quantum computers.
