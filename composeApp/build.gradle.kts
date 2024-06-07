@@ -37,6 +37,7 @@ kotlin {
             implementation(libs.androidx.biometric)
             implementation(libs.decompose)
             implementation(libs.koin.android)
+            implementation("org.bouncycastle:bcprov-jdk18on:1.78.1")
         }
         iosMain.dependencies {
         }
@@ -92,12 +93,6 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
-        externalNativeBuild {
-            cmake {
-                cppFlags += "-std=c++17"
-            }
-        }
     }
     packaging {
         resources {
@@ -109,18 +104,20 @@ android {
             isMinifyEnabled = false
         }
     }
-    externalNativeBuild {
-        cmake {
-            path = file("src/androidMain/native/CMakeLists.txt")
-            version = "3.22.1"
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
     dependencies {
         debugImplementation(libs.androidx.compose.ui.tooling)
+    }
+}
+
+tasks.register("generateKeyStore") {
+    description = "This task generates a Java keystore file to store the CA certificate"
+    doLast {
+        println("Downloading latest version of Bouncy Castle Provider for PQ Cryptograhy")
+
     }
 }
 
