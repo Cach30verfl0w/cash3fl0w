@@ -22,10 +22,14 @@ import androidx.compose.material.icons.filled.DisplaySettings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.ComponentContext
 import de.cacheoverflow.cashflow.security.ISecurityProvider
 import de.cacheoverflow.cashflow.ui.View
 import de.cacheoverflow.cashflow.ui.components.ClickSetting
+import de.cacheoverflow.cashflow.ui.components.SelectableSetting
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.ui.components.SwitchSetting
 import de.cacheoverflow.cashflow.utils.DI
@@ -34,6 +38,12 @@ import de.cacheoverflow.cashflow.utils.disableScreenshots
 import de.cacheoverflow.cashflow.utils.security
 import de.cacheoverflow.cashflow.utils.settings
 import de.cacheoverflow.cashflow.utils.settings.PreferencesProvider
+
+enum class Test {
+    SYSTEM,
+    DARK,
+    LIGHT
+}
 
 class SettingsComponent(
     private val context: ComponentContext,
@@ -46,6 +56,8 @@ fun Settings(component: SettingsComponent) {
     val securityProvider = DI.inject<ISecurityProvider>()
     val settings = DI.inject<PreferencesProvider>()
     val settingsState by settings.collectAsState()
+    var testValue by remember { mutableStateOf(Test.SYSTEM) }
+
     View(settings(), onButton = component.onBack) {
         Column {
             SettingsGroup(security(), Icons.Filled.DisplaySettings) {
@@ -62,6 +74,7 @@ fun Settings(component: SettingsComponent) {
                 ClickSetting(authenticationSettings()) {
                     component.changeToAuthSettings()
                 }
+                SelectableSetting("Themes", value = testValue) { testValue = it }
             }
         }
     }

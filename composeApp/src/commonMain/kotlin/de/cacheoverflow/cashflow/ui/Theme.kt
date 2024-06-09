@@ -73,7 +73,7 @@ val DarkColorScheme: ColorScheme
             secondaryContainer = Color(0xFF666666),
             onSecondaryContainer = Color(0xFFE6E6E6),
             tertiary = Color(0xff505d62),
-            onTertiary = Color(0xFF101010),
+            onTertiary = Color(0xFFFFFFFF),
             tertiaryContainer = Color(0xFF666666),
             onTertiaryContainer = Color(0xFFE6E6E6),
             error = Color(0xffce0f27),

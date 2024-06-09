@@ -16,9 +16,12 @@
 
 package de.cacheoverflow.cashflow.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,7 +30,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +43,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +57,53 @@ import de.cacheoverflow.cashflow.utils.deriveHSLIf
 import de.cacheoverflow.cashflow.utils.grayOutIfDisabled
 
 object SettingsGroupScope
+
+@Composable
+inline fun <reified T: Enum<T>> SettingsGroupScope.SelectableSetting(
+    name: String,
+    value: T,
+    enabled: Boolean = true,
+    expanded: Boolean = false,
+    crossinline onChange: (T) -> Unit
+) {
+    var isExpanded by remember { mutableStateOf(enabled && expanded) }
+    Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.run {
+            if (enabled) { this.clickable { isExpanded = !isExpanded } } else { this }.height(40.dp)
+        }) {
+            Text(
+                name,
+                fontSize = 22.sp,
+                color = MaterialTheme.colorScheme.onSecondary
+                    .deriveHSLIf(!enabled, lightness = 0.5f),
+                modifier = Modifier.padding(end = 10.dp)
+            )
+            Spacer(Modifier.weight(1f))
+            Icon(if (isExpanded) {
+                Icons.Filled.ArrowDropUp
+            } else {
+                Icons.Filled.ArrowDropDown
+            }, null, tint = MaterialTheme.colorScheme.onSecondary)
+        }
+        Spacer(Modifier.height(5.dp))
+        AnimatedVisibility(visible = isExpanded) {
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.tertiary, RoundedCornerShape(5.dp))
+            ) {
+                for (enumValue in enumValues<T>()) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
+                        onChange(enumValue)
+                    }) {
+                        Text(enumValue.toString(), color = MaterialTheme.colorScheme.onTertiary, modifier = Modifier.padding(start = 10.dp))
+                        Spacer(Modifier.weight(1f))
+                        RadioButton(enumValue == value, onClick = { onChange(enumValue) })
+                    }
+                }
+            }
+        }
+    }
+}
 
 /**
  * This component represents a setting that can be clicked to switch the menu etc.
@@ -64,6 +121,7 @@ fun SettingsGroupScope.ClickSetting(
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(start = 10.dp, end = 10.dp).run {
