@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="App Module Scope" pattern="file[Cash3Fl0w.cash3fl0w-app*]:*//*||file[Cash3Fl0w.cash3fl0w-app.main]:*/" />
+</component>

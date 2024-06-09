@@ -1,3 +1,8 @@
 <component name="CopyrightManager">
-  <settings default="Copyright" />
+  <settings>
+    <module2copyright>
+      <element module="Crypto Module Scope" copyright="Apache-2.0 License Copyright" />
+      <element module="App Module Scope" copyright="GPL License Copyright" />
+    </module2copyright>
+  </settings>
 </component>

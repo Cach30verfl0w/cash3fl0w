@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Crypto Module Scope" pattern="src[Cash3Fl0w.kmp-advcrypto*]:*..*" />
+</component>
