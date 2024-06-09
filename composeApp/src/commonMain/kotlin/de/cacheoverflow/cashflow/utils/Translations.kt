@@ -106,7 +106,7 @@ fun noAuthenticationMethodsFound() = translate {
 }
 
 fun hardwareNotPresent() = translate {
-    DE translatesTo "Dieses Gerät besitzt nicht die Hardware"
+    DE translatesTo "Dieses Gerät besitzt nicht die bennötigte Hardware"
     EN translatesTo "This device does not have the hardware"
 }
 
