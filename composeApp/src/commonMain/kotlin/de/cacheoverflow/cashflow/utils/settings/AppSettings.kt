@@ -17,7 +17,6 @@
 package de.cacheoverflow.cashflow.utils.settings
 
 import androidx.compose.ui.text.intl.Locale
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.Serializable
 
 /**
@@ -76,17 +75,5 @@ data class AppSettings(
                 EN -> "English"
             }
         }
-    }
-
-    /**
-     * This interface implements the holder of the settings data class. This is simply used for the
-     * dependency injection, provided through Koin. The application updates the settings by the
-     * update method specified.
-     *
-     * @author Cedric Hammes
-     * @since  01/06/2024
-     */
-    interface ICashFlowSettingsHolder: StateFlow<AppSettings> {
-        fun update(updater: (AppSettings) -> AppSettings)
     }
 }
