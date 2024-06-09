@@ -34,7 +34,7 @@ object DefaultTranslation: ITranslation {
 fun translate(closure: ITranslation.() -> Unit): String {
     val settings = DI.inject<PreferencesProvider>()
     DefaultTranslation.apply(closure)
-    return DefaultTranslation.languages[settings.value.language]?: "Unable"
+    return DefaultTranslation.languages[settings.value.language]?: ""
 }
 
 fun settings() = translate {
