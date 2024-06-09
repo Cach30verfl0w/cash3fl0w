@@ -54,6 +54,9 @@ fun AuthSettings(component: AuthSettingsComponent) {
     val securityProvider = DI.inject<ISecurityProvider>()
     val isAuthenticated by securityProvider.wasAuthenticated().collectAsState()
     View(authenticationSettings(), onButton = component.onBack) {
+        // TODO: Allow only specific methods like fingerprint (BIOMETRICS_STRONG) or face
+        //  identification (+ fingerprint, BIOMETRICS_WEAK) or PIN etc. (DEVICE_CREDENTIAL)
+
         SettingsGroup(
             "Status",
             Icons.Filled.QueryStats,
