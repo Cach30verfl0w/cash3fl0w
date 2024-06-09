@@ -37,7 +37,6 @@ kotlin {
             implementation(libs.androidx.biometric)
             implementation(libs.decompose)
             implementation(libs.koin.android)
-            implementation("org.bouncycastle:bcprov-jdk18on:1.78.1")
         }
         iosMain.dependencies {
         }
@@ -81,7 +80,7 @@ compose.desktop {
 
 android {
     namespace = "de.cacheoverflow.cashflow"
-    compileSdk = 34
+    compileSdk = libs.versions.android.sdk.compile.get().toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
@@ -89,8 +88,7 @@ android {
 
     defaultConfig {
         applicationId = "de.cacheoverflow.cashflow"
-        minSdk = 30
-        targetSdk = 34
+        minSdk = libs.versions.android.sdk.min.get().toInt()
         versionCode = 1
         versionName = "1.0"
     }

@@ -1,6 +1,7 @@
 [versions]
 agp = "8.2.2"
 okio = "3.9.0"
+bouncycastle = "1.78.1"
 
 # Kotlin
 kotlin = "1.9.23"
@@ -21,9 +22,14 @@ compose-plugin = "1.6.2"
 decompose = "2.2.0-alpha03"
 extensionsComposeJetbrains = "2.1.4-compose-experimental"
 
+# Android SDK
+android-sdk-min = "24"
+android-sdk-compile = "33"
+
 [libraries]
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 
 # Androidx
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -43,6 +49,7 @@ decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jet
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

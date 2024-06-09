@@ -78,7 +78,6 @@ fun loadingAccounts() = translate {
     EN translatesTo "Decrypt and load accounts"
 }
 
-// Acount unlock
 fun unlockAccountInfo() = translate {
     DE translatesTo "Kontoinformationen freischalten"
     EN translatesTo "Unlock account information"
@@ -89,7 +88,6 @@ fun unlockAccountInfoSubtitle() = translate {
     EN translatesTo "Confirm your identity to unlock your account information"
 }
 
-// Generic authentication messages
 fun awaitingAuthentication() = translate {
     DE translatesTo "Warte auf Authentifizierung"
     EN translatesTo "Awaiting authentication"
@@ -115,7 +113,6 @@ fun unknownError() = translate {
     EN translatesTo "Unknown error"
 }
 
-// Authentication information
 fun keyringNotUnlocked() = translate {
     DE translatesTo "Der Schlüsselspeicher wurde nicht entsperrt"
     EN translatesTo "The key store has not been unlocked"
