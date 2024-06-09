@@ -12,6 +12,8 @@ import de.cacheoverflow.cashflow.security.ISecurityProvider
 import de.cacheoverflow.cashflow.security.cryptography.IAsymmetricCryptoProvider
 import de.cacheoverflow.cashflow.security.cryptography.ISymmetricCryptoProvider
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import okio.Path
 
 class DesktopSecurityProvider: ISecurityProvider {
@@ -48,12 +50,8 @@ class DesktopSecurityProvider: ISecurityProvider {
         return true // Authentication like passwords are always available
     }
 
-    override fun isBiometricAuthenticationAvailable(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun wasAuthenticated(): Boolean {
-        return true // TODO: Lock behind authentication
+    override fun wasAuthenticated(): StateFlow<Boolean> {
+        return MutableStateFlow(true) // TODO: Lock behind authentication
     }
 
     override fun isScreenshotPolicySupported(): Boolean {
