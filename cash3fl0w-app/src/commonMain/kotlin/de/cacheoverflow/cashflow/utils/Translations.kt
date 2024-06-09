@@ -158,3 +158,15 @@ fun dark() = translate {
     EN translatesTo "Dark"
     PL translatesTo "Ciemno"
 }
+
+fun securityWarning() = translate {
+    DE translatesTo "Sicherheitswarnung"
+    EN translatesTo "Security Warning"
+    PL translatesTo "Ostrzeżenie dotyczące bezpieczeństwa"
+}
+
+fun deviceRootedPromptText() = translate {
+    DE translatesTo "Dein Gerät wurde gerootet! Dies kann ein Sicherheitsrisiko darstellen, da die Integrität und Sicherheit sensibler Daten nicht mehr gewehrleistet werden kann."
+    EN translatesTo "Your device is rooted! This can be a security risk, as the integrity and security of the data can no longer be guaranteed."
+    PL translatesTo "Twoje urządzenie jest zrootowane! Może to stanowić zagrożenie dla bezpieczeństwa, ponieważ nie można zagwarantować integralności i bezpieczeństwa danych."
+}

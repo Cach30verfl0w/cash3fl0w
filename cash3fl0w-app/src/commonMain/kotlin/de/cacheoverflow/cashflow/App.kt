@@ -6,19 +6,28 @@
 package de.cacheoverflow.cashflow
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.router.stack.ChildStack
+import de.cacheoverflow.cashflow.security.ISecurityProvider
 import de.cacheoverflow.cashflow.ui.DefaultColorScheme
 import de.cacheoverflow.cashflow.ui.HomeScreen
+import de.cacheoverflow.cashflow.ui.components.Modal
+import de.cacheoverflow.cashflow.ui.components.ModalType
 import de.cacheoverflow.cashflow.ui.settings.Settings
 import de.cacheoverflow.cashflow.ui.components.OptionalAuthLock
 import de.cacheoverflow.cashflow.ui.components.RootComponent
 import de.cacheoverflow.cashflow.ui.settings.AuthSettings
+import de.cacheoverflow.cashflow.utils.DI
+import de.cacheoverflow.cashflow.utils.deviceRootedPromptText
+import de.cacheoverflow.cashflow.utils.securityWarning
 import de.cacheoverflow.cashflow.utils.unlockAccountInfo
 import de.cacheoverflow.cashflow.utils.unlockAccountInfoSubtitle
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,6 +67,14 @@ fun App(root: RootComponent) {
             subtitle = unlockAccountInfoSubtitle(),
             authCancelled = { AppView(childStack) }
         ) {
+            if (DI.inject<ISecurityProvider>().isDeviceRooted()) {
+                // TODO: Don't show menu if already clicked away?
+                val rootedModalVisible = remember { mutableStateOf(true) }
+                Modal(rootedModalVisible, securityWarning(), ModalType.WARNING) {
+                    Text(deviceRootedPromptText())
+                }
+            }
+
             AppView(childStack)
         }
     }

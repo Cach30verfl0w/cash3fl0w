@@ -56,6 +56,15 @@ interface ISecurityProvider {
     fun isAuthenticationSupported(authScheme: EnumAuthScheme): EnumAuthStatus
 
     /**
+     * This method returns whether the application's environment is rooted/jailbreaked to show the
+     * user a prompt about the security of sensitive data.
+     *
+     * @author Cedric Hammes
+     * @since  09/06/2024
+     */
+    fun isDeviceRooted(): Boolean
+
+    /**
      * This method toggles the policy of disabling screenshots for this app. This is used to provide
      * more security to the financial information of the user against many forms of information
      * leakage.

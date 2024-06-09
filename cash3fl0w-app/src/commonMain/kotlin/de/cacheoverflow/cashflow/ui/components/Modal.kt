@@ -5,6 +5,7 @@
 
 package de.cacheoverflow.cashflow.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,10 +49,10 @@ enum class ModalType {
 @Composable
 fun Modal(
     visible: MutableState<Boolean>,
-    onOk: () -> Unit = { visible.value = false },
-    onDismiss: () -> Unit = { visible.value = false },
     title: String,
     type: ModalType,
+    onOk: () -> Unit = { visible.value = false },
+    onDismiss: () -> Unit = { visible.value = false },
     dismiss: Boolean = true,
     ok: Boolean = false,
     content: @Composable ColumnScope.() -> Unit
@@ -61,14 +62,12 @@ fun Modal(
             onDismissRequest = {
                 visible.value = false
             }, content = {
-                Box(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
+                Box(modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+                    .background(MaterialTheme.colorScheme.background, RoundedCornerShape(8.dp))) {
                     Surface(
                         tonalElevation = 1.dp,
                         modifier = Modifier
-                            .align(Alignment.Center)
-                            .clip(RoundedCornerShape(8.dp))
-                            .border(Dp.Hairline, Color.Black, RoundedCornerShape(8.dp))
-                    ) {
+                            .align(Alignment.Center)) {
                         Column(modifier = Modifier.padding(15.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(

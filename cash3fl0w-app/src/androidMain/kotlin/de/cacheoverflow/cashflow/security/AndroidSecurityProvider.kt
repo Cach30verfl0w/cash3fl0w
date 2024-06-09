@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import okio.FileSystem
 import okio.Path
+import java.io.IOException
 import java.security.KeyFactory
 import java.security.KeyStore
 import java.security.spec.PKCS8EncodedKeySpec
@@ -126,6 +127,23 @@ class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecuri
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> EnumAuthStatus.HARDWARE_MISSING
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> EnumAuthStatus.HARDWARE_MISSING
             else -> EnumAuthStatus.UNSUPPORTED
+        }
+    }
+
+    /**
+     * This method returns whether the application's environment is rooted/jailbreaked to show the
+     * user a prompt about the security of sensitive data.
+     *
+     * @author Cedric Hammes
+     * @since  09/06/2024
+     */
+    override fun isDeviceRooted(): Boolean {
+        try {
+            Runtime.getRuntime().exec("su")
+            return true
+        } catch (ignored: IOException) {
+            return MainActivity.instance?.packageManager?.getInstalledPackages(0)!!
+                .count { it.applicationInfo.packageName == "com.topjohnwu.magisk" } > 0
         }
     }
 
