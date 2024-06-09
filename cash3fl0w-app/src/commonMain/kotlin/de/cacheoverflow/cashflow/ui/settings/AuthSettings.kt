@@ -59,6 +59,9 @@ fun AuthSettings(component: AuthSettingsComponent) {
             Icons.Filled.QueryStats,
             innerModifier = Modifier.padding(start = 12.dp)
         ) {
+            // TODO: Show keyring only as unlocked if the account keys were be loaded
+            //   and authentication was enabled in settings (If authentication stays
+            //   optional)
             AuthStatus(keyringSecured(), keyringNotSecured(), true)
             AuthStatus(keyringUnlocked(), keyringNotUnlocked(), isAuthenticated)
         }
