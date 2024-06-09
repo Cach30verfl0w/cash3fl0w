@@ -6,6 +6,8 @@
 package de.cacheoverflow.cashflow.utils.settings
 
 import androidx.compose.ui.text.intl.Locale
+import de.cacheoverflow.cashflow.utils.dark
+import de.cacheoverflow.cashflow.utils.light
 import kotlinx.serialization.Serializable
 
 /**
@@ -39,8 +41,8 @@ data class AppSettings(
         override fun toString(): String {
             return when(this) {
                 SYSTEM -> "System"
-                LIGHT -> "Light"
-                DARK -> "Dark"
+                LIGHT -> light()
+                DARK -> dark()
             }
         }
     }

@@ -144,5 +144,17 @@ fun keyringNotSecured() = translate {
 fun keyringSecured() = translate {
     DE translatesTo "Der Schlüsselspeicher ist gesichert"
     EN translatesTo "The key store is secured"
-    DE translatesTo "Pamięć klucza jest zabezpieczona"
+    PL translatesTo "Pamięć klucza jest zabezpieczona"
+}
+
+fun light() = translate {
+    DE translatesTo "Hell"
+    EN translatesTo "Light"
+    PL translatesTo "Światło"
+}
+
+fun dark() = translate {
+    DE translatesTo "Dunkel"
+    EN translatesTo "Dark"
+    PL translatesTo "Ciemny"
 }
