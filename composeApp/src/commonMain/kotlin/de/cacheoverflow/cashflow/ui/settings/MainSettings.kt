@@ -34,9 +34,11 @@ import de.cacheoverflow.cashflow.utils.DI
 import de.cacheoverflow.cashflow.utils.appearance
 import de.cacheoverflow.cashflow.utils.authenticationSettings
 import de.cacheoverflow.cashflow.utils.disableScreenshots
+import de.cacheoverflow.cashflow.utils.language
 import de.cacheoverflow.cashflow.utils.security
 import de.cacheoverflow.cashflow.utils.settings
 import de.cacheoverflow.cashflow.utils.settings.PreferencesProvider
+import de.cacheoverflow.cashflow.utils.theme
 
 class SettingsComponent(
     private val context: ComponentContext,
@@ -68,9 +70,14 @@ fun Settings(component: SettingsComponent) {
                 }
             }
             SettingsGroup(appearance(), Icons.Filled.Style) {
-                SelectableSetting("Theme", value = settingsState.theme) { newTheme ->
+                SelectableSetting(theme(), value = settingsState.theme) { newTheme ->
                     settings.update {
                         it.copy(theme = newTheme)
+                    }
+                }
+                SelectableSetting(language(), value = settingsState.language) { newLanguage ->
+                    settings.update {
+                        it.copy(language = newLanguage)
                     }
                 }
             }

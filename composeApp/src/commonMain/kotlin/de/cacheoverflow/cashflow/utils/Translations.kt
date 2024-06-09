@@ -52,6 +52,16 @@ fun appearance() = translate {
     EN translatesTo "Appearance"
 }
 
+fun language() = translate {
+    DE translatesTo "Sprache"
+    EN translatesTo "Language"
+}
+
+fun theme() = translate {
+    DE translatesTo "Thema"
+    EN translatesTo "Theme"
+}
+
 fun disableScreenshots() = translate {
     DE translatesTo "Screenshots verbieten"
     EN translatesTo "Disable screenshots"
