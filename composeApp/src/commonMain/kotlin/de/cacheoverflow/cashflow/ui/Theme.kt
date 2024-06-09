@@ -40,8 +40,8 @@ val LightColorScheme: ColorScheme
             onSecondary = Color(0xFF101010), 
             secondaryContainer = Color(0xFF666666),
             onSecondaryContainer = Color(0xFFE6E6E6),
-            tertiary = Color(0xffc3c9e0),
-            onTertiary = Color(0xFFFFFFFF),
+            tertiary = Color(0xFFC3C9E0),
+            onTertiary = Color(0xFF040404),
             tertiaryContainer = Color(0xFF666666),
             onTertiaryContainer = Color(0xFFE6E6E6),
             error = Color(0xFF8A0D1D),
@@ -72,11 +72,11 @@ val DarkColorScheme: ColorScheme
             onSecondary = Color(0xFFFFFFFF),
             secondaryContainer = Color(0xFF666666),
             onSecondaryContainer = Color(0xFFE6E6E6),
-            tertiary = Color(0xff505d62),
+            tertiary = Color(0xFF505D62),
             onTertiary = Color(0xFFFFFFFF),
             tertiaryContainer = Color(0xFF666666),
             onTertiaryContainer = Color(0xFFE6E6E6),
-            error = Color(0xffce0f27),
+            error = Color(0xFFCE0F27),
             errorContainer = Color(0xFFFFDAD6),
             onError = Color(0xFFFFFFFF),
             onErrorContainer = Color(0xFF45002),
@@ -86,7 +86,7 @@ val DarkColorScheme: ColorScheme
             onSurface = Color(0xFFFFFFFF),
             surfaceVariant = Color(0xFF214152),
             onSurfaceVariant = Color(0xFFFFFFFF),
-            outline = Color(0xff79d07d),
+            outline = Color(0xFF79D07D),
             inverseOnSurface = Color(0xFF161616)
         )
     }

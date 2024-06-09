@@ -46,7 +46,15 @@ data class AppSettings(
     enum class EnumTheme {
         SYSTEM,
         LIGHT,
-        DARK
+        DARK;
+
+        override fun toString(): String {
+            return when(this) {
+                SYSTEM -> "System"
+                LIGHT -> "Light"
+                DARK -> "Dark"
+            }
+        }
     }
 
     /**

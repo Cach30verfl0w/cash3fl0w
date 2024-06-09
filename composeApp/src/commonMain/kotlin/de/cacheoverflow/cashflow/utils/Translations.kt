@@ -47,6 +47,11 @@ fun security() = translate {
     EN translatesTo "Security"
 }
 
+fun appearance() = translate {
+    DE translatesTo "Aussehen"
+    EN translatesTo "Appearance"
+}
+
 fun disableScreenshots() = translate {
     DE translatesTo "Screenshots verbieten"
     EN translatesTo "Disable screenshots"

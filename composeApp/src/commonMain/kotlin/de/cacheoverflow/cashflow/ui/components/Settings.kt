@@ -19,9 +19,7 @@ package de.cacheoverflow.cashflow.ui.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,7 +31,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -75,15 +72,18 @@ inline fun <reified T: Enum<T>> SettingsGroupScope.SelectableSetting(
                 name,
                 fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.onSecondary
-                    .deriveHSLIf(!enabled, lightness = 0.5f),
-                modifier = Modifier.padding(end = 10.dp)
+                    .deriveHSLIf(!enabled, lightness = 0.5f)
             )
             Spacer(Modifier.weight(1f))
-            Icon(if (isExpanded) {
-                Icons.Filled.ArrowDropUp
-            } else {
-                Icons.Filled.ArrowDropDown
-            }, null, tint = MaterialTheme.colorScheme.onSecondary)
+            Icon(
+                if (isExpanded) {
+                    Icons.Filled.ArrowDropUp
+                } else {
+                    Icons.Filled.ArrowDropDown
+                   }, null,
+                tint = MaterialTheme.colorScheme.onSecondary,
+                modifier = Modifier.padding(end = 10.dp)
+            )
         }
         Spacer(Modifier.height(5.dp))
         AnimatedVisibility(visible = isExpanded) {
