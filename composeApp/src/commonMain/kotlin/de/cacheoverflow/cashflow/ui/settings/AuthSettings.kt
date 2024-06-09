@@ -16,14 +16,11 @@
 
 package de.cacheoverflow.cashflow.ui.settings
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,42 +28,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.ComponentContext
 import de.cacheoverflow.cashflow.security.ISecurityProvider
 import de.cacheoverflow.cashflow.ui.View
-import de.cacheoverflow.cashflow.ui.components.Modal
-import de.cacheoverflow.cashflow.ui.components.ModalType
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.utils.DI
-import de.cacheoverflow.cashflow.utils.algorithmUsed
 import de.cacheoverflow.cashflow.utils.authenticationSettings
 import de.cacheoverflow.cashflow.utils.keyringNotSecured
 import de.cacheoverflow.cashflow.utils.keyringNotUnlocked
 import de.cacheoverflow.cashflow.utils.keyringSecured
 import de.cacheoverflow.cashflow.utils.keyringUnlocked
-import de.cacheoverflow.cashflow.utils.rsaExplanation
 
 class AuthSettingsComponent(
     private val context: ComponentContext,
     internal val onBack: () -> Unit
 ): ComponentContext by context
-
-@Composable
-fun AutoInfo(text: String, modalTitle: String, modalContent: @Composable ColumnScope.() -> Unit) {
-    val showModal = remember { mutableStateOf(false) }
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-        showModal.value = true
-    }) {
-        Icon(Icons.Filled.Info, null, tint = MaterialTheme.colorScheme.onSecondary)
-        Text(text, color = MaterialTheme.colorScheme.onSecondary)
-    }
-    Modal(showModal, title = modalTitle, type = ModalType.INFO, content = modalContent)
-}
 
 @Composable
 fun AuthStatus(ifTrueText: String, ifFalseText: String, value: Boolean) {
@@ -94,9 +73,6 @@ fun AuthSettings(component: AuthSettingsComponent) {
         ) {
             AuthStatus(keyringSecured(), keyringNotSecured(), true)
             AuthStatus(keyringUnlocked(), keyringNotUnlocked(), isAuthenticated)
-            AutoInfo(algorithmUsed(asymmetricProvider.getName()), asymmetricProvider.getName()) {
-                Text(rsaExplanation(), color = MaterialTheme.colorScheme.onSecondary)
-            }
         }
     }
 }

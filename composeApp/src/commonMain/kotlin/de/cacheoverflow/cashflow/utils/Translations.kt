@@ -135,13 +135,3 @@ fun keyringSecured() = translate {
     DE translatesTo "Der Schlüsselspeicher ist gesichert"
     EN translatesTo "The key store is secured"
 }
-
-fun algorithmUsed(algorithm: String) = translate {
-    DE translatesTo "Algorithmus $algorithm wird genutzt"
-    EN translatesTo "Algorithm $algorithm is used"
-}
-
-fun rsaExplanation() = translate {
-    DE translatesTo "RSA (Rivest–Shamir–Adleman) ist ein Kryptosystem hoher Sicherheit. Mit diesem Verfahren werden Einstellungen verschlüsselt um die Schreibbarkeit an die Authentifizierung zu koppeln aber die Lesbarkeit zu garantieren."
-    EN translatesTo "RSA (Rivest-Shamir-Adleman) is a high-security cryptosystem. This system is used to encrypt settings in order to link writability to authentication but guarantee readability."
-}
