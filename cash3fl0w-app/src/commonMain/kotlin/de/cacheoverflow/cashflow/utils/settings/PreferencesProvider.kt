@@ -19,6 +19,10 @@ import okio.Path
 import okio.Path.Companion.toPath
 import okio.SYSTEM
 
+// TODO: New plan to verify the integrity of the configuration: Create public-private key pair and
+//   store in keystore, but the public key is available without authentication. Then sign the config
+//   an validate the signature.
+
 class PreferencesProvider(
     pathProvider: (Path) -> Path,
 ): StateFlow<AppSettings> {
