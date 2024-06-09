@@ -21,5 +21,5 @@ enum class EnumAuthStatus {
     HARDWARE_MISSING,
     UNSUPPORTED;
 
-    inline fun isUnsupported(): Boolean = this != SUPPORTED
+    fun isUnsupported(): Boolean = this != SUPPORTED
 }

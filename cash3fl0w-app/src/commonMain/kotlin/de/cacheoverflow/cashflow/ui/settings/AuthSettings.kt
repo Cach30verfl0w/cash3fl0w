@@ -63,7 +63,6 @@ fun AuthStatus(ifTrueText: String, ifFalseText: String, value: Boolean) {
 @Composable
 fun AuthSettings(component: AuthSettingsComponent) {
     val securityProvider = DI.inject<ISecurityProvider>()
-    val asymmetricProvider = securityProvider.getAsymmetricCryptoProvider()
     val isAuthenticated by securityProvider.wasAuthenticated().collectAsState()
     View(authenticationSettings(), onButton = component.onBack) {
         SettingsGroup(

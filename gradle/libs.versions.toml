@@ -24,7 +24,7 @@ extensionsComposeJetbrains = "2.1.4-compose-experimental"
 
 # Android SDK
 android-sdk-min = "24"
-android-sdk-compile = "33"
+android-sdk-compile = "34"
 
 [libraries]
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }

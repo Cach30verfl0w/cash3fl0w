@@ -67,12 +67,14 @@ data class AppSettings(
     @Serializable
     enum class EnumLanguage {
         DE,
-        EN;
+        EN,
+        PL;
 
         override fun toString(): String {
             return when(this) {
                 DE -> "Deutsch"
                 EN -> "English"
+                PL -> "Polski"
             }
         }
     }

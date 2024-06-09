@@ -34,10 +34,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import okio.FileSystem
 import okio.Path
-import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider
 import java.security.KeyFactory
 import java.security.KeyStore
-import java.security.Security
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import javax.crypto.spec.SecretKeySpec
@@ -63,15 +61,6 @@ class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecuri
     internal val keyStore = KeyStore.getInstance(KEY_STORE).apply { load(null) }
     val isAuthenticated = MutableStateFlow(false)
     private var screenshotDisabled = false
-
-    init {
-        /**
-         * Add bouncycastle PQC provider to implement support for post-quantum algorithms like
-         * CRYSTALS-Dilithium into this application. These algorithms are resistant against
-         * quantum computers. ~ Cedric Hammes, 07.06.2024
-         */
-        Security.addProvider(BouncyCastlePQCProvider())
-    }
 
     override fun getSymmetricCryptoProvider(usePadding: Boolean): ISymmetricCryptoProvider {
         return AESCryptoProvider(this, usePadding)
