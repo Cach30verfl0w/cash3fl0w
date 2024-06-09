@@ -150,11 +150,11 @@ fun keyringSecured() = translate {
 fun light() = translate {
     DE translatesTo "Hell"
     EN translatesTo "Light"
-    PL translatesTo "Światło"
+    PL translatesTo "Jasno"
 }
 
 fun dark() = translate {
     DE translatesTo "Dunkel"
     EN translatesTo "Dark"
-    PL translatesTo "Ciemny"
+    PL translatesTo "Ciemno"
 }
