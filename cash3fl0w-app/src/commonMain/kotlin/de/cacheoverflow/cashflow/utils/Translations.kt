@@ -170,3 +170,39 @@ fun deviceRootedPromptText() = translate {
     EN translatesTo "Your device is rooted! This can be a security risk, as the integrity and security of the data can no longer be guaranteed."
     PL translatesTo "Twoje urządzenie jest zrootowane! Może to stanowić zagrożenie dla bezpieczeństwa, ponieważ nie można zagwarantować integralności i bezpieczeństwa danych."
 }
+
+fun data() = translate {
+    DE translatesTo "Daten"
+    EN translatesTo "Data"
+    PL translatesTo "Dane"
+}
+
+fun dataTransfer() = translate {
+    DE translatesTo "Datentransfer"
+    EN translatesTo "Data transfer"
+    PL translatesTo "Przesyłanie danych"
+}
+
+fun dataDelete() = translate {
+    DE translatesTo "Daten löschen"
+    EN translatesTo "Delete data"
+    PL translatesTo "Usuń dane"
+}
+
+fun authenticationEnabled() = translate {
+    DE translatesTo "Authentifizierung aktiviert"
+    EN translatesTo "Authentication enabled"
+    PL translatesTo "Uwierzytelnianie włączone"
+}
+
+fun biometricAuth() = translate {
+    DE translatesTo "Biometrische Authentifizierung"
+    EN translatesTo "Biometric authentication"
+    PL translatesTo "Uwierzytelnianie biometryczne"
+}
+
+fun credentialAuth() = translate {
+    DE translatesTo "Wissensbasierte Authentifizierung"
+    EN translatesTo "Knowledge-based authentication"
+    PL translatesTo "Uwierzytelnianie oparte na wiedzy"
+}

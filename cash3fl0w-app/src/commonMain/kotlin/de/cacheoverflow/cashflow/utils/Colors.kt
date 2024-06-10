@@ -5,6 +5,7 @@
 
 package de.cacheoverflow.cashflow.utils
 
+import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
@@ -79,6 +80,25 @@ fun SwitchColors.grayOutIfDisabled(enabled: Boolean): SwitchColors = if (enabled
         this.uncheckedTrackColor.deriveHSL(saturation = 0.0f),
         this.uncheckedBorderColor.deriveHSL(saturation = 0.0f),
         this.uncheckedIconColor.deriveHSL(saturation = 0.0f)
+    )
+}
+
+fun CheckboxColors.grayOutIfDisabled(enabled: Boolean): CheckboxColors = if (enabled) {
+    this
+} else {
+    CheckboxColors(
+        this.checkedCheckmarkColor.deriveHSL(saturation = 0.2f),
+        this.uncheckedCheckmarkColor.deriveHSL(saturation = 0.2f),
+        this.checkedBoxColor.deriveHSL(saturation = 0.2f),
+        this.uncheckedBoxColor.deriveHSL(saturation = 0.2f),
+        this.disabledCheckedBoxColor.deriveHSL(saturation = 0.2f),
+        this.disabledUncheckedBoxColor.deriveHSL(saturation = 0.2f),
+        this.disabledIndeterminateBoxColor.deriveHSL(saturation = 0.2f),
+        this.checkedBorderColor.deriveHSL(saturation = 0.2f),
+        this.uncheckedBorderColor.deriveHSL(saturation = 0.2f),
+        this.disabledBorderColor.deriveHSL(saturation = 0.2f),
+        this.disabledUncheckedBorderColor.deriveHSL(saturation = 0.2f),
+        this.disabledIndeterminateBorderColor.deriveHSL(saturation = 0.2f)
     )
 }
 

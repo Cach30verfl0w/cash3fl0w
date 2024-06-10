@@ -47,6 +47,15 @@ interface ISecurityProvider {
     ): Flow<IKey>
 
     /**
+     * This method returns the authentication methods supported by this system. This is used to
+     * reduce the amount of settings based on the authentication schemes available.
+     *
+     * @author Cedric Hammes
+     * @since  10/06/2024
+     */
+    fun getSupportedAuthMethods(): Array<EnumAuthScheme>
+
+    /**
      * This method returns the status of the specified authentication method of this device. This
      * can be used to check whether the respective authentication method is supported.
      *

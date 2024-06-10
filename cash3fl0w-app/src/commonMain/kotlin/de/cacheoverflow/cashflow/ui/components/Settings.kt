@@ -20,6 +20,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -84,7 +87,11 @@ inline fun <reified T: Enum<T>> SettingsGroupScope.SelectableSetting(
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
                         onChange(enumValue)
                     }) {
-                        Text(enumValue.toString(), color = MaterialTheme.colorScheme.onTertiary, modifier = Modifier.padding(start = 10.dp))
+                        Text(
+                            enumValue.toString(),
+                            color = MaterialTheme.colorScheme.onTertiary,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
                         Spacer(Modifier.weight(1f))
                         RadioButton(enumValue == value, onClick = { onChange(enumValue) })
                     }
@@ -108,6 +115,7 @@ inline fun <reified T: Enum<T>> SettingsGroupScope.SelectableSetting(
 fun SettingsGroupScope.ClickSetting(
     name: String,
     enabled: Boolean = true,
+    textColor: Color = MaterialTheme.colorScheme.onSecondary,
     onClick: () -> Unit
 ) {
 
@@ -125,8 +133,7 @@ fun SettingsGroupScope.ClickSetting(
             Text(
                 name,
                 fontSize = 22.sp,
-                color = MaterialTheme.colorScheme.onSecondary
-                    .deriveHSLIf(!enabled, lightness = 0.5f)
+                color = textColor.deriveHSLIf(!enabled, lightness = 0.5f)
             )
         }
         Spacer(Modifier.weight(1.0f))
@@ -138,7 +145,7 @@ fun SettingsGroupScope.ClickSetting(
             Icon(
                 Icons.Filled.KeyboardDoubleArrowRight,
                 null,
-                tint = MaterialTheme.colorScheme.onSecondary.deriveHSLIf(!enabled, lightness = 0.5f)
+                tint = textColor.deriveHSLIf(!enabled, lightness = 0.5f)
             )
         }
     }
@@ -192,6 +199,52 @@ fun SettingsGroupScope.RadioSetting(
 
 /**
  * This component represents a setting that can be toggled and the state is represented through a
+ * checkbox.
+ *
+ * @param name     The name of the setting
+ * @param enabled  Whether the setting is enabled (toggleable) or not
+ * @param value    The value of the setting (is the setting toggled or not)
+ * @param onToggle Function called when element gets clicked
+ *
+ * @author Cedric Hammes
+ * @since  04/06/2024
+ */
+@Composable
+fun SettingsGroupScope.CheckboxSetting(
+    name: String,
+    value: Boolean,
+    enabled: Boolean = true,
+    onToggle: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(start = 10.dp, end = 10.dp).run {
+            if (enabled) {
+                this.clickable { onToggle() }
+            } else {
+                this
+            }
+        }
+    ) {
+        Column {
+            Text(
+                name,
+                fontSize = 22.sp,
+                color = MaterialTheme.colorScheme.onSecondary
+                    .deriveHSLIf(!enabled, lightness = 0.5f)
+            )
+        }
+        Spacer(Modifier.weight(1.0f))
+        Checkbox(enabled = enabled, checked = value, onCheckedChange = {
+            if (enabled) {
+                onToggle()
+            }
+        }, colors = CheckboxDefaults.colors().grayOutIfDisabled(enabled))
+    }
+}
+
+/**
+ * This component represents a setting that can be toggled and the state is represented through a
  * switch.
  *
  * @param name     The name of the setting
@@ -205,8 +258,8 @@ fun SettingsGroupScope.RadioSetting(
 @Composable
 fun SettingsGroupScope.SwitchSetting(
     name: String,
-    enabled: Boolean = true,
     value: Boolean,
+    enabled: Boolean = true,
     onToggle: () -> Unit
 ) {
     Row(

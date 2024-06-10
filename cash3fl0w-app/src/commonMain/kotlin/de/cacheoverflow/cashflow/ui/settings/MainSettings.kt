@@ -7,8 +7,14 @@ package de.cacheoverflow.cashflow.ui.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DataArray
+import androidx.compose.material.icons.filled.DataExploration
+import androidx.compose.material.icons.filled.DataObject
+import androidx.compose.material.icons.filled.DataUsage
 import androidx.compose.material.icons.filled.DisplaySettings
+import androidx.compose.material.icons.filled.GMobiledata
 import androidx.compose.material.icons.filled.Style
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,6 +28,9 @@ import de.cacheoverflow.cashflow.ui.components.SwitchSetting
 import de.cacheoverflow.cashflow.utils.DI
 import de.cacheoverflow.cashflow.utils.appearance
 import de.cacheoverflow.cashflow.utils.authenticationSettings
+import de.cacheoverflow.cashflow.utils.data
+import de.cacheoverflow.cashflow.utils.dataDelete
+import de.cacheoverflow.cashflow.utils.dataTransfer
 import de.cacheoverflow.cashflow.utils.disableScreenshots
 import de.cacheoverflow.cashflow.utils.language
 import de.cacheoverflow.cashflow.utils.security
@@ -68,6 +77,14 @@ fun Settings(component: SettingsComponent) {
                     settings.update {
                         it.copy(language = newLanguage)
                     }
+                }
+            }
+            SettingsGroup(data(), Icons.Filled.DataExploration) {
+                ClickSetting(dataTransfer()) {
+                    TODO("Implement data transfer")
+                }
+                ClickSetting(dataDelete(), textColor = MaterialTheme.colorScheme.error) {
+                    TODO("Implement data delete")
                 }
             }
         }

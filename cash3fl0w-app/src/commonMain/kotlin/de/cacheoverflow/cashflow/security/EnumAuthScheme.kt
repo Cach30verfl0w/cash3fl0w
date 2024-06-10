@@ -6,6 +6,7 @@
 package de.cacheoverflow.cashflow.security
 
 enum class EnumAuthScheme {
-    BIOMETRIC,
-    CREDENTIAL
+    FINGERPRINT,
+    FACE_DETECTION,
+    CREDENTIAL;
 }

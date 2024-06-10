@@ -23,8 +23,22 @@ data class AppSettings(
     val language: EnumLanguage = EnumLanguage.entries
         .firstOrNull { it.name == Locale.current.language.uppercase() } ?: EnumLanguage.EN,
     val screenshotsDisabled: Boolean = false,
-    val authenticationRequired: Boolean = false
+    val authenticationSettings: AuthenticationSettings = AuthenticationSettings()
 ) {
+
+    /**
+     * This class represents the settings for the authentication.
+     *
+     * @author Cedric Hammes
+     * @since  10/06/2024
+     */
+    @Serializable
+    data class AuthenticationSettings(
+        val authenticationEnabled: Boolean = false,
+        val biometricAuthentication: Boolean = true,
+        val credentialAuthentication: Boolean = true
+    )
+
     /**
      * This enum represents the theme used by the application. The user can use whether system to
      * adopt the theme from the system or the light theme or the dark theme.

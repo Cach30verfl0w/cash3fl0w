@@ -66,7 +66,7 @@ actual fun OptionalAuthLock(
         is AuthState.AwaitingAuth -> {
             MainActivity.instance?.apply {
                 val executor = ContextCompat.getMainExecutor(LocalContext.current)
-                val auths = Authenticators.BIOMETRIC_STRONG or Authenticators.DEVICE_CREDENTIAL
+                val auths = Authenticators.DEVICE_CREDENTIAL or Authenticators.BIOMETRIC_STRONG
                 val promptInfo = BiometricPrompt.PromptInfo.Builder()
                     .setTitle(title)
                     .setSubtitle(subtitle)

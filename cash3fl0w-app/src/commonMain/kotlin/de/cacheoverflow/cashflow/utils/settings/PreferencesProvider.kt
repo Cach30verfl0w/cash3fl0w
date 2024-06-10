@@ -32,6 +32,10 @@ class PreferencesProvider(
     private val configFile = pathProvider(CONFIG_FILE)
 
     init {
+        if (!fileSystem.exists(configFile.parent!!)) {
+            fileSystem.createDirectory(configFile.parent!!)
+        }
+
         if (fileSystem.exists(configFile)) {
             ioCoroutineScope.launch {
                 fileSystem.read(configFile) {
@@ -57,9 +61,8 @@ class PreferencesProvider(
         }
     }
 
-    override suspend fun collect(collector: FlowCollector<AppSettings>): Nothing {
+    override suspend fun collect(collector: FlowCollector<AppSettings>): Nothing =
         this.settingsFlow.collect(collector)
-    }
 
     override val replayCache: List<AppSettings>
         get() = this.settingsFlow.replayCache

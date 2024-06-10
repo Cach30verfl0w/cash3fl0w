@@ -35,6 +35,7 @@ class HomeScreenComponent(
 
 @Composable
 fun HomeScreen(component: HomeScreenComponent) {
+    // TODO: Add option in view to disable button and disable button if accounts were not loaded
     View(home(), false, onButton = component.onButton) {
             Column(modifier = Modifier.fillMaxSize()) {
                 if (!DI.inject<ISecurityProvider>().wasAuthenticated().value) {
@@ -44,6 +45,7 @@ fun HomeScreen(component: HomeScreenComponent) {
                             .align(Alignment.CenterHorizontally),
                         contentAlignment = Alignment.Center
                     ) {
+                        // TODO: Add clickable text for re-authentication
                         Text(
                             text = keyringNotUnlocked(),
                             fontSize = 20.sp,

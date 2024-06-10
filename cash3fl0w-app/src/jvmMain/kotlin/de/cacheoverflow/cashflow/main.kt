@@ -13,13 +13,20 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import de.cacheoverflow.cashflow.security.ISecurityProvider
 import de.cacheoverflow.cashflow.ui.components.RootComponent
 import de.cacheoverflow.cashflow.utils.DesktopSecurityProvider
+import de.cacheoverflow.cashflow.utils.settings.PreferencesProvider
+import okio.Path
+import okio.Path.Companion.toPath
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import java.nio.file.Paths
 
-// TODO: Redesign app for both desktop and mobile
+val defaultFileProvider: (Path) -> Path = {
+    Paths.get(System.getProperty("user.home"), ".cash3fl0w").toString().toPath() / it
+}
 
 val compatibilityModule = module {
     single<ISecurityProvider> { DesktopSecurityProvider() }
+    single<PreferencesProvider> { PreferencesProvider(defaultFileProvider) }
 }
 
 fun main() = application {

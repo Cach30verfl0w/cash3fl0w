@@ -28,6 +28,7 @@ import java.security.KeyFactory
 import java.security.KeyStore
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
+import java.util.ArrayList
 import javax.crypto.spec.SecretKeySpec
 
 /**
@@ -93,6 +94,24 @@ class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecuri
     }
 
     /**
+     * This method returns the authentication methods supported by this system. This is used to
+     * reduce the amount of settings based on the authentication schemes available.
+     *
+     * @author Cedric Hammes
+     * @since  10/06/2024
+     */
+    override fun getSupportedAuthMethods(): Array<EnumAuthScheme> {
+        val supportedAuthMethods = ArrayList<EnumAuthScheme>()
+        for (authenticationScheme in EnumAuthScheme.entries) {
+            if (this.isAuthenticationSupported(authenticationScheme) != EnumAuthStatus.SUPPORTED) {
+                continue
+            }
+            supportedAuthMethods.add(authenticationScheme)
+        }
+        return supportedAuthMethods.toTypedArray()
+    }
+
+    /**
      * This method toggles the policy of disabling screenshots for this app. This is used to provide
      * more security to the financial information of the user against many forms of information
      * leakage.
@@ -120,7 +139,8 @@ class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecuri
      */
     override fun isAuthenticationSupported(authScheme: EnumAuthScheme): EnumAuthStatus {
         return when (BiometricManager.from(DI.inject()).canAuthenticate(when(authScheme) {
-            EnumAuthScheme.BIOMETRIC -> Authenticators.BIOMETRIC_STRONG
+            EnumAuthScheme.FINGERPRINT -> Authenticators.BIOMETRIC_STRONG
+            EnumAuthScheme.FACE_DETECTION -> Authenticators.BIOMETRIC_WEAK
             EnumAuthScheme.CREDENTIAL -> Authenticators.DEVICE_CREDENTIAL
         })) {
             BiometricManager.BIOMETRIC_SUCCESS -> EnumAuthStatus.SUPPORTED

@@ -35,11 +35,20 @@ class DesktopSecurityProvider: ISecurityProvider {
         TODO("Not yet implemented")
     }
 
+    override fun getSupportedAuthMethods(): Array<EnumAuthScheme> {
+        return EnumAuthScheme.entries.toTypedArray() // TODO
+    }
+
     override fun isAuthenticationSupported(authScheme: EnumAuthScheme): EnumAuthStatus {
         return when(authScheme) {
             EnumAuthScheme.CREDENTIAL -> EnumAuthStatus.SUPPORTED
-            EnumAuthScheme.BIOMETRIC -> EnumAuthStatus.UNSUPPORTED // TODO: Check support
+            EnumAuthScheme.FINGERPRINT -> EnumAuthStatus.UNSUPPORTED // TODO: Check support
+            EnumAuthScheme.FACE_DETECTION -> EnumAuthStatus.UNSUPPORTED // TODO: Check support
         }
+    }
+
+    override fun isDeviceRooted(): Boolean {
+        return false
     }
 
     override fun toggleScreenshotPolicy() {
