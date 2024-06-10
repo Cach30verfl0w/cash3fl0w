@@ -42,7 +42,6 @@ class PreferencesProvider(
             ioCoroutineScope.launch {
                 fileSystem.read(configFile) {
                     settingsFlow.emit(Json.decodeFromString(readByteArray().decodeToString()))
-
                     val securityProvider = DI.inject<ISecurityProvider>()
                     if (settingsFlow.value.screenshotsDisabled && !securityProvider.areScreenshotsDisallowed()) {
                         securityProvider.toggleScreenshotPolicy()

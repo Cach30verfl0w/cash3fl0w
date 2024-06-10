@@ -15,20 +15,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.ComponentContext
 import de.cacheoverflow.cashflow.ui.View
 import de.cacheoverflow.cashflow.ui.components.ClickSetting
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.utils.dataTransfer
+import de.cacheoverflow.cashflow.utils.initTransfer
 import de.cacheoverflow.cashflow.utils.receiveTransfer
 import de.cacheoverflow.cashflow.utils.regenerateSecret
 import de.cacheoverflow.cashflow.utils.secret
@@ -56,6 +63,21 @@ fun DataTransfer(component: DataTransferComponent) {
                     Spacer(Modifier.width(10.dp))
                     Column {
                         Column {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.Filled.Close,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.error
+                                )
+                                Text(
+                                    "Der Server läuft nicht",
+                                    color = MaterialTheme.colorScheme.onSecondary,
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            }
+                            Spacer(Modifier.width(20.dp))
                             Text(
                                 server("127.0.0.1:1337"), // TODO: Replace with chosen
                                 color = MaterialTheme.colorScheme.onSecondary
@@ -81,6 +103,10 @@ fun DataTransfer(component: DataTransferComponent) {
                 }
             }
             SettingsGroup(null, null) {
+                ClickSetting(initTransfer()) {
+                    // TODO: Change after press to cancel
+                    // TODO: Open separate menu
+                }
                 ClickSetting(receiveTransfer()) {
                     // TODO: Open separate menu
                 }

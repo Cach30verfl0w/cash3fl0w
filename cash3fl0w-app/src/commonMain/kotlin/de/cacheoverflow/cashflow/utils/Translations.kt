@@ -232,6 +232,12 @@ fun regenerateSecret() = translate {
     PL translatesTo "Sekret regeneracji"
 }
 
+fun initTransfer() = translate {
+    DE translatesTo "Transfer starten"
+    EN translatesTo "Start transfer"
+    PL translatesTo "Rozpoczęcie transferu"
+}
+
 fun receiveTransfer() = translate {
     DE translatesTo "Daten empfangen"
     EN translatesTo "Receive data"
