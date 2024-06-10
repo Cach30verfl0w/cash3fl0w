@@ -16,7 +16,16 @@
 
 package io.karma.advcrypto
 
+/**
+ * This annotations marks an experimental API for providing or perform cryptographic operations with
+ * your KMP application. This annotation is mostly used for provider or algorithms newly discovered
+ * and not proven practical.
+ *
+ * @author Cedric Hammes
+ * @since  11/06/2024
+ */
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)
+@MustBeDocumented
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS)
 annotation class ExperimentalCryptoApi
