@@ -17,6 +17,8 @@
 package io.karma.advcrypto.algorithm
 
 import io.karma.advcrypto.AbstractProvider
+import io.karma.advcrypto.keys.Key
+import io.karma.advcrypto.keys.KeyPair
 
 /**
  * This class is used to create algorithms for the Provider API. The created algorithm information
@@ -29,6 +31,7 @@ import io.karma.advcrypto.AbstractProvider
  * @since  09/06/2024
  */
 class AlgorithmFactory(val name: String) {
+    private val keyGenerators: MutableList<KeyGeneratorFactory> = ArrayList()
     var allowedBlockModes: Byte = 0
 
     /**
@@ -43,7 +46,7 @@ class AlgorithmFactory(val name: String) {
         keySizes: Array<Short>,
         closure: KeyGeneratorFactory.() -> Unit
     ) {
-        KeyGeneratorFactory(keyPurposes, keySizes).apply(closure)
+        keyGenerators.add(KeyGeneratorFactory(keyPurposes, keySizes).apply(closure))
     }
 }
 
@@ -53,9 +56,60 @@ class AlgorithmFactory(val name: String) {
  * following properties of the key generator:
  * - [KeyGeneratorFactory.keyPurposes] (must be set): The allowed purposes of the generated key
  * - [KeyGeneratorFactory.allowedKeySizes] (must be set): The key sizes supported by the algorithm
+ * - [KeyGeneratorFactory.keyPairGenerator] (optionally): The key pair generator closure
+ * - [KeyGeneratorFactory.keyGenerator] (optionally): The key generator closure
  *
  * @author Cedric Hammes
  * @since  11/06/2024
  */
 class KeyGeneratorFactory(val keyPurposes: Byte, val allowedKeySizes: Array<Short>) {
+    private var keyPairGenerator: (() -> KeyPair)? = null
+    private var keyGenerator: (() -> Key?)? = null
+
+    /**
+     * This method is used as a delegate for the keypair generation used in this algorithm. In the
+     * specified closure, the key generator receives all parameters specified by the caller of a
+     * key generator. Then this closure generates the key pair and returns it to the user.
+     *
+     * Beware, create a key generation delegate before or after this delegate results in an
+     * exception thrown from the system.
+     *
+     * @param closure The closure used to generate the keypair for the caller
+     * TODO: Add information about key into closure
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    fun generateKeyPair(closure: () -> KeyPair) {
+        if (keyGenerator == null) {
+            throw IllegalStateException(
+                "Unable to register key pair generator after registering key generator"
+            )
+        }
+        this.keyPairGenerator = closure
+    }
+
+    /**
+     * This method is used as a delegate for the key generation used in this algorithm. In the
+     * specified closure, the key generator receives all parameters specified by the caller of a
+     * key generator. Then this closure generates the key and returns it to the user.
+     *
+     * Beware, create a key pair generation delegate before or after this delegate results in an
+     * exception thrown from the system.
+     *
+     * @param closure The closure used to generate the key for the caller
+     * TODO: Add information about key into closure
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    fun generateKey(closure: () -> Key) {
+        if (keyPairGenerator == null) {
+            throw IllegalStateException(
+                "Unable to register key generator after registering key pair generator"
+            )
+        }
+        this.keyGenerator = closure
+    }
+
 }
