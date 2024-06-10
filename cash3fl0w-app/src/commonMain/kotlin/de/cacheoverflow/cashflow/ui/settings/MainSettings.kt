@@ -15,13 +15,18 @@ import androidx.compose.material.icons.filled.DisplaySettings
 import androidx.compose.material.icons.filled.GMobiledata
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import com.arkivanov.decompose.ComponentContext
 import de.cacheoverflow.cashflow.security.ISecurityProvider
 import de.cacheoverflow.cashflow.ui.View
 import de.cacheoverflow.cashflow.ui.components.ClickSetting
+import de.cacheoverflow.cashflow.ui.components.Modal
+import de.cacheoverflow.cashflow.ui.components.ModalType
 import de.cacheoverflow.cashflow.ui.components.SelectableSetting
 import de.cacheoverflow.cashflow.ui.components.SettingsGroup
 import de.cacheoverflow.cashflow.ui.components.SwitchSetting
@@ -34,9 +39,11 @@ import de.cacheoverflow.cashflow.utils.dataTransfer
 import de.cacheoverflow.cashflow.utils.disableScreenshots
 import de.cacheoverflow.cashflow.utils.language
 import de.cacheoverflow.cashflow.utils.security
+import de.cacheoverflow.cashflow.utils.securityWarning
 import de.cacheoverflow.cashflow.utils.settings
 import de.cacheoverflow.cashflow.utils.settings.PreferencesProvider
 import de.cacheoverflow.cashflow.utils.theme
+import de.cacheoverflow.cashflow.utils.transferScreenshotWarning
 
 class SettingsComponent(
     private val context: ComponentContext,
@@ -48,10 +55,14 @@ class SettingsComponent(
 @Composable
 fun Settings(component: SettingsComponent) {
     val securityProvider = DI.inject<ISecurityProvider>()
+    val dataTransferWarnPrompt = remember { mutableStateOf(false) }
     val settings = DI.inject<PreferencesProvider>()
     val settingsState by settings.collectAsState()
 
     View(settings(), onButton = component.onBack) {
+        Modal(dataTransferWarnPrompt, securityWarning(), ModalType.INFO) {
+            Text(transferScreenshotWarning())
+        }
         Column {
             SettingsGroup(security(), Icons.Filled.DisplaySettings) {
                 SwitchSetting(
@@ -82,7 +93,11 @@ fun Settings(component: SettingsComponent) {
             }
             SettingsGroup(data(), Icons.Filled.DataExploration) {
                 ClickSetting(dataTransfer()) {
-                    component.changeToDataTransfer()
+                    if (!securityProvider.areScreenshotsDisallowed() && securityProvider.isScreenshotPolicySupported()) {
+                        dataTransferWarnPrompt.value = true
+                    } else {
+                        component.changeToDataTransfer()
+                    }
                 }
                 ClickSetting(dataDelete(), textColor = MaterialTheme.colorScheme.error) {
                     TODO("Implement data delete")

@@ -206,3 +206,9 @@ fun credentialAuth() = translate {
     EN translatesTo "Knowledge-based authentication"
     PL translatesTo "Uwierzytelnianie oparte na wiedzy"
 }
+
+fun transferScreenshotWarning() = translate {
+    DE translatesTo "Screenshots sind momentan erlaubt! Das nächste Menu enthält sensible Daten. Die Sicherheit and Vertraulichkeit der Kontoinformationen gefährdet werden."
+    EN translatesTo "Screenshots are currently permitted! The next menu contains sensible data. The security and confidentiality of the account information may be at risk."
+    PL translatesTo "Zrzuty ekranu są obecnie dozwolone! Następne menu zawiera poufne dane. Poufność i bezpieczeństwo informacji o koncie mogą być zagrożone."
+}

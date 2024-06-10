@@ -18,6 +18,5 @@ class DataTransferComponent(
 @Composable
 fun DataTransfer(component: DataTransferComponent) {
     View(dataTransfer(), onButton = component.onBack) {
-
     }
 }
