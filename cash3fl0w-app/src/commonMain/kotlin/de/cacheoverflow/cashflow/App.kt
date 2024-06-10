@@ -25,6 +25,7 @@ import de.cacheoverflow.cashflow.ui.settings.Settings
 import de.cacheoverflow.cashflow.ui.components.OptionalAuthLock
 import de.cacheoverflow.cashflow.ui.components.RootComponent
 import de.cacheoverflow.cashflow.ui.settings.AuthSettings
+import de.cacheoverflow.cashflow.ui.settings.DataTransfer
 import de.cacheoverflow.cashflow.utils.DI
 import de.cacheoverflow.cashflow.utils.deviceRootedPromptText
 import de.cacheoverflow.cashflow.utils.securityWarning
@@ -54,6 +55,7 @@ fun AppView(
             is RootComponent.Child.MainMenu -> HomeScreen(instance.component)
             is RootComponent.Child.Settings -> Settings(instance.component)
             is RootComponent.Child.AuthSettings -> AuthSettings(instance.component)
+            is RootComponent.Child.DataTransfer -> DataTransfer(instance.component)
         }
     }
 }

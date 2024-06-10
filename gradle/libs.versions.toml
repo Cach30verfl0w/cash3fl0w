@@ -26,7 +26,7 @@ decompose = "2.2.0-alpha03"
 extensionsComposeJetbrains = "2.1.4-compose-experimental"
 
 # Android SDK
-android-sdk-min = "24"
+android-sdk-min = "30"
 android-sdk-compile = "34"
 
 [libraries]

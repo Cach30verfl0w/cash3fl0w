@@ -41,7 +41,8 @@ import de.cacheoverflow.cashflow.utils.theme
 class SettingsComponent(
     private val context: ComponentContext,
     internal val onBack: () -> Unit,
-    internal val changeToAuthSettings: () -> Unit
+    internal val changeToAuthSettings: () -> Unit,
+    internal val changeToDataTransfer: () -> Unit
 ) : ComponentContext by context
 
 @Composable
@@ -81,7 +82,7 @@ fun Settings(component: SettingsComponent) {
             }
             SettingsGroup(data(), Icons.Filled.DataExploration) {
                 ClickSetting(dataTransfer()) {
-                    TODO("Implement data transfer")
+                    component.changeToDataTransfer()
                 }
                 ClickSetting(dataDelete(), textColor = MaterialTheme.colorScheme.error) {
                     TODO("Implement data delete")
