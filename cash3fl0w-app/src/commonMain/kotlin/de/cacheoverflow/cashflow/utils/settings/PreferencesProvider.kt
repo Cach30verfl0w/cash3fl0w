@@ -5,6 +5,8 @@
 
 package de.cacheoverflow.cashflow.utils.settings
 
+import de.cacheoverflow.cashflow.security.ISecurityProvider
+import de.cacheoverflow.cashflow.utils.DI
 import de.cacheoverflow.cashflow.utils.defaultCoroutineScope
 import de.cacheoverflow.cashflow.utils.ioCoroutineScope
 import kotlinx.coroutines.flow.FlowCollector
@@ -40,6 +42,11 @@ class PreferencesProvider(
             ioCoroutineScope.launch {
                 fileSystem.read(configFile) {
                     settingsFlow.emit(Json.decodeFromString(readByteArray().decodeToString()))
+
+                    val securityProvider = DI.inject<ISecurityProvider>()
+                    if (settingsFlow.value.screenshotsDisabled && !securityProvider.areScreenshotsDisallowed()) {
+                        securityProvider.toggleScreenshotPolicy()
+                    }
                     close()
                 }
             }

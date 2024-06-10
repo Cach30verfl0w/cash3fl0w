@@ -9,6 +9,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -301,9 +302,9 @@ fun SettingsGroupScope.SwitchSetting(
  * @since  03/06/2024
  */
 @Composable
-fun SettingsGroup(
-    name: String,
-    icon: ImageVector,
+fun ColumnScope.SettingsGroup(
+    name: String?,
+    icon: ImageVector?,
     innerModifier: Modifier = Modifier,
     content: @Composable SettingsGroupScope.() -> Unit
 ) {
@@ -311,12 +312,14 @@ fun SettingsGroup(
         modifier = Modifier.fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
-            Spacer(Modifier.width(5.dp))
-            Text(name, fontSize = 30.sp, color = MaterialTheme.colorScheme.onBackground)
+        if (name != null && icon != null) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
+                Spacer(Modifier.width(5.dp))
+                Text(name, fontSize = 30.sp, color = MaterialTheme.colorScheme.onBackground)
+            }
+            Spacer(Modifier.height(5.dp))
         }
-        Spacer(Modifier.height(5.dp))
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))

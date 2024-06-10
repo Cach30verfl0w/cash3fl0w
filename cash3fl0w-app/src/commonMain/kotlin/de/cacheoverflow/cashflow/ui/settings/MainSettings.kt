@@ -60,7 +60,9 @@ fun Settings(component: SettingsComponent) {
     val settingsState by settings.collectAsState()
 
     View(settings(), onButton = component.onBack) {
-        Modal(dataTransferWarnPrompt, securityWarning(), ModalType.INFO) {
+        Modal(dataTransferWarnPrompt, securityWarning(), ModalType.INFO, ok = true, onOk = {
+            component.changeToDataTransfer()
+        }) {
             Text(transferScreenshotWarning())
         }
         Column {

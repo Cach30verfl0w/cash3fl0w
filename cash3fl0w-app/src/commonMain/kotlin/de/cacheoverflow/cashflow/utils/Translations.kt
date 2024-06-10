@@ -5,6 +5,7 @@
 
 package de.cacheoverflow.cashflow.utils
 
+import de.cacheoverflow.cashflow.utils.DefaultTranslation.translatesTo
 import de.cacheoverflow.cashflow.utils.settings.AppSettings.EnumLanguage.*
 import de.cacheoverflow.cashflow.utils.settings.AppSettings.EnumLanguage
 import de.cacheoverflow.cashflow.utils.settings.PreferencesProvider
@@ -196,19 +197,43 @@ fun authenticationEnabled() = translate {
 }
 
 fun biometricAuth() = translate {
-    DE translatesTo "Biometrische Authentifizierung"
+    DE translatesTo "Biometrische Auth"
     EN translatesTo "Biometric authentication"
     PL translatesTo "Uwierzytelnianie biometryczne"
 }
 
 fun credentialAuth() = translate {
-    DE translatesTo "Wissensbasierte Authentifizierung"
+    DE translatesTo "Wissensbasierte Auth"
     EN translatesTo "Knowledge-based authentication"
     PL translatesTo "Uwierzytelnianie oparte na wiedzy"
 }
 
 fun transferScreenshotWarning() = translate {
-    DE translatesTo "Screenshots sind momentan erlaubt! Das nächste Menu enthält sensible Daten. Die Sicherheit and Vertraulichkeit der Kontoinformationen gefährdet werden."
+    DE translatesTo "Screenshots sind momentan erlaubt! Das nächste Menu enthält sensible Daten. Die Sicherheit and Vertraulichkeit der Kontoinformationen können gefährdet werden."
     EN translatesTo "Screenshots are currently permitted! The next menu contains sensible data. The security and confidentiality of the account information may be at risk."
     PL translatesTo "Zrzuty ekranu są obecnie dozwolone! Następne menu zawiera poufne dane. Poufność i bezpieczeństwo informacji o koncie mogą być zagrożone."
+}
+
+fun server(address: String) = translate {
+    DE translatesTo "Server: $address"
+    EN translatesTo "Server: $address"
+    PL translatesTo "Serwer: $address"
+}
+
+fun secret(secret: String) = translate {
+    DE translatesTo "Secret: $secret"
+    EN translatesTo "Secret: $secret"
+    PL translatesTo "Sekret: $secret"
+}
+
+fun regenerateSecret() = translate {
+    DE translatesTo "Secret regenerieren"
+    EN translatesTo "Regenerate secret"
+    PL translatesTo "Sekret regeneracji"
+}
+
+fun receiveTransfer() = translate {
+    DE translatesTo "Daten empfangen"
+    EN translatesTo "Receive data"
+    PL translatesTo "Odbieranie danych"
 }
