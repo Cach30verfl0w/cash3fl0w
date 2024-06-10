@@ -41,14 +41,13 @@ abstract class AbstractProvider(
      * to define the algorithm's properties, key generators etc.
      *
      * @param name     The name of the algorithm (without padding and block mode)
-     * @param purposes The key purposes supported by the algorithm
      * @param factory  The factory lambda that registers key gens etc. to the algorithm
      *
      * @author Cedric Hammes
      * @since  08/06/2024
      */
-    fun algorithm(name: String, purposes: Byte, factory: AlgorithmFactory.() -> Unit) {
-        AlgorithmFactory(name, purposes).apply(factory) // TODO: Use
+    fun algorithm(name: String, factory: AlgorithmFactory.() -> Unit) {
+        AlgorithmFactory(name).apply(factory) // TODO: Use
     }
 
     /**

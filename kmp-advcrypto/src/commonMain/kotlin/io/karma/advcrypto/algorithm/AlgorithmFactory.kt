@@ -22,51 +22,40 @@ import io.karma.advcrypto.AbstractProvider
  * This class is used to create algorithms for the Provider API. The created algorithm information
  * with factories are stored in the [AbstractProvider]. You can configure the following properties
  * of the algorithm:
- * - [AlgorithmFactory.allowedKeySizes] (must be set): The key sizes supported by the algorithm
- * - [AlgorithmFactory.allowedBlockModes] (none by default): The algorithm's supported block modes
- * - [AlgorithmFactory.keyPurposes] (must be set): The allowed purposes of the generated key
+ * - [AlgorithmFactory.allowedBlockModes] (none by def): The algorithm's supported block modes
  * - [AlgorithmFactory.name] (must be set): The algorithm's name without padding, block mode etc.
- *
  *
  * @author Cedric Hammes
  * @since  09/06/2024
  */
-class AlgorithmFactory(val name: String, val keyPurposes: Byte) {
-    var allowedKeySizes: Array<Short>? = null
+class AlgorithmFactory(val name: String) {
     var allowedBlockModes: Byte = 0
 
     /**
-     * This method is used to generate a key generator definition for the algorithm. This function
-     * should be called one-time by the developer because otherwise an exception will be thrown.
-     *
-     * @param factory The factory function for the key generator
+     * This method is used to generate a new key generator for the algorithm. If a key generator was
+     * set before this call, the factory returns an exception.
      *
      * @author Cedric Hammes
-     * @since  09/06/2024
+     * @since  11/06/2024
      */
-    fun keyGenerator(factory: KeyGeneratorFactory.() -> Unit) {
-        KeyGeneratorFactory().apply(factory) // TODO: Do something
+    fun keyGenerator(
+        keyPurposes: Byte,
+        keySizes: Array<Short>,
+        closure: KeyGeneratorFactory.() -> Unit
+    ) {
+        KeyGeneratorFactory(keyPurposes, keySizes).apply(closure)
     }
+}
 
-    /**
-     * This class is used to specify a key generator for the algorithm creating. A key generator
-     * is used in encryption and signature algorithms like AES, CRYSTALS-Kyber or RSA.
-     *
-     * @author Cedric Hammes
-     * @since  09/06/2024
-     */
-    class KeyGeneratorFactory {
-
-        /**
-         * This method registers a factory for an instance of the key generator. This is used when
-         * the developer creates a key generator with this API.
-         *
-         * @author Cedric Hammes
-         * @since  09/06/2024
-         */
-        fun factory(factory: () -> Unit) {
-
-        }
-
-    }
+/**
+ * This class is used to create a key generator for a specific algorithm. The created key generator
+ * factory and information are stored in [AbstractProvider] in the algorithm. You can configure the
+ * following properties of the key generator:
+ * - [KeyGeneratorFactory.keyPurposes] (must be set): The allowed purposes of the generated key
+ * - [KeyGeneratorFactory.allowedKeySizes] (must be set): The key sizes supported by the algorithm
+ *
+ * @author Cedric Hammes
+ * @since  11/06/2024
+ */
+class KeyGeneratorFactory(val keyPurposes: Byte, val allowedKeySizes: Array<Short>) {
 }
