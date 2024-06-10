@@ -59,6 +59,7 @@ kotlin {
             // Other
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.okio)
+            implementation(libs.qrkit)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

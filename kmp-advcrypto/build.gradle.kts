@@ -14,6 +14,7 @@ kotlin {
     }
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.bouncycastle)
         }
         commonMain.dependencies {
         }
