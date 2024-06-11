@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package io.karma.advcrypto.algorithm
-
-import io.karma.advcrypto.annotations.InsecureCryptoApi
+package io.karma.advcrypto.annotations
 
 /**
- * This enum class implements all block modes available through this cryptography library.
+ * This annotations marks an insecure/outdated API for providing or perform cryptographic operations
+ * with your KMP application. This annotation is used for block modes or other insecure or outdated
+ * cryptographic parameter.
  *
  * @author Cedric Hammes
  * @since  11/06/2024
  */
-enum class BlockMode {
-
-    CBC,
-    @InsecureCryptoApi
-    ECB,
-    CTR,
-    GCM
-
-}
+@RequiresOptIn(level = RequiresOptIn.Level.ERROR)
+@MustBeDocumented
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FIELD)
+annotation class InsecureCryptoApi

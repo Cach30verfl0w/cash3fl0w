@@ -17,11 +17,11 @@
 package io.karma.advcrypto.android.providers
 
 import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.algorithm.BlockMode
 import io.karma.advcrypto.android.keys.AndroidKey
 import io.karma.advcrypto.android.purposesToAndroid
+import io.karma.advcrypto.annotations.InsecureCryptoApi
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
 import java.security.KeyPairGenerator
@@ -36,6 +36,9 @@ class DefaultCryptoProvider: AbstractProvider(
     "1.0.0-Dev"
 ) {
     init {
+        // As far as I know, only RSA with the ECB operation mode is supported. Therefore, ECB mode
+        // is used here despite its vulnerability to statistical attacks.
+        @OptIn(InsecureCryptoApi::class)
         algorithm("RSA") {
             allowedBlockModes = arrayOf(BlockMode.ECB)
             defaultBlockMode = BlockMode.ECB

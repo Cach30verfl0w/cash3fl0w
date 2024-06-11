@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.karma.advcrypto
+package io.karma.advcrypto.annotations
 
 /**
  * This annotations marks an experimental API for providing or perform cryptographic operations with
