@@ -21,57 +21,18 @@ import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
 
 /**
- * This class is used to create algorithms for the Provider API. The created algorithm information
- * with factories are stored in the [AbstractProvider]. You can configure the following properties
- * of the algorithm:
- * - [AlgorithmFactory.allowedBlockModes] (none by def): The algorithm's supported block modes
- * - [AlgorithmFactory.name] (must be set): The algorithm's name without padding, block mode etc.
- *
- * TODO: Rename to delegate
- *
- * @author Cedric Hammes
- * @since  09/06/2024
- */
-class AlgorithmFactory(val name: String) {
-    private val keyGenerators: MutableList<KeyGeneratorFactory<*>> = ArrayList()
-    var allowedBlockModes: Byte = 0
-
-    /**
-     * This method is used to generate a new key generator for the algorithm. If a key generator was
-     * set before this call, the factory returns an exception.
-     *
-     * @author Cedric Hammes
-     * @since  11/06/2024
-     */
-    fun <C> keyGenerator(
-        keyPurposes: Byte,
-        keySizes: Array<Short>,
-        closure: KeyGeneratorFactory<C>.() -> Unit
-    ) {
-        // TODO: Only one key generator per algorithm
-        keyGenerators.add(KeyGeneratorFactory<C>(keyPurposes, keySizes).apply(closure))
-    }
-}
-
-// TODO: CipherDelegate: initializer, encrypt, decrypt
-// TODO: SignatureDelegate: initializer, sign, verify
-// TODO: HashDelegate: initializer, hash
-
-/**
  * This class is used to create a key generator for a specific algorithm. The created key generator
  * factory and information are stored in [AbstractProvider] in the algorithm. You can configure the
  * following properties of the key generator:
- * - [KeyGeneratorFactory.keyPurposes] (must be set): The allowed purposes of the generated key
- * - [KeyGeneratorFactory.allowedKeySizes] (must be set): The key sizes supported by the algorithm
- * - [KeyGeneratorFactory.keyPairGenerator] (optionally): The key pair generator closure
- * - [KeyGeneratorFactory.keyGenerator] (optionally): The key generator closure
- *
- * TODO: Rename to delegate
+ * - [KeyGeneratorDelegate.keyPurposes] (must be set): The allowed purposes of the generated key
+ * - [KeyGeneratorDelegate.allowedKeySizes] (must be set): The key sizes supported by the algorithm
+ * - [KeyGeneratorDelegate.keyPairGenerator] (optionally): The key pair generator closure
+ * - [KeyGeneratorDelegate.keyGenerator] (optionally): The key generator closure
  *
  * @author Cedric Hammes
  * @since  11/06/2024
  */
-class KeyGeneratorFactory<C>(val keyPurposes: Byte, val allowedKeySizes: Array<Short>) {
+class KeyGeneratorDelegate<C>(val keyPurposes: Byte, val allowedKeySizes: Array<Short>) {
     private var keyPairGenerator: ((C) -> KeyPair)? = null
     private var keyGenerator: ((C) -> Key?)? = null
     private var initializer: (() -> C)? = null

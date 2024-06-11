@@ -16,8 +16,9 @@
 
 package io.karma.advcrypto.android.keys
 
-import io.karma.advcrypto.android.RawKey
 import io.karma.advcrypto.keys.Key
+
+typealias RawKey = java.security.Key
 
 class AndroidKey(raw: RawKey, override val purposes: Byte): Key {
     override val algorithm: String = raw.algorithm

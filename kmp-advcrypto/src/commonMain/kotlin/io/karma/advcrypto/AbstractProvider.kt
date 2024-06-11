@@ -16,7 +16,7 @@
 
 package io.karma.advcrypto
 
-import io.karma.advcrypto.algorithm.AlgorithmFactory
+import io.karma.advcrypto.algorithm.Algorithm
 
 /**
  * This class is the implementation template of a single provider in this library. These providers
@@ -35,6 +35,7 @@ abstract class AbstractProvider(
     val description: String,
     val version: String = "1.0.0"
 ) {
+    private val algorithms: MutableList<Algorithm> = ArrayList()
 
     /**
      * This method registers the specified algorithm into this provider. The factory lambda is used
@@ -46,8 +47,11 @@ abstract class AbstractProvider(
      * @author Cedric Hammes
      * @since  08/06/2024
      */
-    fun algorithm(name: String, factory: AlgorithmFactory.() -> Unit) {
-        AlgorithmFactory(name).apply(factory) // TODO: Use
+    fun algorithm(name: String, factory: Algorithm.() -> Unit) {
+        if (algorithms.find { it.name == name } != null) { // TODO: Change from provider to central
+            throw IllegalStateException("Unable to register same algorithm twice")
+        }
+        this.algorithms.add(Algorithm(name).apply(factory))
     }
 
     /**
