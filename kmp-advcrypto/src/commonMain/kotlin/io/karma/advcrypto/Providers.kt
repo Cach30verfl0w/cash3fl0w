@@ -22,7 +22,6 @@ object Providers {
     private val registeredProviders: MutableList<AbstractProvider> = ArrayList()
 
     fun addProvider(provider: AbstractProvider) {
-        provider.initialize()
         this.registeredProviders.add(provider)
     }
 

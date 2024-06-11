@@ -55,15 +55,6 @@ abstract class AbstractProvider(
     }
 
     /**
-     * This method initializes the provider. This is called while the registration of the provider
-     * into the crypto system.
-     *
-     * @author Cedric Hammes
-     * @since  08/06/2024
-     */
-    abstract fun initialize()
-
-    /**
      * This method returns a copy of the algorithms registered in this provider.
      *
      * @author Cedric Hammes

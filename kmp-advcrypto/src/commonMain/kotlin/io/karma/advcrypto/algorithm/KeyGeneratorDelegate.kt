@@ -49,9 +49,19 @@ class KeyGeneratorDelegate<C: Any>(
     var keyGenerator: ((context: KeyGenContext<C>) -> Key)? = null
         private set
 
+    /**
+     * This method creates an instance of a public-private keypair generator if a key pair generator
+     * was registered by the provider. This is used in the cross-platform part of the API to acquire
+     * a keypair generator for the user.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
     fun createKeyPairGenerator(): KeyPairGenerator {
         if (keyPairGenerator == null) {
-            throw UnsupportedOperationException("Unable to create keypair generator without keypair generator specified")
+            throw UnsupportedOperationException(
+                "Unable to create keypair generator without keypair generator specified"
+            )
         }
 
         return object: KeyPairGenerator {
@@ -138,5 +148,4 @@ class KeyGeneratorDelegate<C: Any>(
         }
         this.keyGenerator = closure
     }
-
 }

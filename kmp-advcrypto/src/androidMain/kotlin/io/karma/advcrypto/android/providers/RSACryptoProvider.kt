@@ -29,7 +29,7 @@ class RSACryptoProvider: AbstractProvider(
     "This class provides access to the RSA cryptosystem",
     "1.0.0-Dev"
 ) {
-    override fun initialize() {
+    init {
         algorithm("RSA") {
             keyGenerator<KeyPairGenerator>(
                 Key.PURPOSE_ALL,

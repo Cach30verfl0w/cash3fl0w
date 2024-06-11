@@ -1,5 +1,4 @@
 # Cash3Fl0w
-  
 Cash3Fl0w is a finance software developed with Kotlin Multiplatform for mobile devices and desktop/JVM. This application supports FinTS/HBCI to access information from German banking accounts. This application doesn't use any centralized storage or third-party environment to execute requests etc. Only your handy is used.  
 
 ## HBCI/FinTS Support  
