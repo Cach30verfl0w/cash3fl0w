@@ -84,6 +84,8 @@ class KeyGeneratorFactory<C>(val keyPurposes: Byte, val allowedKeySizes: Array<S
      * @param closure                The constructor of the generator's "internal" context
      * @throws IllegalStateException Thrown if this function is called twice
      *
+     * TODO: Provide name like RSA/ECB/NoPadding to initializer
+     *
      * @author Cedric Hammes
      * @since  11/06/2024
      */
