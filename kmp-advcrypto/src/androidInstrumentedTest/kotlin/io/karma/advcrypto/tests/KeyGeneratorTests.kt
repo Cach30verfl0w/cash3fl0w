@@ -1,7 +1,8 @@
 package io.karma.advcrypto.tests
 
 import io.karma.advcrypto.Providers
-import io.karma.advcrypto.algorithm.KeyGeneratorSpec
+import io.karma.advcrypto.algorithm.Padding
+import io.karma.advcrypto.algorithm.specs.KeyGeneratorSpec
 import io.karma.advcrypto.android.providers.DefaultCryptoProvider
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.wrapper.KeyGenerator
@@ -17,6 +18,7 @@ class KeyGeneratorTests {
 
         val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
         keyPairGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_ALL).run {
+            setPadding(Padding.PKCS1)
             setKeySize(4096)
             build()
         })

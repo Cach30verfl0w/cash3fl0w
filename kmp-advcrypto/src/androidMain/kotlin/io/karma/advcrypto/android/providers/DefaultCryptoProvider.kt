@@ -19,6 +19,7 @@ package io.karma.advcrypto.android.providers
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import io.karma.advcrypto.AbstractProvider
+import io.karma.advcrypto.algorithm.BlockMode
 import io.karma.advcrypto.android.keys.AndroidKey
 import io.karma.advcrypto.android.purposesToAndroid
 import io.karma.advcrypto.keys.Key
@@ -26,6 +27,7 @@ import io.karma.advcrypto.keys.KeyPair
 import java.security.KeyPairGenerator
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
+import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.IvParameterSpec
 
 class DefaultCryptoProvider: AbstractProvider(
@@ -35,6 +37,9 @@ class DefaultCryptoProvider: AbstractProvider(
 ) {
     init {
         algorithm("RSA") {
+            allowedBlockModes = arrayOf(BlockMode.ECB)
+            defaultBlockMode = BlockMode.ECB
+
             keyGenerator<KeyPairGenerator>(
                 Key.PURPOSES_ALL,
                 arrayOf(1024, 2048, 4096),
@@ -44,9 +49,9 @@ class DefaultCryptoProvider: AbstractProvider(
                     val purposes = purposesToAndroid(initSpec.purposes)
                     val spec = KeyGenParameterSpec.Builder("AndroidKeyStore", purposes).run {
                         setKeySize(initSpec.keySize?: defaultKeySize)
-                        setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
-                        setBlockModes(KeyProperties.BLOCK_MODE_ECB)
-                        // TODO
+                        setEncryptionPaddings(initSpec.padding.toString())
+                        setBlockModes((initSpec.blockMode?: defaultBlockMode).toString())
+                        // TODO: Auth
                         build()
                     }
 
@@ -72,9 +77,8 @@ class DefaultCryptoProvider: AbstractProvider(
             }
 
             cipher<Cipher> {
-                initializer { _ ->
-                    // TODO: Save block mode in context
-                    Cipher.getInstance("RSA/ECB/PKCS1Padding")
+                initializer { spec, _ ->
+                    Cipher.getInstance("RSA/${spec.blockMode?: defaultBlockMode}/${spec.padding}")
                 }
 
                 encrypt { context, data ->
@@ -91,6 +95,9 @@ class DefaultCryptoProvider: AbstractProvider(
         }
 
         algorithm("AES") {
+            allowedBlockModes = BlockMode.entries.toTypedArray()
+            defaultBlockMode = BlockMode.GCM
+
             keyGenerator<KeyGenerator>(
                 Key.PURPOSE_ENCRYPT or Key.PURPOSE_DECRYPT,
                 arrayOf(128, 196, 256),
@@ -100,9 +107,9 @@ class DefaultCryptoProvider: AbstractProvider(
                     val purposes = purposesToAndroid(initSpec.purposes)
                     val spec = KeyGenParameterSpec.Builder("AndroidKeyStore", purposes).run {
                         setKeySize(initSpec.keySize?: defaultKeySize)
-                        setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                        setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                        // TODO
+                        setEncryptionPaddings(initSpec.padding.toString())
+                        setBlockModes((initSpec.blockMode?: defaultBlockMode).toString())
+                        // TODO: Auth
                         build()
                     }
 
@@ -119,9 +126,8 @@ class DefaultCryptoProvider: AbstractProvider(
                 }
             }
             cipher<Cipher> {
-                initializer { _ ->
-                    // TODO: Save block mode in context
-                    Cipher.getInstance("AES/CBC/PKCS7Padding")
+                initializer { spec, _ ->
+                    Cipher.getInstance("AES/${spec.blockMode?: defaultBlockMode}/${spec.padding}")
                 }
                 encrypt { context, data ->
                     val cipher = context.internalContext
@@ -149,11 +155,14 @@ class DefaultCryptoProvider: AbstractProvider(
                     System.arraycopy(data, 4, initVector, 0, initVector.size)
 
                     // Init cipher
-                    val iv = IvParameterSpec(initVector)
                     val cipher = context.internalContext
-                    // TODO: Replace IvParameterSpec with GCMParmeterSpec if GCM block mode
                     // TODO: Add support for non-default implemented key and support for padding etc
-                    cipher.init(Cipher.DECRYPT_MODE, (context.key as AndroidKey).raw, iv)
+                    cipher.init(Cipher.DECRYPT_MODE, (context.key as AndroidKey).raw,
+                        when(context.spec.blockMode?: defaultBlockMode) {
+                            BlockMode.GCM -> GCMParameterSpec(128, initVector)
+                            else -> IvParameterSpec(initVector)
+                        }
+                    )
 
                     // Decrypt
                     val encryptedData = ByteArray(data.size - initVectorSize - 4)

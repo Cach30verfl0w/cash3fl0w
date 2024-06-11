@@ -17,7 +17,7 @@
 package io.karma.advcrypto.algorithm.delegates
 
 import io.karma.advcrypto.AbstractProvider
-import io.karma.advcrypto.algorithm.KeyGeneratorSpec
+import io.karma.advcrypto.algorithm.specs.KeyGeneratorSpec
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
 import io.karma.advcrypto.wrapper.KeyGenerator

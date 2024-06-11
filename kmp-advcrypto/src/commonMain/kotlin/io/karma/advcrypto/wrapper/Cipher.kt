@@ -17,8 +17,8 @@
 package io.karma.advcrypto.wrapper
 
 import io.karma.advcrypto.Providers
-import io.karma.advcrypto.algorithm.KeyGeneratorSpec
 import io.karma.advcrypto.algorithm.delegates.KeyGeneratorDelegate
+import io.karma.advcrypto.algorithm.specs.CipherSpec
 import io.karma.advcrypto.keys.Key
 
 /**
@@ -37,7 +37,7 @@ interface Cipher {
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun initialize(key: Key)
+    fun initialize(spec: CipherSpec)
 
     fun encrypt(data: ByteArray): ByteArray
 

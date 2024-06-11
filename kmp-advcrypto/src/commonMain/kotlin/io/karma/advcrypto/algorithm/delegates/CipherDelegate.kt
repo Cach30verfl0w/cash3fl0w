@@ -16,13 +16,14 @@
 
 package io.karma.advcrypto.algorithm.delegates
 
+import io.karma.advcrypto.algorithm.specs.CipherSpec
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.wrapper.Cipher
 
-data class CipherContext<C>(val key: Key, val internalContext: C)
+data class CipherContext<C>(val spec: CipherSpec, val key: Key, val internalContext: C)
 
 class CipherDelegate<C: Any> {
-    private lateinit var initializer: (Key) -> CipherContext<C>
+    private lateinit var initializer: (CipherSpec, Key) -> CipherContext<C>
     private var encrypt: ((CipherContext<C>, ByteArray) -> ByteArray)? = null
     private var decrypt: ((CipherContext<C>, ByteArray) -> ByteArray)? = null
 
@@ -30,8 +31,8 @@ class CipherDelegate<C: Any> {
         return object: Cipher {
             private var context: CipherContext<C>? = null
 
-            override fun initialize(key: Key) {
-                this.context = initializer(key)
+            override fun initialize(spec: CipherSpec) {
+                this.context = initializer(spec, spec.key)
             }
 
             override fun encrypt(data: ByteArray): ByteArray {
@@ -51,12 +52,12 @@ class CipherDelegate<C: Any> {
         }
     }
 
-    fun initializer(closure: (key: Key) -> C) {
-        this.initializer = { key ->
+    fun initializer(closure: (spec: CipherSpec, key: Key) -> C) {
+        this.initializer = { spec, key ->
             if ((key.purposes and (Key.PURPOSE_ENCRYPT or Key.PURPOSE_DECRYPT)).toInt() == 0) {
                 throw UnsupportedOperationException("This key doesn't support encrypt or decrypt")
             }
-            CipherContext(key, closure(key))
+            CipherContext(spec, key, closure(spec, key))
         }
     }
 

@@ -35,7 +35,9 @@ class Algorithm(val name: String) {
         private set
     var cipher: CipherDelegate<*>? = null
         private set
-    var allowedBlockModes: Short = 0
+
+    var allowedBlockModes: Array<BlockMode> = arrayOf()
+    var defaultBlockMode: BlockMode? = null
 
     /**
      * This method is used to generate a new key generator for the algorithm. If a key generator was
