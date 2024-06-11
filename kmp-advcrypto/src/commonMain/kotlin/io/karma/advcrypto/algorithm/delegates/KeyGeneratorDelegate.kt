@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package io.karma.advcrypto.algorithm
+package io.karma.advcrypto.algorithm.delegates
 
 import io.karma.advcrypto.AbstractProvider
+import io.karma.advcrypto.algorithm.KeyGeneratorSpec
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
 import io.karma.advcrypto.wrapper.KeyGenerator
@@ -45,10 +46,8 @@ class KeyGeneratorDelegate<C: Any>(
 ) {
     lateinit var initializer: ((KeyGeneratorSpec) -> KeyGenContext<C>)
         private set
-    var keyPairGenerator: ((context: KeyGenContext<C>) -> KeyPair)? = null
-        private set
-    var keyGenerator: ((context: KeyGenContext<C>) -> Key)? = null
-        private set
+    private var keyPairGenerator: ((context: KeyGenContext<C>) -> KeyPair)? = null
+    private var keyGenerator: ((context: KeyGenContext<C>) -> Key)? = null
 
     /**
      * This method creates an instance of a public-private keypair generator if a key pair generator

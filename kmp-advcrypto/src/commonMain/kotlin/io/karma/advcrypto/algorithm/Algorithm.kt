@@ -17,6 +17,8 @@
 package io.karma.advcrypto.algorithm
 
 import io.karma.advcrypto.AbstractProvider
+import io.karma.advcrypto.algorithm.delegates.CipherDelegate
+import io.karma.advcrypto.algorithm.delegates.KeyGeneratorDelegate
 
 /**
  * This class is used to create algorithms for the Provider API. The created algorithm information
@@ -30,6 +32,8 @@ import io.karma.advcrypto.AbstractProvider
  */
 class Algorithm(val name: String) {
     var keyGenerator: KeyGeneratorDelegate<*>? = null
+        private set
+    var cipher: CipherDelegate<*>? = null
         private set
     var allowedBlockModes: Short = 0
 
@@ -47,12 +51,25 @@ class Algorithm(val name: String) {
         closure: KeyGeneratorDelegate<C>.() -> Unit
     ) {
         if (keyGenerator != null) {
-            throw IllegalStateException("You can set a key generator twice")
+            throw IllegalStateException("You can set key generator twice")
         }
         keyGenerator = KeyGeneratorDelegate<C>(keyPurposes, defaultKeySize, keySizes).apply(closure)
     }
+
+    /**
+     * This method is used to generate a new cipher for the algorithm. If a cipher was set before
+     * this call, the factory returns an exception.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    fun <C: Any> cipher(closure: CipherDelegate<C>.() -> Unit) {
+        if (cipher != null) {
+            throw IllegalStateException("You can set cipher twice")
+        }
+        cipher = CipherDelegate<C>().apply(closure)
+    }
 }
 
-// TODO: CipherDelegate: initializer, encrypt, decrypt
 // TODO: SignatureDelegate: initializer, sign, verify
 // TODO: HashDelegate: initializer, hash

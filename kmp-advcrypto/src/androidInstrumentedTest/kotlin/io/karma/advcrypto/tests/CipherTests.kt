@@ -4,36 +4,33 @@ import io.karma.advcrypto.Providers
 import io.karma.advcrypto.algorithm.KeyGeneratorSpec
 import io.karma.advcrypto.android.providers.DefaultCryptoProvider
 import io.karma.advcrypto.keys.Key
+import io.karma.advcrypto.wrapper.Cipher
 import io.karma.advcrypto.wrapper.KeyGenerator
-import io.karma.advcrypto.wrapper.KeyPairGenerator
 import org.junit.Test
 
-class KeyGeneratorTests {
+class CipherTests {
+
     @Test
-    fun testKeyGeneratorRSA() {
+    fun testCipherAES() {
         if (Providers.getProviderByName("Default") == null) {
             Providers.addProvider(DefaultCryptoProvider())
         }
 
-        val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-        keyPairGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSE_ALL).run {
-            setKeySize(4096)
-            build()
-        })
-        println(keyPairGenerator.generateKeyPair())
-    }
-
-    @Test
-    fun testKeyGeneratorAES() {
-        if (Providers.getProviderByName("Default") == null) {
-            Providers.addProvider(DefaultCryptoProvider())
-        }
-
+        // Generate key
         val keyGenerator = KeyGenerator.getInstance("AES")
         keyGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSE_SYMMETRIC).run {
             setKeySize(256)
             build()
         })
-        println(keyGenerator.generateKey())
+        val key = keyGenerator.generateKey()
+        println(key)
+
+        // Encrypt and decrypt
+        val cipher = Cipher.getInstance("AES")
+        cipher.initialize(key)
+        val encryptedData = cipher.encrypt("Test".encodeToByteArray())
+        val decryptedData = cipher.decrypt(encryptedData).decodeToString()
+        assert(decryptedData == "Test")
     }
+
 }

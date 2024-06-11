@@ -28,25 +28,20 @@ import io.karma.advcrypto.keys.Key
  * @author Cedric Hammes
  * @since  11/06/2024
  */
-interface KeyGenerator {
+interface Cipher {
 
     /**
-     * This method initializes the key generator with the specified specification. This
-     * specification is used while key generation.
+     * This method initializes the cipher with the specified specification. This specification is
+     * used while encryption/decryption.
      *
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun initialize(spec: KeyGeneratorSpec)
+    fun initialize(key: Key)
 
-    /**
-     * This method generates a key with the specification defined before. This method will throw an
-     * exception if you didn't initialized the key generator before.
-     *
-     * @author Cedric Hammes
-     * @since  11/06/2024
-     */
-    fun generateKey(): Key
+    fun encrypt(data: ByteArray): ByteArray
+
+    fun decrypt(data: ByteArray): ByteArray
 
     companion object {
         /**
@@ -56,9 +51,9 @@ interface KeyGenerator {
          * @author Cedric Hammes
          * @since  11/06/2024
          */
-        fun getInstance(algorithm: String): KeyGenerator {
-            return Providers.getAlgorithmByName(algorithm)?.keyGenerator?.createKeyGenerator()?: throw
-            UnsupportedOperationException("The algorithm $algorithm doesn't exists or this algorithm doesn't support key generation")
+        fun getInstance(algorithm: String): Cipher {
+            return Providers.getAlgorithmByName(algorithm)?.cipher?.createCipher()?: throw
+            UnsupportedOperationException("The algorithm $algorithm doesn't exists or this algorithm doesn't support ciphers")
         }
     }
 

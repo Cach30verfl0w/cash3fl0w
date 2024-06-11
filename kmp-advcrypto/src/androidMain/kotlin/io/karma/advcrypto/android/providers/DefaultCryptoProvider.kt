@@ -17,13 +17,16 @@
 package io.karma.advcrypto.android.providers
 
 import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.android.keys.AndroidKey
 import io.karma.advcrypto.android.purposesToAndroid
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
 import java.security.KeyPairGenerator
+import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
+import javax.crypto.spec.IvParameterSpec
 
 class DefaultCryptoProvider: AbstractProvider(
     "Default",
@@ -77,6 +80,8 @@ class DefaultCryptoProvider: AbstractProvider(
                     val purposes = purposesToAndroid(initSpec.purposes)
                     val spec = KeyGenParameterSpec.Builder("AndroidKeyStore", purposes).run {
                         setKeySize(initSpec.keySize?: defaultKeySize)
+                        setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                        setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                         // TODO
                         build()
                     }
@@ -91,6 +96,46 @@ class DefaultCryptoProvider: AbstractProvider(
                         context.internalContext.generateKey(),
                         Key.PURPOSE_DECRYPT or Key.PURPOSE_ENCRYPT
                     )
+                }
+            }
+            cipher<Pair<Cipher, Key>> {
+                initializer { key ->
+                    // TODO: Add support for non-default implemented key and support for padding etc
+                    // TODO: Save block mode in context
+                    Pair(Cipher.getInstance("AES/CBC/PKCS7Padding"), key)
+                }
+                encrypt { context, data ->
+                    context.first.init(Cipher.ENCRYPT_MODE, (context.second as AndroidKey).raw)
+                    val encryptedData = context.first.doFinal(data)
+                    val initVector = context.first.iv
+                    val finalData = ByteArray(encryptedData.size + initVector.size + 4)
+                    val initVectorSize = ByteArray(Int.SIZE_BYTES)
+                    initVectorSize[0] = ((initVector.size shr 24) and 0xFF).toByte()
+                    initVectorSize[1] = ((initVector.size shr 16) and 0xFF).toByte()
+                    initVectorSize[2] = ((initVector.size shr 8) and 0xFF).toByte()
+                    initVectorSize[3] = ((initVector.size shr 0) and 0xFF).toByte()
+                    System.arraycopy(initVectorSize, 0, finalData, 0, 4)
+                    System.arraycopy(initVector, 0, finalData, 4, initVector.size)
+                    System.arraycopy(encryptedData, 0, finalData, initVector.size + 4, encryptedData.size)
+                    finalData
+                }
+                decrypt { context, data ->
+                    val initVectorSize = (data[0].toInt() shl 24) or
+                            (data[1].toInt() shl 16) or
+                            (data[2].toInt() shl 8) or
+                            (data[3].toInt() and 0xFF)
+                    val initVector = ByteArray(initVectorSize)
+                    System.arraycopy(data, 4, initVector, 0, initVector.size)
+
+                    // Init cipher
+                    val iv = IvParameterSpec(initVector)
+                    // TODO: Replace IvParameterSpec with GCMParmeterSpec if GCM block mode
+                    context.first.init(Cipher.DECRYPT_MODE, (context.second as AndroidKey).raw, iv)
+
+                    // Decrypt
+                    val encryptedData = ByteArray(data.size - initVectorSize - 4)
+                    System.arraycopy(data, initVectorSize + 4, encryptedData, 0, encryptedData.size)
+                    context.first.doFinal(encryptedData)
                 }
             }
         }
