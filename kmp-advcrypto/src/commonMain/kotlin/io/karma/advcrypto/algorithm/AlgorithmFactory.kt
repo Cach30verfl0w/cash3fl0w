@@ -66,6 +66,10 @@ class KeyGeneratorFactory(val keyPurposes: Byte, val allowedKeySizes: Array<Shor
     private var keyPairGenerator: (() -> KeyPair)? = null
     private var keyGenerator: (() -> Key?)? = null
 
+    fun initializer(closure: () -> Unit) {
+
+    }
+
     /**
      * This method is used as a delegate for the keypair generation used in this algorithm. In the
      * specified closure, the key generator receives all parameters specified by the caller of a
@@ -86,7 +90,7 @@ class KeyGeneratorFactory(val keyPurposes: Byte, val allowedKeySizes: Array<Shor
                 "Unable to register key pair generator after registering key generator"
             )
         }
-        this.keyPairGenerator = closure
+        //this.keyPairGenerator = closure
     }
 
     /**
@@ -103,13 +107,13 @@ class KeyGeneratorFactory(val keyPurposes: Byte, val allowedKeySizes: Array<Shor
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun generateKey(closure: () -> Key) {
+    fun <T> generateKey(initial: () -> T, closure: (T) -> Key) {
         if (keyPairGenerator == null) {
             throw IllegalStateException(
                 "Unable to register key generator after registering key pair generator"
             )
         }
-        this.keyGenerator = closure
+        //this.keyGenerator = closure
     }
 
 }

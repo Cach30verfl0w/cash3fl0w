@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ManagedVirtualDevice
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
@@ -14,11 +16,12 @@ kotlin {
     }
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.bouncycastle)
+            implementation(libs.bouncycastle.prov)
         }
         commonMain.dependencies {
         }
         commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
 }
@@ -28,11 +31,35 @@ android {
     compileSdk = libs.versions.android.sdk.compile.get().toInt()
 
     defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         minSdk = libs.versions.android.sdk.min.get().toInt()
+    }
+
+    packaging {
+        resources.excludes.add("META-INF/versions/9/OSGI-INF/*")
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    testOptions {
+        managedDevices {
+            devices {
+                maybeCreate<ManagedVirtualDevice>("pixel5").apply {
+                    device = "Pixel 5"
+                    apiLevel = libs.versions.android.sdk.compile.get().toInt()
+                    systemImageSource = "aosp"
+                }
+            }
+        }
+    }
+}
+
+
+dependencies {
+    //Android integration tests
+    testImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.ui.test.junit4)
 }

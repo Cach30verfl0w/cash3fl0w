@@ -50,7 +50,7 @@ class AndroidPQCProvider: AbstractProvider(
         algorithm("Kyber") {
             keyGenerator(
                 Key.PURPOSE_ENCRYPT or Key.PURPOSE_DECRYPT,
-                arrayOf(512, 768, 1024)
+                arrayOf(512, 768, 1024),
             ) {
             }
         }
