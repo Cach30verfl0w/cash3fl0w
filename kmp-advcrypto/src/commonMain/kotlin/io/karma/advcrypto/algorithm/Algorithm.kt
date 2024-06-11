@@ -22,7 +22,7 @@ import io.karma.advcrypto.AbstractProvider
  * This class is used to create algorithms for the Provider API. The created algorithm information
  * with factories are stored in the [AbstractProvider]. You can configure the following properties
  * of the algorithm:
- * - [Algorithm.allowedBlockModes] (none by def): The algorithm's supported block modes
+ * - [Algorithm.allowedBlockModes] (none by default): The algorithm's supported block modes
  * - [Algorithm.name] (must be set): The algorithm's name without padding, block mode etc.
  *
  * @author Cedric Hammes
@@ -31,7 +31,7 @@ import io.karma.advcrypto.AbstractProvider
 class Algorithm(val name: String) {
     var keyGenerator: KeyGeneratorDelegate<*>? = null
         private set
-    var allowedBlockModes: Byte = 0
+    var allowedBlockModes: Short = 0
 
     /**
      * This method is used to generate a new key generator for the algorithm. If a key generator was
@@ -40,15 +40,16 @@ class Algorithm(val name: String) {
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun <C> keyGenerator(
-        keyPurposes: Byte,
-        keySizes: Array<Short>,
+    fun <C: Any> keyGenerator(
+        keyPurposes: UByte,
+        keySizes: Array<Int>,
+        defaultKeySize: Int,
         closure: KeyGeneratorDelegate<C>.() -> Unit
     ) {
         if (keyGenerator != null) {
             throw IllegalStateException("You can set a key generator twice")
         }
-        keyGenerator = KeyGeneratorDelegate<C>(keyPurposes, keySizes).apply(closure)
+        keyGenerator = KeyGeneratorDelegate<C>(keyPurposes, defaultKeySize, keySizes).apply(closure)
     }
 }
 

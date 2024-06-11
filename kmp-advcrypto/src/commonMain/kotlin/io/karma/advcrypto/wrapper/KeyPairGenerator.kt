@@ -14,10 +14,22 @@
  * limitations under the License.
  */
 
-package io.karma.advcrypto.keys
+package io.karma.advcrypto.wrapper
 
-data class KeyPair(val publicKey: Key, val privateKey: Key) {
-    override fun toString(): String {
-        return "KeyPair(publicKey=$publicKey, privateKey=$privateKey)"
+import io.karma.advcrypto.Providers
+import io.karma.advcrypto.algorithm.KeyGeneratorSpec
+import io.karma.advcrypto.keys.KeyPair
+
+interface KeyPairGenerator {
+
+    fun initialize(spec: KeyGeneratorSpec)
+
+    fun generateKeyPair(): KeyPair
+
+    companion object {
+        fun getInstance(algorithm: String): KeyPairGenerator? {
+            return Providers.getAlgorithmByName(algorithm)?.keyGenerator?.createKeyPairGenerator()
+        }
     }
+
 }

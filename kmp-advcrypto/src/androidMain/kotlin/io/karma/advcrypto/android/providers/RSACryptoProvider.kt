@@ -16,8 +16,10 @@
 
 package io.karma.advcrypto.android.providers
 
+import android.security.keystore.KeyGenParameterSpec
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.android.keys.AndroidKey
+import io.karma.advcrypto.android.purposesToAndroid
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
 import java.security.KeyPairGenerator
@@ -31,21 +33,33 @@ class RSACryptoProvider: AbstractProvider(
         algorithm("RSA") {
             keyGenerator<KeyPairGenerator>(
                 Key.PURPOSE_ALL,
-                arrayOf(1024, 2048, 4096, 8192)
+                arrayOf(1024, 2048, 4096),
+                4096
             ) {
-                initializer {
+                initializer { initSpec ->
+                    val purposes = purposesToAndroid(initSpec.purposes)
+                    val spec = KeyGenParameterSpec.Builder("AndroidKeyStore", purposes).run {
+                        setKeySize(initSpec.keySize?: defaultKeySize)
+                        build()
+                    }
+
                     KeyPairGenerator.getInstance("RSA").apply {
-                        /*initialize(KeyGenParameterSpec.Builder("").run {
-                            build()
-                        })*/
+                        initialize(spec)
                     }
                 }
 
-                generateKeyPair {
-                    val keyPair = it.generateKeyPair()
+                generateKeyPair { context ->
+                    val purposes = context.generatorSpec.purposes
+                    val keyPair = context.internalContext.generateKeyPair()
                     KeyPair(
-                        AndroidKey(keyPair.public, 0), // TODO: Correct purpose
-                        AndroidKey(keyPair.private, 1) // TODO: Correct purpose
+                        AndroidKey(
+                            keyPair.public,
+                            purposes and (Key.PURPOSE_DECRYPT or Key.PURPOSE_SIGNING).inv()
+                        ),
+                        AndroidKey(
+                            keyPair.private,
+                            purposes and (Key.PURPOSE_ENCRYPT or Key.PURPOSE_VERIFY).inv()
+                        )
                     )
                 }
             }

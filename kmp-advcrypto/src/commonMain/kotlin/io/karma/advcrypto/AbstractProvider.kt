@@ -35,7 +35,7 @@ abstract class AbstractProvider(
     val description: String,
     val version: String = "1.0.0"
 ) {
-    private val algorithms: MutableList<Algorithm> = ArrayList()
+    private var algorithms: MutableList<Algorithm> = ArrayList()
 
     /**
      * This method registers the specified algorithm into this provider. The factory lambda is used
@@ -62,5 +62,13 @@ abstract class AbstractProvider(
      * @since  08/06/2024
      */
     abstract fun initialize()
+
+    /**
+     * This method returns a copy of the algorithms registered in this provider.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    fun getAlgorithms(): List<Algorithm> = ArrayList(this.algorithms)
 
 }

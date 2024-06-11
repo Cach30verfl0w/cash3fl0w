@@ -20,6 +20,10 @@ import io.karma.advcrypto.keys.Key
 
 typealias RawKey = java.security.Key
 
-class AndroidKey(raw: RawKey, override val purposes: Byte): Key {
+class AndroidKey(raw: RawKey, override val purposes: UByte): Key {
     override val algorithm: String = raw.algorithm
+
+    override fun toString(): String {
+        return "AndroidKey(algorithm=\"$algorithm\", purposes=$purposes)"
+    }
 }

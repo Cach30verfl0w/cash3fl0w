@@ -19,12 +19,17 @@ package io.karma.advcrypto.algorithm
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
+import io.karma.advcrypto.wrapper.KeyPairGenerator
+
+
+data class KeyGenContext<C>(val generatorSpec: KeyGeneratorSpec, val internalContext: C)
 
 /**
  * This class is used to create a key generator for a specific algorithm. The created key generator
  * factory and information are stored in [AbstractProvider] in the algorithm. You can configure the
  * following properties of the key generator:
  * - [KeyGeneratorDelegate.keyPurposes] (must be set): The allowed purposes of the generated key
+ * - [KeyGeneratorDelegate.defaultKeySize] (must be set): The key size if it's is not in the spec
  * - [KeyGeneratorDelegate.allowedKeySizes] (must be set): The key sizes supported by the algorithm
  * - [KeyGeneratorDelegate.keyPairGenerator] (optionally): The key pair generator closure
  * - [KeyGeneratorDelegate.keyGenerator] (optionally): The key generator closure
@@ -32,10 +37,36 @@ import io.karma.advcrypto.keys.KeyPair
  * @author Cedric Hammes
  * @since  11/06/2024
  */
-class KeyGeneratorDelegate<C>(val keyPurposes: Byte, val allowedKeySizes: Array<Short>) {
-    private var keyPairGenerator: ((C) -> KeyPair)? = null
-    private var keyGenerator: ((C) -> Key?)? = null
-    private var initializer: (() -> C)? = null
+class KeyGeneratorDelegate<C: Any>(
+    val keyPurposes: UByte,
+    val defaultKeySize: Int,
+    val allowedKeySizes: Array<Int>
+) {
+    lateinit var initializer: ((KeyGeneratorSpec) -> KeyGenContext<C>)
+        private set
+    var keyPairGenerator: ((context: KeyGenContext<C>) -> KeyPair)? = null
+        private set
+    var keyGenerator: ((context: KeyGenContext<C>) -> Key)? = null
+        private set
+
+    fun createKeyPairGenerator(): KeyPairGenerator {
+        if (keyPairGenerator == null) {
+            throw UnsupportedOperationException("Unable to create keypair generator without keypair generator specified")
+        }
+
+        return object: KeyPairGenerator {
+            private var context: KeyGenContext<C>? = null
+
+            override fun initialize(spec: KeyGeneratorSpec) {
+                context = initializer(spec)
+            }
+
+            override fun generateKeyPair(): KeyPair {
+                return keyPairGenerator!!.invoke(context!!)
+            }
+
+        }
+    }
 
     /**
      * This method is used as a delegate for the creation of a internal context for the key
@@ -45,16 +76,14 @@ class KeyGeneratorDelegate<C>(val keyPurposes: Byte, val allowedKeySizes: Array<
      * @param closure                The constructor of the generator's "internal" context
      * @throws IllegalStateException Thrown if this function is called twice
      *
-     * TODO: Provide name like RSA/ECB/NoPadding to initializer
-     *
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun initializer(closure: () -> C) {
-        if (initializer != null) {
-            throw IllegalStateException("Initializer was already created")
+    fun initializer(closure: (KeyGeneratorSpec) -> C) {
+        this.initializer = { keyGenSpec ->
+            // TODO: Add validation for purposes
+            KeyGenContext(keyGenSpec, closure(keyGenSpec))
         }
-        this.initializer = closure
     }
 
     /**
@@ -71,13 +100,13 @@ class KeyGeneratorDelegate<C>(val keyPurposes: Byte, val allowedKeySizes: Array<
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun generateKeyPair(closure: (context: C) -> KeyPair) {
-        if (keyGenerator == null) {
+    fun generateKeyPair(closure: (context: KeyGenContext<C>) -> KeyPair) {
+        if (keyGenerator != null) {
             throw IllegalStateException(
                 "Unable to register key pair generator after registering key generator"
             )
         }
-        if (keyPairGenerator == null) {
+        if (keyPairGenerator != null) {
             throw IllegalStateException("Keypair generator was already created")
         }
 
@@ -98,13 +127,13 @@ class KeyGeneratorDelegate<C>(val keyPurposes: Byte, val allowedKeySizes: Array<
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun generateKey(closure: (context: C) -> Key) {
-        if (keyPairGenerator == null) {
+    fun generateKey(closure: (context: KeyGenContext<C>) -> Key) {
+        if (keyPairGenerator != null) {
             throw IllegalStateException(
                 "Unable to register key generator after registering key pair generator"
             )
         }
-        if (keyGenerator == null) {
+        if (keyGenerator != null) {
             throw IllegalStateException("Keypair generator was already created")
         }
         this.keyGenerator = closure

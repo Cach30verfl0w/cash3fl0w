@@ -43,14 +43,14 @@ interface Key {
      * @author Cedric Hammes
      * @since  07/06/2024
      */
-    val purposes: Byte
+    val purposes: UByte
 
     companion object {
-        const val PURPOSE_ALL: Byte = 0b0000_1111
-        const val PURPOSE_VERIFY: Byte = 0b0000_0001
-        const val PURPOSE_SIGNING: Byte = 0b0000_0010
-        const val PURPOSE_ENCRYPT: Byte = 0b0000_0100
-        const val PURPOSE_DECRYPT: Byte = 0b0000_1000
+        const val PURPOSE_ALL: UByte = 0b0000_1111U
+        const val PURPOSE_VERIFY: UByte = 0b0000_0001U
+        const val PURPOSE_SIGNING: UByte = 0b0000_0010U
+        const val PURPOSE_ENCRYPT: UByte = 0b0000_0100U
+        const val PURPOSE_DECRYPT: UByte = 0b0000_1000U
 
         const val BLOCK_MODE_ALL: Byte = 0b0000_1111
         const val BLOCK_MODE_GCM: Byte = 0b0000_0001

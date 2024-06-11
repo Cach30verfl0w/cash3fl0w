@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
-package io.karma.advcrypto.keys
+package io.karma.advcrypto
 
-data class KeyPair(val publicKey: Key, val privateKey: Key) {
-    override fun toString(): String {
-        return "KeyPair(publicKey=$publicKey, privateKey=$privateKey)"
+import io.karma.advcrypto.algorithm.Algorithm
+
+object Providers {
+    private val registeredProviders: MutableList<AbstractProvider> = ArrayList()
+
+    fun addProvider(provider: AbstractProvider) {
+        provider.initialize()
+        this.registeredProviders.add(provider)
     }
+
+    fun getProviderByName(name: String): AbstractProvider? = this.registeredProviders
+        .firstOrNull { it.name == name }
+
+    fun getAlgorithmByName(name: String): Algorithm? = this.registeredProviders
+        .map { it.getAlgorithms() }.flatten().firstOrNull { it.name == name }
 }
