@@ -52,7 +52,12 @@ class CipherDelegate<C: Any> {
     }
 
     fun initializer(closure: (key: Key) -> C) {
-        this.initializer = { key -> CipherContext(key, closure(key)) }
+        this.initializer = { key ->
+            if ((key.purposes and (Key.PURPOSE_ENCRYPT or Key.PURPOSE_DECRYPT)).toInt() == 0) {
+                throw UnsupportedOperationException("This key doesn't support encrypt or decrypt")
+            }
+            CipherContext(key, closure(key))
+        }
     }
 
     fun encrypt(closure: (context: CipherContext<C>, data: ByteArray) -> ByteArray) {

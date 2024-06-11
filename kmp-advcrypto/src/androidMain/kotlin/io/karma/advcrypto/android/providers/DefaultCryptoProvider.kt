@@ -44,6 +44,8 @@ class DefaultCryptoProvider: AbstractProvider(
                     val purposes = purposesToAndroid(initSpec.purposes)
                     val spec = KeyGenParameterSpec.Builder("AndroidKeyStore", purposes).run {
                         setKeySize(initSpec.keySize?: defaultKeySize)
+                        setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+                        setBlockModes(KeyProperties.BLOCK_MODE_ECB)
                         // TODO
                         build()
                     }
@@ -66,6 +68,24 @@ class DefaultCryptoProvider: AbstractProvider(
                             purposes and (Key.PURPOSE_ENCRYPT or Key.PURPOSE_VERIFY).inv()
                         )
                     )
+                }
+            }
+
+            cipher<Cipher> {
+                initializer { _ ->
+                    // TODO: Save block mode in context
+                    Cipher.getInstance("RSA/ECB/PKCS1Padding")
+                }
+
+                encrypt { context, data ->
+                    val cipher = context.internalContext
+                    cipher.init(Cipher.ENCRYPT_MODE, (context.key as AndroidKey).raw)
+                    cipher.doFinal(data)
+                }
+                decrypt { context, data ->
+                    val cipher = context.internalContext
+                    cipher.init(Cipher.DECRYPT_MODE, (context.key as AndroidKey).raw)
+                    cipher.doFinal(data)
                 }
             }
         }
@@ -100,12 +120,12 @@ class DefaultCryptoProvider: AbstractProvider(
             }
             cipher<Cipher> {
                 initializer { _ ->
-                    // TODO: Add support for non-default implemented key and support for padding etc
                     // TODO: Save block mode in context
                     Cipher.getInstance("AES/CBC/PKCS7Padding")
                 }
                 encrypt { context, data ->
                     val cipher = context.internalContext
+                    // TODO: Add support for non-default implemented key and support for padding etc
                     cipher.init(Cipher.ENCRYPT_MODE, (context.key as AndroidKey).raw)
                     val encryptedData = cipher.doFinal(data)
                     val initVector = cipher.iv
@@ -132,6 +152,7 @@ class DefaultCryptoProvider: AbstractProvider(
                     val iv = IvParameterSpec(initVector)
                     val cipher = context.internalContext
                     // TODO: Replace IvParameterSpec with GCMParmeterSpec if GCM block mode
+                    // TODO: Add support for non-default implemented key and support for padding etc
                     cipher.init(Cipher.DECRYPT_MODE, (context.key as AndroidKey).raw, iv)
 
                     // Decrypt
