@@ -95,7 +95,7 @@ class DefaultCryptoProvider: AbstractProvider(
         }
 
         algorithm("AES") {
-            allowedBlockModes = BlockMode.entries.toTypedArray()
+            allowedBlockModes = arrayOf(BlockMode.GCM, BlockMode.CBC)
             defaultBlockMode = BlockMode.GCM
 
             keyGenerator<KeyGenerator>(
