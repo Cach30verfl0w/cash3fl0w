@@ -36,7 +36,7 @@ class DefaultCryptoProvider: AbstractProvider(
     init {
         algorithm("RSA") {
             keyGenerator<KeyPairGenerator>(
-                Key.PURPOSE_ALL,
+                Key.PURPOSES_ALL,
                 arrayOf(1024, 2048, 4096),
                 4096
             ) {
@@ -94,20 +94,21 @@ class DefaultCryptoProvider: AbstractProvider(
                 generateKey { context ->
                     AndroidKey(
                         context.internalContext.generateKey(),
-                        Key.PURPOSE_DECRYPT or Key.PURPOSE_ENCRYPT
+                        context.generatorSpec.purposes
                     )
                 }
             }
-            cipher<Pair<Cipher, Key>> {
-                initializer { key ->
+            cipher<Cipher> {
+                initializer { _ ->
                     // TODO: Add support for non-default implemented key and support for padding etc
                     // TODO: Save block mode in context
-                    Pair(Cipher.getInstance("AES/CBC/PKCS7Padding"), key)
+                    Cipher.getInstance("AES/CBC/PKCS7Padding")
                 }
                 encrypt { context, data ->
-                    context.first.init(Cipher.ENCRYPT_MODE, (context.second as AndroidKey).raw)
-                    val encryptedData = context.first.doFinal(data)
-                    val initVector = context.first.iv
+                    val cipher = context.internalContext
+                    cipher.init(Cipher.ENCRYPT_MODE, (context.key as AndroidKey).raw)
+                    val encryptedData = cipher.doFinal(data)
+                    val initVector = cipher.iv
                     val finalData = ByteArray(encryptedData.size + initVector.size + 4)
                     val initVectorSize = ByteArray(Int.SIZE_BYTES)
                     initVectorSize[0] = ((initVector.size shr 24) and 0xFF).toByte()
@@ -129,13 +130,14 @@ class DefaultCryptoProvider: AbstractProvider(
 
                     // Init cipher
                     val iv = IvParameterSpec(initVector)
+                    val cipher = context.internalContext
                     // TODO: Replace IvParameterSpec with GCMParmeterSpec if GCM block mode
-                    context.first.init(Cipher.DECRYPT_MODE, (context.second as AndroidKey).raw, iv)
+                    cipher.init(Cipher.DECRYPT_MODE, (context.key as AndroidKey).raw, iv)
 
                     // Decrypt
                     val encryptedData = ByteArray(data.size - initVectorSize - 4)
                     System.arraycopy(data, initVectorSize + 4, encryptedData, 0, encryptedData.size)
-                    context.first.doFinal(encryptedData)
+                    cipher.doFinal(encryptedData)
                 }
             }
         }

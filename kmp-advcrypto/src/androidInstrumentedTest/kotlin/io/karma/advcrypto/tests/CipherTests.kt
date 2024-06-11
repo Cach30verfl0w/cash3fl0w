@@ -18,7 +18,7 @@ class CipherTests {
 
         // Generate key
         val keyGenerator = KeyGenerator.getInstance("AES")
-        keyGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSE_SYMMETRIC).run {
+        keyGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_SYMMETRIC).run {
             setKeySize(256)
             build()
         })

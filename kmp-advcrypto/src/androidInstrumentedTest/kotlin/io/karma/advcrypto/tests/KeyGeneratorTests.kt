@@ -16,7 +16,7 @@ class KeyGeneratorTests {
         }
 
         val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-        keyPairGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSE_ALL).run {
+        keyPairGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_ALL).run {
             setKeySize(4096)
             build()
         })
@@ -30,7 +30,7 @@ class KeyGeneratorTests {
         }
 
         val keyGenerator = KeyGenerator.getInstance("AES")
-        keyGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSE_SYMMETRIC).run {
+        keyGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_SYMMETRIC).run {
             setKeySize(256)
             build()
         })

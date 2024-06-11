@@ -19,14 +19,16 @@ package io.karma.advcrypto.algorithm.delegates
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.wrapper.Cipher
 
+data class CipherContext<C>(val key: Key, val internalContext: C)
+
 class CipherDelegate<C: Any> {
-    private lateinit var initializer: (Key) -> C
-    private var encrypt: ((C, ByteArray) -> ByteArray)? = null
-    private var decrypt: ((C, ByteArray) -> ByteArray)? = null
+    private lateinit var initializer: (Key) -> CipherContext<C>
+    private var encrypt: ((CipherContext<C>, ByteArray) -> ByteArray)? = null
+    private var decrypt: ((CipherContext<C>, ByteArray) -> ByteArray)? = null
 
     fun createCipher(): Cipher {
         return object: Cipher {
-            private var context: C? = null
+            private var context: CipherContext<C>? = null
 
             override fun initialize(key: Key) {
                 this.context = initializer(key)
@@ -50,21 +52,31 @@ class CipherDelegate<C: Any> {
     }
 
     fun initializer(closure: (key: Key) -> C) {
-        this.initializer = closure
+        this.initializer = { key -> CipherContext(key, closure(key)) }
     }
 
-    fun encrypt(closure: (context: C, data: ByteArray) -> ByteArray) {
+    fun encrypt(closure: (context: CipherContext<C>, data: ByteArray) -> ByteArray) {
         if (this.encrypt != null) {
             throw IllegalStateException("Unable to register encrypt method multiple times")
         }
-        this.encrypt = closure
+        this.encrypt = { context, data ->
+            if ((context.key.purposes and Key.PURPOSE_ENCRYPT) != Key.PURPOSE_ENCRYPT) {
+                throw UnsupportedOperationException("This key doesn't support encrypt mode")
+            }
+            closure(context, data)
+        }
     }
 
-    fun decrypt(closure: (context: C, data: ByteArray) -> ByteArray) {
+    fun decrypt(closure: (context: CipherContext<C>, data: ByteArray) -> ByteArray) {
         if (this.decrypt != null) {
             throw IllegalStateException("Unable to register decrypt method multiple times")
         }
-        this.decrypt = closure
+        this.decrypt = { context, data ->
+            if ((context.key.purposes and Key.PURPOSE_DECRYPT) != Key.PURPOSE_DECRYPT) {
+                throw UnsupportedOperationException("This key doesn't support decrypt mode")
+            }
+            closure(context, data)
+        }
     }
 
 }
