@@ -41,12 +41,12 @@ class AlgorithmFactory(val name: String) {
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun keyGenerator(
+    fun <C> keyGenerator(
         keyPurposes: Byte,
         keySizes: Array<Short>,
-        closure: KeyGeneratorFactory.() -> Unit
+        closure: KeyGeneratorFactory<C>.() -> Unit
     ) {
-        keyGenerators.add(KeyGeneratorFactory(keyPurposes, keySizes).apply(closure))
+        keyGenerators.add(KeyGeneratorFactory<C>(keyPurposes, keySizes).apply(closure))
     }
 }
 
@@ -62,12 +62,27 @@ class AlgorithmFactory(val name: String) {
  * @author Cedric Hammes
  * @since  11/06/2024
  */
-class KeyGeneratorFactory(val keyPurposes: Byte, val allowedKeySizes: Array<Short>) {
-    private var keyPairGenerator: (() -> KeyPair)? = null
-    private var keyGenerator: (() -> Key?)? = null
+class KeyGeneratorFactory<C>(val keyPurposes: Byte, val allowedKeySizes: Array<Short>) {
+    private var keyPairGenerator: ((C) -> KeyPair)? = null
+    private var keyGenerator: ((C) -> Key?)? = null
+    private var initializer: (() -> C)? = null
 
-    fun initializer(closure: () -> Unit) {
-
+    /**
+     * This method is used as a delegate for the creation of a internal context for the key
+     * generator. This internal context can be the original key generator from Android etc.
+     * and can used in the keypair or key generation closure.
+     *
+     * @param closure                The constructor of the generator's "internal" context
+     * @throws IllegalStateException Thrown if this function is called twice
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    fun initializer(closure: () -> C) {
+        if (initializer != null) {
+            throw IllegalStateException("Initializer was already created")
+        }
+        this.initializer = closure
     }
 
     /**
@@ -78,18 +93,22 @@ class KeyGeneratorFactory(val keyPurposes: Byte, val allowedKeySizes: Array<Shor
      * Beware, create a key generation delegate before or after this delegate results in an
      * exception thrown from the system.
      *
-     * @param closure The closure used to generate the keypair for the caller
-     * TODO: Add information about key into closure
+     * @param closure                The closure used to generate the keypair for the caller
+     * @throws IllegalStateException Thrown if this function is called twice or on invalid state
      *
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun generateKeyPair(closure: () -> KeyPair) {
+    fun generateKeyPair(closure: (context: C) -> KeyPair) {
         if (keyGenerator == null) {
             throw IllegalStateException(
                 "Unable to register key pair generator after registering key generator"
             )
         }
+        if (keyPairGenerator == null) {
+            throw IllegalStateException("Keypair generator was already created")
+        }
+
         this.keyPairGenerator = closure
     }
 
@@ -102,16 +121,19 @@ class KeyGeneratorFactory(val keyPurposes: Byte, val allowedKeySizes: Array<Shor
      * exception thrown from the system.
      *
      * @param closure The closure used to generate the key for the caller
-     * TODO: Add information about key into closure
+     * @throws IllegalStateException Thrown if this function is called twice or on invalid state
      *
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun  generateKey(closure: () -> Key) {
+    fun generateKey(closure: (context: C) -> Key) {
         if (keyPairGenerator == null) {
             throw IllegalStateException(
                 "Unable to register key generator after registering key pair generator"
             )
+        }
+        if (keyGenerator == null) {
+            throw IllegalStateException("Keypair generator was already created")
         }
         this.keyGenerator = closure
     }
