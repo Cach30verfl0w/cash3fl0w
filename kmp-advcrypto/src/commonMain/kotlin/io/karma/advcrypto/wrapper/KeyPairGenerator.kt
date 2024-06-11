@@ -57,8 +57,9 @@ interface KeyPairGenerator {
          * @author Cedric Hammes
          * @since  11/06/2024
          */
-        fun getInstance(algorithm: String): KeyPairGenerator? {
-            return Providers.getAlgorithmByName(algorithm)?.keyGenerator?.createKeyPairGenerator()
+        fun getInstance(algorithm: String): KeyPairGenerator {
+            return Providers.getAlgorithmByName(algorithm)?.keyGenerator?.createKeyPairGenerator()?: throw
+            UnsupportedOperationException("The algorithm $algorithm doesn't exists or this algorithm doesn't support keypair generation")
         }
     }
 
