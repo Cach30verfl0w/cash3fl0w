@@ -58,7 +58,7 @@ interface KeyGenerator {
          */
         fun getInstance(algorithm: String): KeyGenerator {
             return Providers.getAlgorithmByName(algorithm)?.keyGenerator?.createKeyGenerator()?: throw
-                    UnsupportedOperationException("The algorithm $algorithm doesn't exists or this algorithm doesn't support key generation")
+            UnsupportedOperationException("The algorithm $algorithm doesn't exists or this algorithm doesn't support key generation")
         }
     }
 
