@@ -134,7 +134,7 @@ class DefaultCryptoProvider: AbstractProvider(
                 }
                 encrypt { context, data ->
                     val cipher = context.internalContext
-                    // TODO: Add support for non-default implemented key and support for padding etc
+                    // TODO: Add support for non-default implemented key
                     cipher.init(Cipher.ENCRYPT_MODE, (context.key as AndroidKey).raw)
                     val encryptedData = cipher.doFinal(data)
                     val initVector = cipher.iv
@@ -159,7 +159,7 @@ class DefaultCryptoProvider: AbstractProvider(
 
                     // Init cipher
                     val cipher = context.internalContext
-                    // TODO: Add support for non-default implemented key and support for padding etc
+                    // TODO: Add support for non-default implemented key
                     cipher.init(Cipher.DECRYPT_MODE, (context.key as AndroidKey).raw,
                         when(context.spec.blockMode?: defaultBlockMode) {
                             BlockMode.GCM -> GCMParameterSpec(128, initVector)
