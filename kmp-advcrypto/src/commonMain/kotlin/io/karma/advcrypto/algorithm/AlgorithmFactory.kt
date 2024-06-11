@@ -27,6 +27,8 @@ import io.karma.advcrypto.keys.KeyPair
  * - [AlgorithmFactory.allowedBlockModes] (none by def): The algorithm's supported block modes
  * - [AlgorithmFactory.name] (must be set): The algorithm's name without padding, block mode etc.
  *
+ * TODO: Rename to delegate
+ *
  * @author Cedric Hammes
  * @since  09/06/2024
  */
@@ -46,9 +48,14 @@ class AlgorithmFactory(val name: String) {
         keySizes: Array<Short>,
         closure: KeyGeneratorFactory<C>.() -> Unit
     ) {
+        // TODO: Only one key generator per algorithm
         keyGenerators.add(KeyGeneratorFactory<C>(keyPurposes, keySizes).apply(closure))
     }
 }
+
+// TODO: CipherDelegate: initializer, encrypt, decrypt
+// TODO: SignatureDelegate: initializer, sign, verify
+// TODO: HashDelegate: initializer, hash
 
 /**
  * This class is used to create a key generator for a specific algorithm. The created key generator
@@ -58,6 +65,8 @@ class AlgorithmFactory(val name: String) {
  * - [KeyGeneratorFactory.allowedKeySizes] (must be set): The key sizes supported by the algorithm
  * - [KeyGeneratorFactory.keyPairGenerator] (optionally): The key pair generator closure
  * - [KeyGeneratorFactory.keyGenerator] (optionally): The key generator closure
+ *
+ * TODO: Rename to delegate
  *
  * @author Cedric Hammes
  * @since  11/06/2024
