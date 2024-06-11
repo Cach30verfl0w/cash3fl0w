@@ -47,6 +47,8 @@ interface Key {
 
     companion object {
         const val PURPOSE_ALL: UByte = 0b0000_1111U
+        const val PURPOSE_SYMMETRIC: UByte = 0b0000_1100U
+
         const val PURPOSE_VERIFY: UByte = 0b0000_0001U
         const val PURPOSE_SIGNING: UByte = 0b0000_0010U
         const val PURPOSE_ENCRYPT: UByte = 0b0000_0100U

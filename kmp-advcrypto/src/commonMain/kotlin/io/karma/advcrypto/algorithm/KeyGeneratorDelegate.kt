@@ -19,6 +19,7 @@ package io.karma.advcrypto.algorithm
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
+import io.karma.advcrypto.wrapper.KeyGenerator
 import io.karma.advcrypto.wrapper.KeyPairGenerator
 
 
@@ -73,6 +74,35 @@ class KeyGeneratorDelegate<C: Any>(
 
             override fun generateKeyPair(): KeyPair {
                 return keyPairGenerator!!.invoke(context!!)
+            }
+
+        }
+    }
+
+    /**
+     * This method creates an instance of a key generator if a key pair generator was registered by
+     * the provider. This is used in the cross-platform part of the API to acquire a key generator
+     * for the user.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    fun createKeyGenerator(): KeyGenerator {
+        if (keyGenerator == null) {
+            throw UnsupportedOperationException(
+                "Unable to create key generator without key generator specified"
+            )
+        }
+
+        return object: KeyGenerator {
+            private var context: KeyGenContext<C>? = null
+
+            override fun initialize(spec: KeyGeneratorSpec) {
+                context = initializer(spec)
+            }
+
+            override fun generateKey(): Key {
+                return keyGenerator!!.invoke(context!!)
             }
 
         }

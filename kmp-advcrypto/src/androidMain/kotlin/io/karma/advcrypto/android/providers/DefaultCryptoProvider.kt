@@ -23,10 +23,11 @@ import io.karma.advcrypto.android.purposesToAndroid
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
 import java.security.KeyPairGenerator
+import javax.crypto.KeyGenerator
 
-class RSACryptoProvider: AbstractProvider(
-    "RSA",
-    "This class provides access to the RSA cryptosystem",
+class DefaultCryptoProvider: AbstractProvider(
+    "Default",
+    "This class provides access to the default asymmetric and symmetric algorithms",
     "1.0.0-Dev"
 ) {
     init {
@@ -40,6 +41,7 @@ class RSACryptoProvider: AbstractProvider(
                     val purposes = purposesToAndroid(initSpec.purposes)
                     val spec = KeyGenParameterSpec.Builder("AndroidKeyStore", purposes).run {
                         setKeySize(initSpec.keySize?: defaultKeySize)
+                        // TODO
                         build()
                     }
 
@@ -60,6 +62,34 @@ class RSACryptoProvider: AbstractProvider(
                             keyPair.private,
                             purposes and (Key.PURPOSE_ENCRYPT or Key.PURPOSE_VERIFY).inv()
                         )
+                    )
+                }
+            }
+        }
+
+        algorithm("AES") {
+            keyGenerator<KeyGenerator>(
+                Key.PURPOSE_ENCRYPT or Key.PURPOSE_DECRYPT,
+                arrayOf(128, 196, 256),
+                256
+            ) {
+                initializer { initSpec ->
+                    val purposes = purposesToAndroid(initSpec.purposes)
+                    val spec = KeyGenParameterSpec.Builder("AndroidKeyStore", purposes).run {
+                        setKeySize(initSpec.keySize?: defaultKeySize)
+                        // TODO
+                        build()
+                    }
+
+                    KeyGenerator.getInstance("AES").apply {
+                        init(spec)
+                    }
+                }
+
+                generateKey { context ->
+                    AndroidKey(
+                        context.internalContext.generateKey(),
+                        Key.PURPOSE_DECRYPT or Key.PURPOSE_ENCRYPT
                     )
                 }
             }

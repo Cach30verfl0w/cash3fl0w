@@ -20,19 +20,20 @@ import io.karma.advcrypto.Providers
 import io.karma.advcrypto.algorithm.KeyGeneratorSpec
 import io.karma.advcrypto.keys.KeyPair
 import io.karma.advcrypto.algorithm.KeyGeneratorDelegate
+import io.karma.advcrypto.keys.Key
 
 /**
- * This interface represents the cross-platform implementation of a private-public keypair
- * generator, provided by this library.
+ * This interface represents the cross-platform implementation of a key generator, provided by this
+ * library.
  *
  * @author Cedric Hammes
  * @sicne  11/06/2024
  */
-interface KeyPairGenerator {
+interface KeyGenerator {
 
     /**
-     * This method initializes the key pair generator with the specified specification. This
-     * specification is used while key pair generation.
+     * This method initializes the key generator with the specified specification. This
+     * specification is used while key generation.
      *
      * @author Cedric Hammes
      * @since  11/06/2024
@@ -40,25 +41,24 @@ interface KeyPairGenerator {
     fun initialize(spec: KeyGeneratorSpec)
 
     /**
-     * This method generates a keypair with the specification defined before. This method will throw
-     * an exception if you didn't initialized the key pair generator before.
+     * This method generates a key with the specification defined before. This method will throw an
+     * exception if you didn't initialized the key generator before.
      *
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun generateKeyPair(): KeyPair
+    fun generateKey(): Key
 
     companion object {
         /**
-         * This method returns an instance of a keypair generator, created by the internal
-         * architecture of this library. This interface is implemented in [KeyGeneratorDelegate]
-         * and used here.
+         * This method returns an instance of a key generator, created by the internal architecture
+         * of this library. This interface is implemented in [KeyGeneratorDelegate] and used here.
          *
          * @author Cedric Hammes
          * @since  11/06/2024
          */
-        fun getInstance(algorithm: String): KeyPairGenerator? {
-            return Providers.getAlgorithmByName(algorithm)?.keyGenerator?.createKeyPairGenerator()
+        fun getInstance(algorithm: String): KeyGenerator? {
+            return Providers.getAlgorithmByName(algorithm)?.keyGenerator?.createKeyGenerator()
         }
     }
 
