@@ -19,11 +19,11 @@ package io.karma.advcrypto.android.providers
 import android.security.keystore.KeyGenParameterSpec
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.algorithm.BlockMode
+import io.karma.advcrypto.android.defaultKeyPairGenerator
 import io.karma.advcrypto.android.keys.AndroidKey
 import io.karma.advcrypto.android.purposesToAndroid
 import io.karma.advcrypto.annotations.InsecureCryptoApi
 import io.karma.advcrypto.keys.Key
-import io.karma.advcrypto.keys.KeyPair
 import java.security.KeyPairGenerator
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -43,7 +43,7 @@ class DefaultCryptoProvider: AbstractProvider(
             allowedBlockModes = arrayOf(BlockMode.ECB)
             defaultBlockMode = BlockMode.ECB
 
-            keyGenerator<KeyPairGenerator>(
+            keyGenerator(
                 Key.PURPOSES_ALL,
                 arrayOf(1024, 2048, 4096),
                 4096
@@ -63,20 +63,7 @@ class DefaultCryptoProvider: AbstractProvider(
                     }
                 }
 
-                generateKeyPair { context ->
-                    val purposes = context.generatorSpec.purposes
-                    val keyPair = context.internalContext.generateKeyPair()
-                    KeyPair(
-                        AndroidKey(
-                            keyPair.public,
-                            purposes and (Key.PURPOSE_DECRYPT or Key.PURPOSE_SIGNING).inv()
-                        ),
-                        AndroidKey(
-                            keyPair.private,
-                            purposes and (Key.PURPOSE_ENCRYPT or Key.PURPOSE_VERIFY).inv()
-                        )
-                    )
-                }
+                generateKeyPair(::defaultKeyPairGenerator)
             }
 
             cipher<Cipher> {

@@ -48,8 +48,8 @@ class Algorithm(val name: String) {
      */
     fun <C: Any> keyGenerator(
         keyPurposes: UByte,
-        keySizes: Array<Int>,
-        defaultKeySize: Int,
+        keySizes: Array<Int> = arrayOf(),
+        defaultKeySize: Int = 0,
         closure: KeyGeneratorDelegate<C>.() -> Unit
     ) {
         if (keyGenerator != null) {

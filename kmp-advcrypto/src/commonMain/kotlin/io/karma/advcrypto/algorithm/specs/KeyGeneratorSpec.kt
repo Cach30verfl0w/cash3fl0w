@@ -18,6 +18,7 @@ package io.karma.advcrypto.algorithm.specs
 
 import io.karma.advcrypto.algorithm.BlockMode
 import io.karma.advcrypto.algorithm.Padding
+import io.karma.advcrypto.algorithm.specs.params.KeySpecParameters
 
 /**
  * This class represents the specification data for the key generator. These information is used to
@@ -35,21 +36,27 @@ data class KeyGeneratorSpec(
     val purposes: UByte,
     val blockMode: BlockMode?,
     val padding: Padding,
-    val keySize: Int?
+    val keySize: Int?,
+    val parameters: KeySpecParameters?
 ) {
     class Builder(private val purposes: UByte) {
         private var blockMode: BlockMode? = null
         private var padding: Padding = Padding.NONE
         private var keySize: Int? = null
+        private var parameters: KeySpecParameters? = null
 
         fun setBlockMode(blockMode: BlockMode): Builder = apply { this.blockMode = blockMode }
+        fun setParameters(parameters: KeySpecParameters?): Builder = apply {
+            this.parameters = parameters
+        }
         fun setPadding(padding: Padding): Builder = apply { this.padding = padding }
         fun setKeySize(keySize: Int): Builder = apply { this.keySize = keySize }
         fun build(): KeyGeneratorSpec = KeyGeneratorSpec(
             purposes,
             blockMode,
             padding,
-            keySize
+            keySize,
+            parameters
         )
     }
 }

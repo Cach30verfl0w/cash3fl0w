@@ -17,7 +17,11 @@
 package io.karma.advcrypto.android
 
 import android.security.keystore.KeyProperties
+import io.karma.advcrypto.algorithm.delegates.KeyGenContext
+import io.karma.advcrypto.android.keys.AndroidKey
 import io.karma.advcrypto.keys.Key
+import io.karma.advcrypto.keys.KeyPair
+import java.security.KeyPairGenerator
 
 fun purposesToAndroid(purposes: UByte): Int {
     var value = 0
@@ -37,4 +41,19 @@ fun purposesToAndroid(purposes: UByte): Int {
         value = value.or(KeyProperties.PURPOSE_SIGN)
     }
     return value
+}
+
+fun defaultKeyPairGenerator(context: KeyGenContext<KeyPairGenerator>): KeyPair {
+    val purposes = context.generatorSpec.purposes
+    val keyPair = context.internalContext.generateKeyPair()
+    return KeyPair(
+        AndroidKey(
+            keyPair.public,
+            purposes and Key.PURPOSE_SIGNING.inv()
+        ),
+        AndroidKey(
+            keyPair.private,
+            purposes and Key.PURPOSE_VERIFY.inv()
+        )
+    )
 }
