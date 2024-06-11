@@ -17,9 +17,8 @@
 package io.karma.advcrypto.wrapper
 
 import io.karma.advcrypto.Providers
-import io.karma.advcrypto.algorithm.delegates.KeyGeneratorDelegate
+import io.karma.advcrypto.algorithm.delegates.CipherDelegate
 import io.karma.advcrypto.algorithm.specs.CipherSpec
-import io.karma.advcrypto.keys.Key
 
 /**
  * This interface represents the cross-platform implementation of a key generator, provided by this
@@ -46,7 +45,7 @@ interface Cipher {
     companion object {
         /**
          * This method returns an instance of a key generator, created by the internal architecture
-         * of this library. This interface is implemented in [KeyGeneratorDelegate] and used here.
+         * of this library. This interface is implemented in [CipherDelegate] and used here.
          *
          * @author Cedric Hammes
          * @since  11/06/2024

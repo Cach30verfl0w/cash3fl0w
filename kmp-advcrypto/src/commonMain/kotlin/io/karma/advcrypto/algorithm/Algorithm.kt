@@ -19,6 +19,7 @@ package io.karma.advcrypto.algorithm
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.algorithm.delegates.CipherDelegate
 import io.karma.advcrypto.algorithm.delegates.KeyGeneratorDelegate
+import io.karma.advcrypto.algorithm.delegates.SignatureDelegate
 
 /**
  * This class is used to create algorithms for the Provider API. The created algorithm information
@@ -34,6 +35,8 @@ class Algorithm(val name: String) {
     var keyGenerator: KeyGeneratorDelegate<*>? = null
         private set
     var cipher: CipherDelegate<*>? = null
+        private set
+    var signature: SignatureDelegate<*>? = null
         private set
 
     var allowedBlockModes: Array<BlockMode> = arrayOf()
@@ -56,6 +59,20 @@ class Algorithm(val name: String) {
             throw IllegalStateException("You can set key generator twice")
         }
         keyGenerator = KeyGeneratorDelegate<C>(keyPurposes, defaultKeySize, keySizes).apply(closure)
+    }
+
+    /**
+     * This method is used to generate a new signature for the algorithm. If a signature was set
+     * before this class, the factory returns an exception.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    fun <C: Any> signature(closure: SignatureDelegate<C>.() -> Unit) {
+        if (signature != null) {
+            throw IllegalStateException("You can set signature twice")
+        }
+        signature = SignatureDelegate<C>().apply(closure)
     }
 
     /**

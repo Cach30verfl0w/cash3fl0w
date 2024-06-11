@@ -67,7 +67,7 @@ class KeyGeneratorTests {
         }
 
         val keyPairGenerator = KeyPairGenerator.getInstance("Kyber")
-        val purposes = Key.PURPOSE_VERIFY or Key.PURPOSE_SIGNING
+        val purposes = Key.PURPOSE_DECRYPT or Key.PURPOSE_DECRYPT
         keyPairGenerator.initialize(KeyGeneratorSpec.Builder(purposes).run {
             setKeySize(1024)
             build()
