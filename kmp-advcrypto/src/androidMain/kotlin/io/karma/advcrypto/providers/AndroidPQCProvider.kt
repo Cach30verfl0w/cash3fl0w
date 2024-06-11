@@ -20,6 +20,7 @@ import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.ExperimentalCryptoApi
 import io.karma.advcrypto.keys.Key
 import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider
+import java.security.KeyPairGenerator
 import java.security.Security
 import kotlin.experimental.or
 
@@ -48,10 +49,13 @@ class AndroidPQCProvider: AbstractProvider(
         // finalists in the NIST post-quantum cryptography project.
         // See also: https://pq-crystals.org/kyber/
         algorithm("Kyber") {
-            keyGenerator(
+            keyGenerator<KeyPairGenerator>(
                 Key.PURPOSE_ENCRYPT or Key.PURPOSE_DECRYPT,
                 arrayOf(512, 768, 1024),
             ) {
+                initializer {
+                    KeyPairGenerator.getInstance("Kyber")
+                }
             }
         }
     }

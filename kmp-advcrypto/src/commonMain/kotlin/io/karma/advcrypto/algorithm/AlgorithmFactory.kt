@@ -31,7 +31,7 @@ import io.karma.advcrypto.keys.KeyPair
  * @since  09/06/2024
  */
 class AlgorithmFactory(val name: String) {
-    private val keyGenerators: MutableList<KeyGeneratorFactory> = ArrayList()
+    private val keyGenerators: MutableList<KeyGeneratorFactory<*>> = ArrayList()
     var allowedBlockModes: Byte = 0
 
     /**
