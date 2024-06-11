@@ -26,13 +26,13 @@ import io.karma.advcrypto.algorithm.KeyGeneratorDelegate
  * generator, provided by this library.
  *
  * @author Cedric Hammes
- * @sicne  11/06/2024
+ * @since  11/06/2024
  */
 interface KeyPairGenerator {
 
     /**
-     * This method initializes the key pair generator with the specified specification. This
-     * specification is used while key pair generation.
+     * This method initializes the keypair generator with the specified specification. This
+     * specification is used while keypair generation.
      *
      * @author Cedric Hammes
      * @since  11/06/2024
@@ -41,7 +41,7 @@ interface KeyPairGenerator {
 
     /**
      * This method generates a keypair with the specification defined before. This method will throw
-     * an exception if you didn't initialized the key pair generator before.
+     * an exception if you didn't initialized the keypair generator before.
      *
      * @author Cedric Hammes
      * @since  11/06/2024

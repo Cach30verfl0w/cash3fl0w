@@ -18,7 +18,6 @@ package io.karma.advcrypto.wrapper
 
 import io.karma.advcrypto.Providers
 import io.karma.advcrypto.algorithm.KeyGeneratorSpec
-import io.karma.advcrypto.keys.KeyPair
 import io.karma.advcrypto.algorithm.KeyGeneratorDelegate
 import io.karma.advcrypto.keys.Key
 
@@ -27,7 +26,7 @@ import io.karma.advcrypto.keys.Key
  * library.
  *
  * @author Cedric Hammes
- * @sicne  11/06/2024
+ * @since  11/06/2024
  */
 interface KeyGenerator {
 
