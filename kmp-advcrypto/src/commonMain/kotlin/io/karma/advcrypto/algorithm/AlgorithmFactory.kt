@@ -90,7 +90,7 @@ class KeyGeneratorFactory(val keyPurposes: Byte, val allowedKeySizes: Array<Shor
                 "Unable to register key pair generator after registering key generator"
             )
         }
-        //this.keyPairGenerator = closure
+        this.keyPairGenerator = closure
     }
 
     /**
@@ -107,13 +107,13 @@ class KeyGeneratorFactory(val keyPurposes: Byte, val allowedKeySizes: Array<Shor
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun <T> generateKey(initial: () -> T, closure: (T) -> Key) {
+    fun  generateKey(closure: () -> Key) {
         if (keyPairGenerator == null) {
             throw IllegalStateException(
                 "Unable to register key generator after registering key pair generator"
             )
         }
-        //this.keyGenerator = closure
+        this.keyGenerator = closure
     }
 
 }
