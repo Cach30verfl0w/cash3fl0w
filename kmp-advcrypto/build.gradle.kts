@@ -14,6 +14,13 @@ kotlin {
             }
         }
     }
+
+    linuxX64 {
+        compilations["main"].cinterops {
+            val libssl by creating
+        }
+    }
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.bouncycastle.prov)
