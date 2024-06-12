@@ -120,7 +120,9 @@ class KeyGeneratorDelegate<C: Any>(
      */
     fun initializer(closure: (KeyGeneratorSpec) -> C) {
         this.initializer = { keyGenSpec ->
-            // TODO: Add validation for purposes
+            if ((keyGenSpec.purposes and this.keyPurposes) != keyGenSpec.purposes) {
+                throw IllegalArgumentException("Key purposes ${keyGenSpec.purposes} not supported")
+            }
             KeyGenContext(keyGenSpec, closure(keyGenSpec))
         }
     }

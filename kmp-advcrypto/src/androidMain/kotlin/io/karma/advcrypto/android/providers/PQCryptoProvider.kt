@@ -58,7 +58,7 @@ class PQCryptoProvider: AbstractProvider(
 
         algorithm("Kyber") {
             keyGenerator(
-                Key.PURPOSE_ENCRYPT or Key.PURPOSE_ENCRYPT,
+                Key.PURPOSE_ENCRYPT or Key.PURPOSE_DECRYPT,
                 arrayOf(512, 768, 1024),
                 1024
             ) {
