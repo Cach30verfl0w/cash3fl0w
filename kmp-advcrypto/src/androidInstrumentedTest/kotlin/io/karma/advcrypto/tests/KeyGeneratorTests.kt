@@ -15,7 +15,7 @@ import org.junit.Test
 class KeyGeneratorTests {
 
     @Test
-    fun testKeyGeneratorRSA() {
+    fun testRSA() {
         if (Providers.getProviderByName("Default") == null) {
             Providers.addProvider(DefaultCryptoProvider())
         }
@@ -30,7 +30,7 @@ class KeyGeneratorTests {
     }
 
     @Test
-    fun testKeyGeneratorAES() {
+    fun testAES() {
         if (Providers.getProviderByName("Default") == null) {
             Providers.addProvider(DefaultCryptoProvider())
         }
@@ -45,7 +45,7 @@ class KeyGeneratorTests {
     
     @Test
     @OptIn(ExperimentalCryptoApi::class)
-    fun testKeyGeneratorDilithium() {
+    fun testDilithium() {
         if (Providers.getProviderByName("PQCrypto") == null) {
             Providers.addProvider(PQCryptoProvider())
         }
@@ -61,7 +61,7 @@ class KeyGeneratorTests {
 
     @Test
     @OptIn(ExperimentalCryptoApi::class)
-    fun testKeyGeneratorKyber() {
+    fun testKyber() {
         if (Providers.getProviderByName("PQCrypto") == null) {
             Providers.addProvider(PQCryptoProvider())
         }

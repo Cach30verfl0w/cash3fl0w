@@ -8,7 +8,7 @@ import org.junit.Test
 class HashTests {
 
     @Test
-    fun testHashMD5() {
+    fun testMD5() {
         if (Providers.getProviderByName("Default") == null) {
             Providers.addProvider(DefaultCryptoProvider())
         }
@@ -18,7 +18,7 @@ class HashTests {
     }
 
     @Test
-    fun testHashSHA1() {
+    fun testSHA1() {
         if (Providers.getProviderByName("Default") == null) {
             Providers.addProvider(DefaultCryptoProvider())
         }
@@ -28,7 +28,17 @@ class HashTests {
     }
 
     @Test
-    fun testHashSHA256() {
+    fun testSHA224() {
+        if (Providers.getProviderByName("Default") == null) {
+            Providers.addProvider(DefaultCryptoProvider())
+        }
+
+        val hash = Hasher.getInstance("SHA224").hash("Test".encodeToByteArray())
+        assert(hash == "3606346815fd4d491a92649905a40da025d8cf15f095136b19f37923")
+    }
+
+    @Test
+    fun testSHA256() {
         if (Providers.getProviderByName("Default") == null) {
             Providers.addProvider(DefaultCryptoProvider())
         }
@@ -38,7 +48,17 @@ class HashTests {
     }
 
     @Test
-    fun testHashSHA512() {
+    fun testSHA384() {
+        if (Providers.getProviderByName("Default") == null) {
+            Providers.addProvider(DefaultCryptoProvider())
+        }
+
+        val hash = Hasher.getInstance("SHA512").hash("Test".encodeToByteArray())
+        assert(hash == "c6ee9e33cf5c6715a1d148fd73f7318884b41adcb916021e2bc0e800a5c5dd97f5142178f6ae88c8fdd98e1afb0ce4c8d2c54b5f37b30b7da1997bb33b0b8a31")
+    }
+
+    @Test
+    fun testSHA512() {
         if (Providers.getProviderByName("Default") == null) {
             Providers.addProvider(DefaultCryptoProvider())
         }

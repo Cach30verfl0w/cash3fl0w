@@ -15,7 +15,7 @@ import org.junit.Test
 class CipherTests {
 
     @Test
-    fun testCipherAESWithCBC() {
+    fun testAESWithCBC() {
         if (Providers.getProviderByName("Default") == null) {
             Providers.addProvider(DefaultCryptoProvider())
         }
@@ -41,7 +41,7 @@ class CipherTests {
     }
 
     @Test
-    fun testCipherAESWithGCM() {
+    fun testAESWithGCM() {
         if (Providers.getProviderByName("Default") == null) {
             Providers.addProvider(DefaultCryptoProvider())
         }
@@ -64,7 +64,7 @@ class CipherTests {
     }
 
     @Test
-    fun testCipherRSA() {
+    fun testRSA() {
         if (Providers.getProviderByName("Default") == null) {
             Providers.addProvider(DefaultCryptoProvider())
         }

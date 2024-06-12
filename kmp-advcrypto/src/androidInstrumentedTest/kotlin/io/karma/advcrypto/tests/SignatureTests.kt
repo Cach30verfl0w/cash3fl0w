@@ -14,7 +14,7 @@ class SignatureTests {
 
     @Test
     @OptIn(ExperimentalCryptoApi::class)
-    fun testSignatureDilithium() {
+    fun testDilithium() {
         if (Providers.getProviderByName("PQCrypto") == null) {
             Providers.addProvider(PQCryptoProvider())
         }

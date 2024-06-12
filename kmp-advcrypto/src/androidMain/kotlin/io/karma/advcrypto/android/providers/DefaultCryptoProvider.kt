@@ -34,7 +34,7 @@ class DefaultCryptoProvider: AbstractProvider(
     "1.0.0-Dev"
 ) {
     init {
-        for (name in arrayOf("MD5", "SHA1", "SHA256", "SHA512")) {
+        for (name in arrayOf("MD5", "SHA1", "SHA224", "SHA256", "SHA384", "SHA512")) {
             algorithm(name) { androidHasher() }
         }
 
