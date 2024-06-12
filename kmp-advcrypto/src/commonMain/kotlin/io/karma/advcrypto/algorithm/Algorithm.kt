@@ -106,5 +106,3 @@ class Algorithm(val name: String) {
         hasher = HasherDelegate<C>().apply(closure)
     }
 }
-
-// TODO: HashDelegate: initializer, hash
