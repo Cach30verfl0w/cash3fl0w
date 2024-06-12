@@ -18,6 +18,7 @@ package io.karma.advcrypto.android
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import io.karma.advcrypto.algorithm.Algorithm
 import io.karma.advcrypto.algorithm.BlockMode
 import io.karma.advcrypto.algorithm.delegates.KeyGeneratorDelegate
 import io.karma.advcrypto.algorithm.delegates.SignatureDelegate
@@ -25,6 +26,7 @@ import io.karma.advcrypto.android.keys.AndroidKey
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
 import java.security.KeyPairGenerator
+import java.security.MessageDigest
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.Signature
@@ -107,6 +109,14 @@ fun KeyGeneratorDelegate<KeyGenerator>.androidKey(defaultBlockMode: BlockMode, a
             context.internalContext.generateKey(),
             context.generatorSpec.purposes
         )
+    }
+}
+
+fun Algorithm.androidHasher() {
+    @OptIn(ExperimentalStdlibApi::class)
+    hasher<MessageDigest> {
+        initialize { MessageDigest.getInstance(name) }
+        hash { context, data -> context.digest(data).toHexString() }
     }
 }
 
