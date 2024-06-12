@@ -1,6 +1,8 @@
 # kmp-advcrypto (WIP)
 kmp-advcrypto is a cross-platform cryptography library developed with Kotlin Multiplatform. This library allows to perform cryptographic operations on Desktop and Mobile operating systems without developing a crypto module for separate platforms.
 
+![plot](../images/kmp-advcrypto.png)
+
 ## Supported algorithms
 Below this text is a list of different category of algorithms and a list with the supported algorithms:
 - **Hash Functions:** MD5, SHA-1, SHA-224, SHA-256, SHA-384 and SHA-512
