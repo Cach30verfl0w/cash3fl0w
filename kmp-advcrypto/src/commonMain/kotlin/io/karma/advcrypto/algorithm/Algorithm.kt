@@ -18,6 +18,7 @@ package io.karma.advcrypto.algorithm
 
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.algorithm.delegates.CipherDelegate
+import io.karma.advcrypto.algorithm.delegates.HasherDelegate
 import io.karma.advcrypto.algorithm.delegates.KeyGeneratorDelegate
 import io.karma.advcrypto.algorithm.delegates.SignatureDelegate
 
@@ -37,6 +38,8 @@ class Algorithm(val name: String) {
     var cipher: CipherDelegate<*>? = null
         private set
     var signature: SignatureDelegate<*>? = null
+        private set
+    var hasher: HasherDelegate<*>? = null
         private set
 
     var allowedBlockModes: Array<BlockMode> = arrayOf()
@@ -87,6 +90,20 @@ class Algorithm(val name: String) {
             throw IllegalStateException("You can set cipher twice")
         }
         cipher = CipherDelegate<C>().apply(closure)
+    }
+
+    /**
+     * This method is used to generate a new hasher for the algorithm. If a hasher was set before
+     * this call, the factory returns an exception.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    fun <C: Any> hasher(closure: HasherDelegate<C>.() -> Unit) {
+        if (hasher != null) {
+            throw IllegalStateException("You can set hasher twice")
+        }
+        hasher = HasherDelegate<C>().apply(closure)
     }
 }
 

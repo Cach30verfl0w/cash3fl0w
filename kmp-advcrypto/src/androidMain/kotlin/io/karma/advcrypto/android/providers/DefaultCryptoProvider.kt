@@ -23,6 +23,7 @@ import io.karma.advcrypto.android.androidKeyPair
 import io.karma.advcrypto.android.keys.AndroidKey
 import io.karma.advcrypto.annotations.InsecureCryptoApi
 import io.karma.advcrypto.keys.Key
+import java.security.MessageDigest
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.IvParameterSpec
@@ -33,6 +34,14 @@ class DefaultCryptoProvider: AbstractProvider(
     "1.0.0-Dev"
 ) {
     init {
+        algorithm("SHA1") {
+            @OptIn(ExperimentalStdlibApi::class)
+            hasher<MessageDigest> {
+                initialize { MessageDigest.getInstance("SHA1") }
+                hash { context, data -> context.digest(data).toHexString() }
+            }
+        }
+
         // As far as I know, only RSA with the ECB operation mode is supported. Therefore, ECB mode
         // is used here despite its vulnerability to statistical attacks.
         @OptIn(InsecureCryptoApi::class)
