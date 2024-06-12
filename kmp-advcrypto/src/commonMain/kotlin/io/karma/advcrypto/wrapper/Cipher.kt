@@ -27,7 +27,8 @@ import io.karma.advcrypto.algorithm.specs.CipherSpec
  * @author Cedric Hammes
  * @since  11/06/2024
  */
-interface Cipher {
+@OptIn(ExperimentalStdlibApi::class)
+interface Cipher: AutoCloseable {
 
     /**
      * This method initializes the cipher with the specified specification. This specification is

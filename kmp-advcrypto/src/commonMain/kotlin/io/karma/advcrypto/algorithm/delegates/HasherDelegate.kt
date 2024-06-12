@@ -21,11 +21,13 @@ import io.karma.advcrypto.wrapper.Hasher
 class HasherDelegate<C> {
     private lateinit var initialize: () -> C
     private lateinit var hash: (C, ByteArray) -> String
+    private var close: (CipherContext<C>) -> Unit = {}
 
     fun createHasher(): Hasher {
         return object: Hasher {
             val context = initialize()
             override fun hash(data: ByteArray): String = hash(context, data)
+            override fun close() { close() }
         }
     }
 

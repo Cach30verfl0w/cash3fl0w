@@ -18,7 +18,8 @@ package io.karma.advcrypto.wrapper
 
 import io.karma.advcrypto.Providers
 
-interface Hasher {
+@OptIn(ExperimentalStdlibApi::class)
+interface Hasher: AutoCloseable {
 
     fun hash(data: ByteArray): String
 

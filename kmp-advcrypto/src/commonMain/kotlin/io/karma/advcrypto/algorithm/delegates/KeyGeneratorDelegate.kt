@@ -74,7 +74,6 @@ class KeyGeneratorDelegate<C: Any>(
             override fun generateKeyPair(): KeyPair {
                 return keyPairGenerator!!.invoke(context!!)
             }
-
         }
     }
 
@@ -96,14 +95,15 @@ class KeyGeneratorDelegate<C: Any>(
         return object: KeyGenerator {
             private var context: KeyGenContext<C>? = null
 
-            override fun initialize(spec: KeyGeneratorSpec) {
+            override fun initialize(spec: KeyGeneratorSpec): KeyGenerator {
                 context = initializer(spec)
+                return this
             }
 
             override fun generateKey(): Key {
                 return keyGenerator!!.invoke(context!!)
             }
-
+            override fun close() {}
         }
     }
 

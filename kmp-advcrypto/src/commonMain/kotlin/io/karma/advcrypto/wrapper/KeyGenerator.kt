@@ -28,7 +28,8 @@ import io.karma.advcrypto.keys.Key
  * @author Cedric Hammes
  * @since  11/06/2024
  */
-interface KeyGenerator {
+@OptIn(ExperimentalStdlibApi::class)
+interface KeyGenerator: AutoCloseable {
 
     /**
      * This method initializes the key generator with the specified specification. This
@@ -37,7 +38,7 @@ interface KeyGenerator {
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun initialize(spec: KeyGeneratorSpec)
+    fun initialize(spec: KeyGeneratorSpec): KeyGenerator
 
     /**
      * This method generates a key with the specification defined before. This method will throw an

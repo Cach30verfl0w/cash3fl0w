@@ -29,6 +29,7 @@ data class CipherContext<C>(val spec: CipherSpec, val key: Key, val internalCont
  * - [CipherDelegate.initializer] (required): The initializer of the cipher context
  * - [CipherDelegate.encrypt] (required): The method to encrypt specific data with the context
  * - [CipherDelegate.decrypt] (required): The method to decrypt specific data with the context
+ * - [CipherDelegate.close] (optional): The method called when the cipher is being closed
  *
  * @author Cedric Hammes
  * @since  11/06/2024
@@ -37,6 +38,7 @@ class CipherDelegate<C: Any> {
     private lateinit var initializer: (CipherSpec, Key) -> CipherContext<C>
     private lateinit var encrypt: ((CipherContext<C>, ByteArray) -> ByteArray)
     private lateinit var decrypt: ((CipherContext<C>, ByteArray) -> ByteArray)
+    private var close: (CipherContext<C>) -> Unit = {}
 
     /**
      * This method creates a new cipher object as a wrapper around the delegate functions with the
@@ -67,6 +69,7 @@ class CipherDelegate<C: Any> {
                 return decrypt.invoke(this.context!!, data)
             }
 
+            override fun close() { close() }
         }
     }
 

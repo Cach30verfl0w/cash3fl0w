@@ -28,6 +28,7 @@ import io.karma.advcrypto.wrapper.Signature
  * - [SignatureDelegate.initVerify] (required): Initialize the context for signature verification
  * - [SignatureDelegate.sign] (required): Sign the specified content with the context created before
  * - [SignatureDelegate.verify] (required): Verify the specified signature with the original content
+ * - [SignatureDelegate.close] (optional): Called when the signature is being closed
  * and the context created before.
  *
  * @author Cedric Hammes
@@ -39,6 +40,7 @@ class SignatureDelegate<C: Any> {
     private lateinit var initSign: (C, Key) -> Unit
     private lateinit var sign: (C, ByteArray) -> ByteArray
     private lateinit var verify: (C, ByteArray, ByteArray) -> Boolean
+    private var close: (CipherContext<C>) -> Unit = {}
 
     /**
      * This method creates a new signature that delegates through this functions to the original
@@ -60,7 +62,7 @@ class SignatureDelegate<C: Any> {
 
             override fun verify(signature: ByteArray, original: ByteArray): Boolean =
                 this@SignatureDelegate.verify(context, signature, original)
-
+            override fun close() { close() }
         }
     }
 

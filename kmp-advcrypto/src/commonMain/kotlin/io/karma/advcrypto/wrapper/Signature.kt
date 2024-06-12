@@ -20,7 +20,8 @@ import io.karma.advcrypto.Providers
 import io.karma.advcrypto.algorithm.delegates.SignatureDelegate
 import io.karma.advcrypto.keys.Key
 
-interface Signature {
+@OptIn(ExperimentalStdlibApi::class)
+interface Signature: AutoCloseable {
 
     fun initVerify(key: Key)
 

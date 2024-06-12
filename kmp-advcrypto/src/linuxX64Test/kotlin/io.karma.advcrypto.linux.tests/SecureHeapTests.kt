@@ -6,7 +6,6 @@ import kotlinx.cinterop.ULongVar
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.value
-import libssl.free
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.test.Test
 
