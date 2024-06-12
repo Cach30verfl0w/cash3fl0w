@@ -90,5 +90,4 @@ class Algorithm(val name: String) {
     }
 }
 
-// TODO: SignatureDelegate: initializer, sign, verify
 // TODO: HashDelegate: initializer, hash

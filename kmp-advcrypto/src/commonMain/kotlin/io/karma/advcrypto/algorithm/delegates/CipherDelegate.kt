@@ -22,11 +22,29 @@ import io.karma.advcrypto.wrapper.Cipher
 
 data class CipherContext<C>(val spec: CipherSpec, val key: Key, val internalContext: C)
 
+/**
+ * This class is used to implement the cipher functionality into a algorithm. This delegate is used
+ * for encryption algorithms like AES or RSA. You can configure the following properties of the
+ * cipher:
+ * - [CipherDelegate.initializer] (required): The initializer of the cipher context
+ * - [CipherDelegate.encrypt] (required): The method to encrypt specific data with the context
+ * - [CipherDelegate.decrypt] (required): The method to decrypt specific data with the context
+ *
+ * @author Cedric Hammes
+ * @since  11/06/2024
+ */
 class CipherDelegate<C: Any> {
     private lateinit var initializer: (CipherSpec, Key) -> CipherContext<C>
-    private var encrypt: ((CipherContext<C>, ByteArray) -> ByteArray)? = null
-    private var decrypt: ((CipherContext<C>, ByteArray) -> ByteArray)? = null
+    private lateinit var encrypt: ((CipherContext<C>, ByteArray) -> ByteArray)
+    private lateinit var decrypt: ((CipherContext<C>, ByteArray) -> ByteArray)
 
+    /**
+     * This method creates a new cipher object as a wrapper around the delegate functions with the
+     * specified property functions.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
     fun createCipher(): Cipher {
         return object: Cipher {
             private var context: CipherContext<C>? = null
@@ -39,19 +57,26 @@ class CipherDelegate<C: Any> {
                 if (this.context == null) {
                     throw IllegalStateException("Unable to encrypt without initialized cipher")
                 }
-                return encrypt!!.invoke(this.context!!, data)
+                return encrypt.invoke(this.context!!, data)
             }
 
             override fun decrypt(data: ByteArray): ByteArray {
                 if (this.context == null) {
                     throw IllegalStateException("Unable to decrypt without initialized cipher")
                 }
-                return decrypt!!.invoke(this.context!!, data)
+                return decrypt.invoke(this.context!!, data)
             }
 
         }
     }
 
+    /**
+     * This method sets a delegate to the initializer function to initialize the context of a cipher
+     * created.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
     fun initializer(closure: (spec: CipherSpec, key: Key) -> C) {
         this.initializer = { spec, key ->
             if ((key.purposes and (Key.PURPOSE_ENCRYPT or Key.PURPOSE_DECRYPT)).toInt() == 0) {
@@ -61,10 +86,14 @@ class CipherDelegate<C: Any> {
         }
     }
 
+    /**
+     * This method sets a delegate to the encrypt function of the cipher for the encryption of
+     * specified data with the context.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
     fun encrypt(closure: (context: CipherContext<C>, data: ByteArray) -> ByteArray) {
-        if (this.encrypt != null) {
-            throw IllegalStateException("Unable to register encrypt method multiple times")
-        }
         this.encrypt = { context, data ->
             if ((context.key.purposes and Key.PURPOSE_ENCRYPT) != Key.PURPOSE_ENCRYPT) {
                 throw UnsupportedOperationException("This key doesn't support encrypt mode")
@@ -73,10 +102,14 @@ class CipherDelegate<C: Any> {
         }
     }
 
+    /**
+     * This method sets a delegate to the decrypt function of the cipher for the decryption of
+     * specified data with the context.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
     fun decrypt(closure: (context: CipherContext<C>, data: ByteArray) -> ByteArray) {
-        if (this.decrypt != null) {
-            throw IllegalStateException("Unable to register decrypt method multiple times")
-        }
         this.decrypt = { context, data ->
             if ((context.key.purposes and Key.PURPOSE_DECRYPT) != Key.PURPOSE_DECRYPT) {
                 throw UnsupportedOperationException("This key doesn't support decrypt mode")
