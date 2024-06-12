@@ -126,4 +126,15 @@ class SignatureDelegate<C: Any> {
      * @since  11/06/2024
      */
     fun verify(closure: (C, ByteArray, ByteArray) -> Boolean) = this.apply { verify = closure }
+
+    /**
+     * This method sets a delegate to the close function of the signature.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun close(closure: (context: CipherContext<C>) -> Unit) {
+        this.close = closure
+    }
 }

@@ -38,4 +38,15 @@ class HasherDelegate<C> {
     fun hash(closure: (C, ByteArray) -> String) {
         this.hash = closure
     }
+
+    /**
+     * This method sets a delegate to the close function of the hasher.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun close(closure: (context: CipherContext<C>) -> Unit) {
+        this.close = closure
+    }
 }

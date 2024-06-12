@@ -121,4 +121,15 @@ class CipherDelegate<C: Any> {
         }
     }
 
+    /**
+     * This method sets a delegate to the close function of the cipher.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun close(closure: (context: CipherContext<C>) -> Unit) {
+        this.close = closure
+    }
+
 }
