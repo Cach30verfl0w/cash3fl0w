@@ -1,5 +1,5 @@
 import com.android.build.api.dsl.ManagedVirtualDevice
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.tooling.core.closure
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -17,14 +17,14 @@ kotlin {
     }
 
     linuxX64 {
-        compilations["main"].cinterops {
-            val libssl by creating
+        compilations.all {
+            compilerOptions.configure {
+                freeCompilerArgs.addAll(listOf("-linker-option", "--allow-shlib-undefined"))
+            }
+            cinterops {
+                val libssl by creating
+            }
         }
-    }
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions {
-        freeCompilerArgs.addAll(listOf("-linker-option", "--allow-shlib-undefined"))
     }
 
     sourceSets {

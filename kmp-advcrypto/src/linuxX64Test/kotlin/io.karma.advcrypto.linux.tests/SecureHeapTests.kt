@@ -19,7 +19,7 @@ class SecureHeapTests {
             val pointer = heap.allocate(8U).reinterpret<ULongVar>()
             pointer.pointed.value = 100U
             assert(pointer.pointed.value == 100UL)
-            free(pointer)
+            heap.free(8U, pointer)
             assert(pointer.pointed.value != 100UL)
         }
     }
