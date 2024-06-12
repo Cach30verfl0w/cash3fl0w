@@ -18,8 +18,8 @@ package io.karma.advcrypto.android.providers
 
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.algorithm.specs.params.DilithiumKeySpecParameter
-import io.karma.advcrypto.android.defaultKeyPairGenerator
-import io.karma.advcrypto.android.keys.AndroidKey
+import io.karma.advcrypto.android.android
+import io.karma.advcrypto.android.androidKeyPairGenerator
 import io.karma.advcrypto.annotations.ExperimentalCryptoApi
 import io.karma.advcrypto.keys.Key
 import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider
@@ -27,10 +27,7 @@ import org.bouncycastle.pqc.jcajce.spec.DilithiumParameterSpec
 import org.bouncycastle.pqc.jcajce.spec.KyberParameterSpec
 import java.security.InvalidParameterException
 import java.security.KeyPairGenerator
-import java.security.PrivateKey
-import java.security.PublicKey
 import java.security.Security
-import java.security.Signature
 
 @ExperimentalCryptoApi
 class PQCryptoProvider: AbstractProvider(
@@ -53,22 +50,10 @@ class PQCryptoProvider: AbstractProvider(
                     }
                     KeyPairGenerator.getInstance("Dilithium").apply { initialize(keySpecParameter) }
                 }
-                generateKeyPair(::defaultKeyPairGenerator)
+                androidKeyPairGenerator()
             }
 
-            signature<Signature> {
-                initialize { Signature.getInstance("Dilithium") }
-                initVerify { context, key -> context.initVerify((key as AndroidKey).raw as PublicKey) }
-                initSign { context, key -> context.initSign((key as AndroidKey).raw as PrivateKey) }
-                verify { context, signature, original ->
-                    context.update(original)
-                    context.verify(signature)
-                }
-                sign { context, content ->
-                    context.update(content)
-                    context.sign()
-                }
-            }
+            signature { android("Dilithium") }
         }
 
         algorithm("Kyber") {
@@ -86,7 +71,7 @@ class PQCryptoProvider: AbstractProvider(
                     }
                     KeyPairGenerator.getInstance("Kyber").apply { initialize(keySpecParameter) }
                 }
-                generateKeyPair(::defaultKeyPairGenerator)
+                androidKeyPairGenerator()
             }
         }
     }

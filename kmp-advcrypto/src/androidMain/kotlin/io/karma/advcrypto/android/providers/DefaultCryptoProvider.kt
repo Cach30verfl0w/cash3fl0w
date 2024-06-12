@@ -16,17 +16,14 @@
 
 package io.karma.advcrypto.android.providers
 
-import android.security.keystore.KeyGenParameterSpec
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.algorithm.BlockMode
-import io.karma.advcrypto.android.defaultKeyPairGenerator
+import io.karma.advcrypto.android.androidKey
+import io.karma.advcrypto.android.androidKeyPair
 import io.karma.advcrypto.android.keys.AndroidKey
-import io.karma.advcrypto.android.purposesToAndroid
 import io.karma.advcrypto.annotations.InsecureCryptoApi
 import io.karma.advcrypto.keys.Key
-import java.security.KeyPairGenerator
 import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.IvParameterSpec
 
@@ -47,24 +44,7 @@ class DefaultCryptoProvider: AbstractProvider(
                 Key.PURPOSES_ALL,
                 arrayOf(1024, 2048, 4096),
                 4096
-            ) {
-                initializer { initSpec ->
-                    val purposes = purposesToAndroid(initSpec.purposes)
-                    val spec = KeyGenParameterSpec.Builder("AndroidKeyStore", purposes).run {
-                        setKeySize(initSpec.keySize?: defaultKeySize)
-                        setEncryptionPaddings(initSpec.padding.toString())
-                        setBlockModes((initSpec.blockMode?: defaultBlockMode).toString())
-                        // TODO: Auth
-                        build()
-                    }
-
-                    KeyPairGenerator.getInstance("RSA").apply {
-                        initialize(spec)
-                    }
-                }
-
-                generateKeyPair(::defaultKeyPairGenerator)
-            }
+            ) { androidKeyPair(defaultBlockMode!!, "RSA") }
 
             cipher<Cipher> {
                 initializer { spec, _ ->
@@ -88,33 +68,12 @@ class DefaultCryptoProvider: AbstractProvider(
             allowedBlockModes = arrayOf(BlockMode.GCM, BlockMode.CBC)
             defaultBlockMode = BlockMode.GCM
 
-            keyGenerator<KeyGenerator>(
+            keyGenerator(
                 Key.PURPOSE_ENCRYPT or Key.PURPOSE_DECRYPT,
                 arrayOf(128, 196, 256),
                 256
-            ) {
-                initializer { initSpec ->
-                    val purposes = purposesToAndroid(initSpec.purposes)
-                    val spec = KeyGenParameterSpec.Builder("AndroidKeyStore", purposes).run {
-                        setKeySize(initSpec.keySize?: defaultKeySize)
-                        setEncryptionPaddings(initSpec.padding.toString())
-                        setBlockModes((initSpec.blockMode?: defaultBlockMode).toString())
-                        // TODO: Auth
-                        build()
-                    }
+            ) { androidKey(defaultBlockMode!!, "AES") }
 
-                    KeyGenerator.getInstance("AES").apply {
-                        init(spec)
-                    }
-                }
-
-                generateKey { context ->
-                    AndroidKey(
-                        context.internalContext.generateKey(),
-                        context.generatorSpec.purposes
-                    )
-                }
-            }
             cipher<Cipher> {
                 initializer { spec, _ ->
                     Cipher.getInstance("AES/${spec.blockMode?: defaultBlockMode}/${spec.padding}")

@@ -16,12 +16,19 @@
 
 package io.karma.advcrypto.android
 
+import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import io.karma.advcrypto.algorithm.delegates.KeyGenContext
+import io.karma.advcrypto.algorithm.BlockMode
+import io.karma.advcrypto.algorithm.delegates.KeyGeneratorDelegate
+import io.karma.advcrypto.algorithm.delegates.SignatureDelegate
 import io.karma.advcrypto.android.keys.AndroidKey
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
 import java.security.KeyPairGenerator
+import java.security.PrivateKey
+import java.security.PublicKey
+import java.security.Signature
+import javax.crypto.KeyGenerator
 
 fun purposesToAndroid(purposes: UByte): Int {
     var value = 0
@@ -43,17 +50,76 @@ fun purposesToAndroid(purposes: UByte): Int {
     return value
 }
 
-fun defaultKeyPairGenerator(context: KeyGenContext<KeyPairGenerator>): KeyPair {
-    val purposes = context.generatorSpec.purposes
-    val keyPair = context.internalContext.generateKeyPair()
-    return KeyPair(
-        AndroidKey(
-            keyPair.public,
-            purposes and Key.PURPOSE_SIGNING.inv()
-        ),
-        AndroidKey(
-            keyPair.private,
-            purposes and Key.PURPOSE_VERIFY.inv()
+fun KeyGeneratorDelegate<KeyPairGenerator>.androidKeyPairGenerator() {
+    generateKeyPair { context ->
+        val purposes = context.generatorSpec.purposes
+        val keyPair = context.internalContext.generateKeyPair()
+        KeyPair(
+            AndroidKey(
+                keyPair.public,
+                purposes and Key.PURPOSE_SIGNING.inv()
+            ),
+            AndroidKey(
+                keyPair.private,
+                purposes and Key.PURPOSE_VERIFY.inv()
+            )
         )
-    )
+    }
+}
+
+fun KeyGeneratorDelegate<KeyPairGenerator>.androidKeyPair(defaultBlockMode: BlockMode, algorithm: String) {
+    initializer { initSpec ->
+        val purposes = purposesToAndroid(initSpec.purposes)
+        val spec = KeyGenParameterSpec.Builder("AndroidKeyStore", purposes).run {
+            setKeySize(initSpec.keySize?: defaultKeySize)
+            setEncryptionPaddings(initSpec.padding.toString())
+            setBlockModes((initSpec.blockMode?: defaultBlockMode).toString())
+            // TODO: Auth
+            build()
+        }
+
+        KeyPairGenerator.getInstance(algorithm).apply {
+            initialize(spec)
+        }
+    }
+
+    androidKeyPairGenerator()
+}
+
+fun KeyGeneratorDelegate<KeyGenerator>.androidKey(defaultBlockMode: BlockMode, algorithm: String) {
+    initializer { initSpec ->
+        val purposes = purposesToAndroid(initSpec.purposes)
+        val spec = KeyGenParameterSpec.Builder("AndroidKeyStore", purposes).run {
+            setKeySize(initSpec.keySize?: defaultKeySize)
+            setEncryptionPaddings(initSpec.padding.toString())
+            setBlockModes((initSpec.blockMode?: defaultBlockMode).toString())
+            // TODO: Auth
+            build()
+        }
+
+        KeyGenerator.getInstance(algorithm).apply {
+            init(spec)
+        }
+    }
+
+    generateKey { context ->
+        AndroidKey(
+            context.internalContext.generateKey(),
+            context.generatorSpec.purposes
+        )
+    }
+}
+
+fun SignatureDelegate<Signature>.android(algorithm: String) {
+    initialize { Signature.getInstance(algorithm) }
+    initVerify { context, key -> context.initVerify((key as AndroidKey).raw as PublicKey) }
+    initSign { context, key -> context.initSign((key as AndroidKey).raw as PrivateKey) }
+    verify { context, signature, original ->
+        context.update(original)
+        context.verify(signature)
+    }
+    sign { context, content ->
+        context.update(content)
+        context.sign()
+    }
 }
