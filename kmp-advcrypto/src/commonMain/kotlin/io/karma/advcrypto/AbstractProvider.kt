@@ -48,7 +48,7 @@ abstract class AbstractProvider(
      * @since  08/06/2024
      */
     fun algorithm(name: String, factory: Algorithm.() -> Unit) {
-        if (algorithms.find { it.name == name } != null) { // TODO: Change from provider to central
+        if (Providers.getAlgorithmByName(name) != null) {
             throw IllegalStateException("Unable to register same algorithm twice")
         }
         this.algorithms.add(Algorithm(name).apply(factory))
