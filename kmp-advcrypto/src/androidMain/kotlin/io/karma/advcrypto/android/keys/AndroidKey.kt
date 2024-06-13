@@ -26,4 +26,6 @@ class AndroidKey(val raw: RawKey, override val purposes: UByte): Key {
     override fun toString(): String {
         return "AndroidKey(algorithm=\"$algorithm\", purposes=$purposes, raw=$raw)"
     }
+
+    override fun close() {}
 }

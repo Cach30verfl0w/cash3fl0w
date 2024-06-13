@@ -39,8 +39,8 @@ interface Signature: AutoCloseable {
          * @author Cedric Hammes
          * @since  11/06/2024
          */
-        fun getInstance(algorithm: String): Signature {
-            return Providers.getAlgorithmByName(algorithm)?.signature?.createSignature()?: throw
+        fun getInstance(providers: Providers, algorithm: String): Signature {
+            return providers.getAlgorithmByName(algorithm)?.signature?.createSignature()?: throw
             UnsupportedOperationException("The algorithm $algorithm doesn't exists or this algorithm doesn't support signature")
         }
     }

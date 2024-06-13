@@ -1,6 +1,6 @@
 package io.karma.advcrypto.tests
 
-
+import io.karma.advcrypto.Providers
 import io.karma.advcrypto.algorithm.Padding
 import io.karma.advcrypto.algorithm.specs.KeyGeneratorSpec
 import io.karma.advcrypto.algorithm.specs.params.DilithiumKeySpecParameter
@@ -13,45 +13,38 @@ class KeyGeneratorTests {
 
     @Test
     fun testRSA() {
-        val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-        keyPairGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_ALL).run {
-            setPadding(Padding.PKCS1)
-            setKeySize(4096)
-            build()
-        })
-        println(keyPairGenerator.generateKeyPair())
+        val providers = Providers()
+        val spec = KeyGeneratorSpec.Builder(Key.PURPOSES_ALL).setKeySize(4096)
+            .setPadding(Padding.PKCS1).build()
+        KeyPairGenerator.getInstance(providers, "RSA").initialize(spec).generateKeyPair().close()
+        providers.close()
     }
 
     @Test
     fun testAES() {
-        val keyGenerator = KeyGenerator.getInstance("AES")
-        keyGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_SYMMETRIC).run {
-            setKeySize(256)
-            build()
-        })
-        println(keyGenerator.generateKey())
+        val providers = Providers()
+        val spec = KeyGeneratorSpec.Builder(Key.PURPOSES_SYMMETRIC).setKeySize(256).build()
+        KeyGenerator.getInstance(providers, "AES").initialize(spec).generateKey().close()
+        providers.close()
     }
-    
+
     @Test
     fun testDilithium() {
-        val keyPairGenerator = KeyPairGenerator.getInstance("Dilithium")
-        val purposes = Key.PURPOSE_VERIFY or Key.PURPOSE_SIGNING
-        keyPairGenerator.initialize(KeyGeneratorSpec.Builder(purposes).run {
-            setParameters(DilithiumKeySpecParameter.DILITHIUM5)
-            build()
-        })
-        println(keyPairGenerator.generateKeyPair())
+        val providers = Providers()
+        val spec = KeyGeneratorSpec.Builder(Key.PURPOSE_VERIFY or Key.PURPOSE_SIGNING)
+            .setParameters(DilithiumKeySpecParameter.DILITHIUM5).build()
+        KeyPairGenerator.getInstance(providers, "Dilithium").initialize(spec).generateKeyPair()
+            .close()
+        providers.close()
     }
 
     @Test
     fun testKyber() {
-        val keyPairGenerator = KeyPairGenerator.getInstance("Kyber")
-        val purposes = Key.PURPOSE_DECRYPT or Key.PURPOSE_DECRYPT
-        keyPairGenerator.initialize(KeyGeneratorSpec.Builder(purposes).run {
-            setKeySize(1024)
-            build()
-        })
-        println(keyPairGenerator.generateKeyPair())
+        val providers = Providers()
+        val spec = KeyGeneratorSpec.Builder(Key.PURPOSES_SYMMETRIC).setKeySize(1024).build()
+        KeyPairGenerator.getInstance(providers, "Kyber").initialize(spec).generateKeyPair()
+            .close()
+        providers.close()
     }
 
 }

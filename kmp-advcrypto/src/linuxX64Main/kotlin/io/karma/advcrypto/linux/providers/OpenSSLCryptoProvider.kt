@@ -17,6 +17,7 @@
 package io.karma.advcrypto.linux.providers
 
 import io.karma.advcrypto.AbstractProvider
+import io.karma.advcrypto.Providers
 import io.karma.advcrypto.algorithm.delegates.KeyGenContext
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.linux.keys.OpenSSLKey
@@ -27,10 +28,10 @@ class OpenSSLCryptoProvider: AbstractProvider(
     "This class provides access to the default asymmetric and symmetric algorithms",
     "1.0.0-Dev"
 ) {
-    private val secureHeap = SecureHeap(UShort.MAX_VALUE.toULong() + 1u, 0u) // TODO: How to free with good API design
+    private val secureHeap = SecureHeap(UShort.MAX_VALUE.toULong() + 1u, 0u)
 
-    init {
-        algorithm("AES") {
+    override fun initialize(providers: Providers) {
+        algorithm(providers, "AES") {
             keyGenerator<Unit>(Key.PURPOSES_SYMMETRIC, arrayOf(128, 196, 256), 256) {
                 initializer { spec -> KeyGenContext(spec, Unit) }
                 generateKey { context ->
@@ -43,5 +44,9 @@ class OpenSSLCryptoProvider: AbstractProvider(
                 }
             }
         }
+    }
+
+    override fun close() {
+        this.secureHeap.close()
     }
 }

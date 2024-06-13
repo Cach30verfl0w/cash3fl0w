@@ -26,9 +26,9 @@ import libssl.ERR_func_error_string
 import libssl.ERR_get_error
 import libssl.RAND_bytes
 
-@OptIn(ExperimentalForeignApi::class, ExperimentalStdlibApi::class)
+@OptIn(ExperimentalForeignApi::class)
 class OpenSSLKey(private val secureHeap: SecureHeap, val keySize: Int,
-                 override val purposes: UByte, override val algorithm: String): AutoCloseable, Key {
+                 override val purposes: UByte, override val algorithm: String): Key {
     private val rawDataPtr = secureHeap.allocate((keySize / 8).toULong()).reinterpret<UByteVar>()
 
     override fun close() {

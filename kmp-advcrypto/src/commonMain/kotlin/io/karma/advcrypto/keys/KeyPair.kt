@@ -16,7 +16,13 @@
 
 package io.karma.advcrypto.keys
 
-data class KeyPair(val publicKey: Key, val privateKey: Key) {
+@OptIn(ExperimentalStdlibApi::class)
+data class KeyPair(val publicKey: Key, val privateKey: Key): AutoCloseable {
+    override fun close() {
+        this.publicKey.close()
+        this.privateKey.close()
+    }
+
     override fun toString(): String {
         return "KeyPair(publicKey=$publicKey, privateKey=$privateKey)"
     }

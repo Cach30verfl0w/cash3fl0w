@@ -51,8 +51,8 @@ interface Cipher: AutoCloseable {
          * @author Cedric Hammes
          * @since  11/06/2024
          */
-        fun getInstance(algorithm: String): Cipher {
-            return Providers.getAlgorithmByName(algorithm)?.cipher?.createCipher()?: throw
+        fun getInstance(providers: Providers, algorithm: String): Cipher {
+            return providers.getAlgorithmByName(algorithm)?.cipher?.createCipher()?: throw
             UnsupportedOperationException("The algorithm $algorithm doesn't exists or this algorithm doesn't support ciphers")
         }
     }

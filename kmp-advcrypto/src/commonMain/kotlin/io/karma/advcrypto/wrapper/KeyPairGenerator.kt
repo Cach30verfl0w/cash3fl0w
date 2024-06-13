@@ -37,7 +37,7 @@ interface KeyPairGenerator {
      * @author Cedric Hammes
      * @since  11/06/2024
      */
-    fun initialize(spec: KeyGeneratorSpec)
+    fun initialize(spec: KeyGeneratorSpec): KeyPairGenerator
 
     /**
      * This method generates a keypair with the specification defined before. This method will throw
@@ -57,8 +57,8 @@ interface KeyPairGenerator {
          * @author Cedric Hammes
          * @since  11/06/2024
          */
-        fun getInstance(algorithm: String): KeyPairGenerator {
-            return Providers.getAlgorithmByName(algorithm)?.keyGenerator?.createKeyPairGenerator()?: throw
+        fun getInstance(providers: Providers, algorithm: String): KeyPairGenerator {
+            return providers.getAlgorithmByName(algorithm)?.keyGenerator?.createKeyPairGenerator()?: throw
             UnsupportedOperationException("The algorithm $algorithm doesn't exists or this algorithm doesn't support keypair generation")
         }
     }

@@ -17,6 +17,7 @@
 package io.karma.advcrypto.android.providers
 
 import io.karma.advcrypto.AbstractProvider
+import io.karma.advcrypto.Providers
 import io.karma.advcrypto.algorithm.specs.params.DilithiumKeySpecParameter
 import io.karma.advcrypto.android.android
 import io.karma.advcrypto.android.androidKeyPairGenerator
@@ -35,12 +36,12 @@ class PQCryptoProvider: AbstractProvider(
     "This provider delivers access to post-quantum algorithms",
     "1.0.0-Experimental"
 ) {
-    init {
+    override fun initialize(providers: Providers) {
         if (Security.getProvider(BouncyCastlePQCProvider.PROVIDER_NAME) == null) {
             Security.addProvider(BouncyCastlePQCProvider())
         }
 
-        algorithm("Dilithium") {
+        algorithm(providers, "Dilithium") {
             keyGenerator(Key.PURPOSE_VERIFY or Key.PURPOSE_SIGNING) {
                 initializer { spec ->
                     val keySpecParameter = when (spec.parameters as DilithiumKeySpecParameter) {
@@ -56,7 +57,7 @@ class PQCryptoProvider: AbstractProvider(
             signature { android("Dilithium") }
         }
 
-        algorithm("Kyber") {
+        algorithm(providers, "Kyber") {
             keyGenerator(
                 Key.PURPOSE_ENCRYPT or Key.PURPOSE_DECRYPT,
                 arrayOf(512, 768, 1024),
@@ -75,4 +76,7 @@ class PQCryptoProvider: AbstractProvider(
             }
         }
     }
+
+    override fun close() {}
+
 }

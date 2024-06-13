@@ -16,5 +16,6 @@
 
 package io.karma.advcrypto
 
-internal actual fun initDefaultPlatformProvider() {
+internal actual fun getDefaultPlatformInitializer(): Providers.() -> Unit = {
+
 }

@@ -17,6 +17,7 @@
 package io.karma.advcrypto.android.providers
 
 import io.karma.advcrypto.AbstractProvider
+import io.karma.advcrypto.Providers
 import io.karma.advcrypto.algorithm.BlockMode
 import io.karma.advcrypto.android.androidHasher
 import io.karma.advcrypto.android.androidKey
@@ -33,15 +34,15 @@ class DefaultCryptoProvider: AbstractProvider(
     "This class provides access to the default asymmetric and symmetric algorithms",
     "1.0.0-Dev"
 ) {
-    init {
+    override fun initialize(providers: Providers) {
         for (name in arrayOf("MD5", "SHA1", "SHA224", "SHA256", "SHA384", "SHA512")) {
-            algorithm(name) { androidHasher() }
+            algorithm(providers, name) { androidHasher() }
         }
 
         // As far as I know, only RSA with the ECB operation mode is supported. Therefore, ECB mode
         // is used here despite its vulnerability to statistical attacks.
         @OptIn(InsecureCryptoApi::class)
-        algorithm("RSA") {
+        algorithm(providers, "RSA") {
             allowedBlockModes = arrayOf(BlockMode.ECB)
             defaultBlockMode = BlockMode.ECB
 
@@ -69,7 +70,7 @@ class DefaultCryptoProvider: AbstractProvider(
             }
         }
 
-        algorithm("AES") {
+        algorithm(providers, "AES") {
             allowedBlockModes = arrayOf(BlockMode.GCM, BlockMode.CBC)
             defaultBlockMode = BlockMode.GCM
 
@@ -126,4 +127,7 @@ class DefaultCryptoProvider: AbstractProvider(
             }
         }
     }
+
+    override fun close() {}
+
 }

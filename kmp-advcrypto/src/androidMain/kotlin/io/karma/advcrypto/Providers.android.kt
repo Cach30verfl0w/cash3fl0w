@@ -21,7 +21,7 @@ import io.karma.advcrypto.android.providers.PQCryptoProvider
 import io.karma.advcrypto.annotations.ExperimentalCryptoApi
 
 @OptIn(ExperimentalCryptoApi::class)
-internal actual fun initDefaultPlatformProvider() {
-    Providers.addProvider(DefaultCryptoProvider())
-    Providers.addProvider(PQCryptoProvider())
+internal actual fun getDefaultPlatformInitializer(): Providers.() -> Unit = {
+    addProvider(DefaultCryptoProvider())
+    addProvider(PQCryptoProvider())
 }

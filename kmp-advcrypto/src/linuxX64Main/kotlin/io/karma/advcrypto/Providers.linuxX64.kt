@@ -18,6 +18,6 @@ package io.karma.advcrypto
 
 import io.karma.advcrypto.linux.providers.OpenSSLCryptoProvider
 
-internal actual fun initDefaultPlatformProvider() {
-    Providers.addProvider(OpenSSLCryptoProvider())
+internal actual fun getDefaultPlatformInitializer(): Providers.() -> Unit = {
+    addProvider(OpenSSLCryptoProvider())
 }

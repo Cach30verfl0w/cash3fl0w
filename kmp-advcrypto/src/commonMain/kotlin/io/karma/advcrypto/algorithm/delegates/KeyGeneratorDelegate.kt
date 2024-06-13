@@ -67,8 +67,9 @@ class KeyGeneratorDelegate<C: Any>(
         return object: KeyPairGenerator {
             private var context: KeyGenContext<C>? = null
 
-            override fun initialize(spec: KeyGeneratorSpec) {
+            override fun initialize(spec: KeyGeneratorSpec): KeyPairGenerator {
                 context = initializer(spec)
+                return this
             }
 
             override fun generateKeyPair(): KeyPair {
@@ -150,7 +151,6 @@ class KeyGeneratorDelegate<C: Any>(
         if (keyPairGenerator != null) {
             throw IllegalStateException("Keypair generator was already created")
         }
-
         this.keyPairGenerator = closure
     }
 

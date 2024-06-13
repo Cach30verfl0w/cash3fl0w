@@ -57,8 +57,8 @@ interface KeyGenerator: AutoCloseable {
          * @author Cedric Hammes
          * @since  11/06/2024
          */
-        fun getInstance(algorithm: String): KeyGenerator {
-            return Providers.getAlgorithmByName(algorithm)?.keyGenerator?.createKeyGenerator()?: throw
+        fun getInstance(providers: Providers, algorithm: String): KeyGenerator {
+            return providers.getAlgorithmByName(algorithm)?.keyGenerator?.createKeyGenerator()?: throw
             UnsupportedOperationException("The algorithm $algorithm doesn't exists or this algorithm doesn't support key generation")
         }
     }

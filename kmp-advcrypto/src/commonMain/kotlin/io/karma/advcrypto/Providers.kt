@@ -18,14 +18,16 @@ package io.karma.advcrypto
 
 import io.karma.advcrypto.algorithm.Algorithm
 
-object Providers {
+@OptIn(ExperimentalStdlibApi::class)
+class Providers: AutoCloseable {
     private val registeredProviders: MutableList<AbstractProvider> = ArrayList()
 
     init {
-        initDefaultPlatformProvider()
+        this.apply(getDefaultPlatformInitializer())
     }
 
     fun addProvider(provider: AbstractProvider) {
+        provider.initialize(this)
         this.registeredProviders.add(provider)
     }
 
@@ -34,6 +36,11 @@ object Providers {
 
     fun getAlgorithmByName(name: String): Algorithm? = this.registeredProviders
         .map { it.getAlgorithms() }.flatten().firstOrNull { it.name == name }
+
+    override fun close() {
+        this.registeredProviders.forEach { it.close() }
+        this.registeredProviders.clear()
+    }
 }
 
-internal expect fun initDefaultPlatformProvider()
+internal expect fun getDefaultPlatformInitializer(): Providers.() -> Unit

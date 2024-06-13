@@ -25,7 +25,8 @@ package io.karma.advcrypto.keys
  * @author Cedric Hammes
  * @since  07/06/2024
  */
-interface Key {
+@OptIn(ExperimentalStdlibApi::class)
+interface Key: AutoCloseable {
 
     /**
      * This value represents the algorithm that was used to generate the key/the algorithm for which
@@ -53,12 +54,6 @@ interface Key {
         const val PURPOSE_SIGNING: UByte = 0b0000_0010U
         const val PURPOSE_ENCRYPT: UByte = 0b0000_0100U
         const val PURPOSE_DECRYPT: UByte = 0b0000_1000U
-
-        const val BLOCK_MODE_ALL: Byte = 0b0000_1111
-        const val BLOCK_MODE_GCM: Byte = 0b0000_0001
-        const val BLOCK_MODE_CTR: Byte = 0b0000_0010
-        const val BLOCK_MODE_CBC: Byte = 0b0000_0100
-        const val BLOCK_MODE_ECB: Byte = 0b0000_1000
     }
 
 }

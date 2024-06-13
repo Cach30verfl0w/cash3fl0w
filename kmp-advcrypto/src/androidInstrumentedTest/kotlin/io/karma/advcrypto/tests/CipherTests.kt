@@ -1,5 +1,6 @@
 package io.karma.advcrypto.tests
 
+import io.karma.advcrypto.Providers
 import io.karma.advcrypto.algorithm.BlockMode
 import io.karma.advcrypto.algorithm.Padding
 import io.karma.advcrypto.algorithm.specs.CipherSpec
@@ -14,66 +15,58 @@ class CipherTests {
 
     @Test
     fun testAESWithCBC() {
-        // Generate key
-        val keyGenerator = KeyGenerator.getInstance("AES")
-        keyGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_SYMMETRIC).run {
-            setBlockMode(BlockMode.CBC)
-            setPadding(Padding.PKCS7)
-            setKeySize(256)
-            build()
-        })
-        val key = keyGenerator.generateKey()
-        println(key)
+        val providers = Providers()
+        val key = KeyGenerator.getInstance(providers, "AES").apply {
+            initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_SYMMETRIC).run {
+                setBlockMode(BlockMode.CBC)
+                setPadding(Padding.PKCS7)
+                setKeySize(256)
+                build()
+            })
+        }.generateKey()
 
-        // Encrypt and decrypt
-        val cipher = Cipher.getInstance("AES")
+        val cipher = Cipher.getInstance(providers, "AES")
         cipher.initialize(CipherSpec.Builder(key).setBlockMode(BlockMode.CBC)
             .setPadding(Padding.PKCS7).build())
         val encryptedData = cipher.encrypt("Test".encodeToByteArray())
         val decryptedData = cipher.decrypt(encryptedData).decodeToString()
         assert(decryptedData == "Test")
+        providers.close()
     }
 
     @Test
     fun testAESWithGCM() {
-        // Generate key
-        val keyGenerator = KeyGenerator.getInstance("AES")
-        keyGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_SYMMETRIC).run {
-            setKeySize(256)
-            build()
-        })
-        val key = keyGenerator.generateKey()
-        println(key)
+        val providers = Providers()
+        val key = KeyGenerator.getInstance(providers, "AES")
+            .initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_SYMMETRIC).setKeySize(256).build())
+            .generateKey()
 
-        // Encrypt and decrypt
-        val cipher = Cipher.getInstance("AES")
+        val cipher = Cipher.getInstance(providers, "AES")
         cipher.initialize(CipherSpec.Builder(key).build())
         val encryptedData = cipher.encrypt("Test".encodeToByteArray())
         val decryptedData = cipher.decrypt(encryptedData).decodeToString()
         assert(decryptedData == "Test")
+        providers.close()
     }
 
     @Test
     fun testRSA() {
-        // Generate keypair
-        val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-        keyPairGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_ALL).run {
-            setPadding(Padding.PKCS1)
-            setKeySize(4096)
-            build()
-        })
-        val keypair = keyPairGenerator.generateKeyPair()
-        println(keypair)
-
-        // Encrypt and decrypt
-        val encryptCipher = Cipher.getInstance("RSA")
-        encryptCipher.initialize(CipherSpec.Builder(keypair.publicKey).setPadding(Padding.PKCS1).build())
-        val decryptCipher = Cipher.getInstance("RSA")
-        decryptCipher.initialize(CipherSpec.Builder(keypair.privateKey).setPadding(Padding.PKCS1).build())
+        val providers = Providers()
+        val keyPair = KeyPairGenerator.getInstance(providers, "RSA")
+            .initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_ALL).setKeySize(4096)
+                .setPadding(Padding.PKCS1).build())
+            .generateKeyPair()
+        val encryptCipher = Cipher.getInstance(providers, "RSA")
+        encryptCipher.initialize(CipherSpec.Builder(keyPair.publicKey).setPadding(Padding.PKCS1)
+            .build())
+        val decryptCipher = Cipher.getInstance(providers, "RSA")
+        decryptCipher.initialize(CipherSpec.Builder(keyPair.privateKey).setPadding(Padding.PKCS1)
+            .build())
 
         val encryptedData = encryptCipher.encrypt("Test".encodeToByteArray())
         val decryptedData = decryptCipher.decrypt(encryptedData).decodeToString()
         assert(decryptedData == "Test")
+        providers.close()
     }
 
 }

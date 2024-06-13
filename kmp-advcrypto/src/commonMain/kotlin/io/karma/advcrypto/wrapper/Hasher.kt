@@ -24,8 +24,8 @@ interface Hasher: AutoCloseable {
     fun hash(data: ByteArray): String
 
     companion object {
-        fun getInstance(algorithm: String): Hasher {
-            return Providers.getAlgorithmByName(algorithm)?.hasher?.createHasher()?: throw
+        fun getInstance(providers: Providers, algorithm: String): Hasher {
+            return providers.getAlgorithmByName(algorithm)?.hasher?.createHasher()?: throw
             UnsupportedOperationException("The algorithm $algorithm doesn't exists or this algorithm doesn't support key generation")
         }
     }
