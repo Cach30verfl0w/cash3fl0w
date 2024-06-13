@@ -23,7 +23,13 @@ import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
 import io.karma.advcrypto.linux.keys.OpenSSLKey
 import io.karma.advcrypto.linux.utils.SecureHeap
+import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.CValuesRef
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.UByteVar
+import kotlinx.cinterop.UByteVarOf
+import kotlinx.cinterop.refTo
 import kotlinx.cinterop.reinterpret
 import libssl.BIO_ctrl_pending
 import libssl.BIO_free
@@ -33,12 +39,22 @@ import libssl.BIO_s_secmem
 import libssl.BN_free
 import libssl.BN_new
 import libssl.BN_set_word
+import libssl.MD5
 import libssl.PEM_write_bio_RSAPrivateKey
 import libssl.PEM_write_bio_RSAPublicKey
 import libssl.RSA_F4
 import libssl.RSA_free
 import libssl.RSA_generate_key_ex
 import libssl.RSA_new
+import libssl.SHA1
+import libssl.SHA224
+import libssl.SHA224_DIGEST_LENGTH
+import libssl.SHA256
+import libssl.SHA256_DIGEST_LENGTH
+import libssl.SHA384
+import libssl.SHA384_DIGEST_LENGTH
+import libssl.SHA512
+import libssl.SHA512_DIGEST_LENGTH
 
 class OpenSSLCryptoProvider: AbstractProvider(
     "Default",
@@ -47,8 +63,29 @@ class OpenSSLCryptoProvider: AbstractProvider(
 ) {
     private val secureHeap = SecureHeap(UShort.MAX_VALUE.toULong() + 1u, 0u)
 
-    @OptIn(ExperimentalForeignApi::class)
+    @OptIn(ExperimentalForeignApi::class, ExperimentalStdlibApi::class)
     override fun initialize(providers: Providers) {
+        fun openSSLHasher(name: String, size: Int,
+                          hasher: (CValuesRef<UByteVar>, ULong, CValuesRef<UByteVar>) -> Unit) {
+            algorithm(providers, name) {
+                hasher {
+                    initialize { 0 }
+                    hash { _, data ->
+                        val output = UByteArray(size)
+                        hasher(data.toUByteArray().refTo(0), data.size.toULong(), output.refTo(0))
+                        output.toByteArray().toHexString()
+                    }
+                }
+            }
+        }
+
+        openSSLHasher("MD5", 16, ::MD5)
+        openSSLHasher("SHA1", 20, ::SHA1)
+        openSSLHasher("SHA224", SHA224_DIGEST_LENGTH, ::SHA224)
+        openSSLHasher("SHA256", SHA256_DIGEST_LENGTH, ::SHA256)
+        openSSLHasher("SHA384", SHA384_DIGEST_LENGTH, ::SHA384)
+        openSSLHasher("SHA512", SHA512_DIGEST_LENGTH, ::SHA512)
+
         algorithm(providers, "AES") {
             keyGenerator<Unit>(Key.PURPOSES_SYMMETRIC, arrayOf(128, 196, 256), 256) {
                 initializer { spec -> KeyGenContext(spec, Unit) }
