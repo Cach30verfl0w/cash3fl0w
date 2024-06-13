@@ -48,6 +48,7 @@ class KeyGeneratorDelegate<C: Any>(
         private set
     private var keyPairGenerator: ((context: KeyGenContext<C>) -> KeyPair)? = null
     private var keyGenerator: ((context: KeyGenContext<C>) -> Key)? = null
+    private var close: ((context: KeyGenContext<C>) -> Unit)? = null
 
     /**
      * This method creates an instance of a public-private keypair generator if a key pair generator
@@ -74,6 +75,12 @@ class KeyGeneratorDelegate<C: Any>(
 
             override fun generateKeyPair(): KeyPair {
                 return keyPairGenerator!!.invoke(context!!)
+            }
+
+            override fun close() {
+                if (close != null) {
+                    close()
+                }
             }
         }
     }
@@ -104,7 +111,12 @@ class KeyGeneratorDelegate<C: Any>(
             override fun generateKey(): Key {
                 return keyGenerator!!.invoke(context!!)
             }
-            override fun close() {}
+
+            override fun close() {
+                if (close != null) {
+                    close()
+                }
+            }
         }
     }
 
@@ -178,5 +190,16 @@ class KeyGeneratorDelegate<C: Any>(
             throw IllegalStateException("Keypair generator was already created")
         }
         this.keyGenerator = closure
+    }
+
+    /**
+     * This method sets a delegate to the close function of the key/keypair generato.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun close(closure: (context: KeyGenContext<C>) -> Unit) {
+        this.close = closure
     }
 }

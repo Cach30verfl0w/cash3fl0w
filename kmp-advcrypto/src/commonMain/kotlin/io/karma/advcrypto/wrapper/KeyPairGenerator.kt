@@ -28,7 +28,8 @@ import io.karma.advcrypto.algorithm.delegates.KeyGeneratorDelegate
  * @author Cedric Hammes
  * @since  11/06/2024
  */
-interface KeyPairGenerator {
+@OptIn(ExperimentalStdlibApi::class)
+interface KeyPairGenerator: AutoCloseable {
 
     /**
      * This method initializes the keypair generator with the specified specification. This

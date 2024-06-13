@@ -18,6 +18,7 @@ package io.karma.advcrypto.linux.keys
 
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.linux.utils.SecureHeap
+import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.UByteVar
 import kotlinx.cinterop.reinterpret
@@ -27,22 +28,27 @@ import libssl.ERR_get_error
 import libssl.RAND_bytes
 
 @OptIn(ExperimentalForeignApi::class)
-class OpenSSLKey(private val secureHeap: SecureHeap, val keySize: Int,
-                 override val purposes: UByte, override val algorithm: String): Key {
-    private val rawDataPtr = secureHeap.allocate((keySize / 8).toULong()).reinterpret<UByteVar>()
+class OpenSSLKey(private val secureHeap: SecureHeap,
+                 override val purposes: UByte,
+                 override val algorithm: String,
+                 private val rawDataPtr: CPointer<UByteVar>,
+                 private val rawDataSize: ULong
+): Key {
 
     override fun close() {
-        secureHeap.free((keySize / 8).toULong(), rawDataPtr)
+        secureHeap.free(rawDataSize, rawDataPtr)
     }
 
     companion object {
-        fun generateRandom(secureHeap: SecureHeap, keySize: Int, purposes: UByte,
-                           algorithm: String): OpenSSLKey =
-            OpenSSLKey(secureHeap, keySize, purposes, algorithm).apply {
-                if (RAND_bytes(rawDataPtr, 1) != 1) {
-                    throw Exception(ERR_func_error_string(ERR_get_error())?.toKString())
-                }
+        fun generateRandom(secureHeap: SecureHeap, keySize: Int, purposes: UByte, algorithm: String): OpenSSLKey {
+            val dataSize = (keySize / 8).toULong()
+            val rawDataPtr = secureHeap.allocate((keySize / 8).toULong()).reinterpret<UByteVar>()
+            if (RAND_bytes(rawDataPtr, 1) != 1) {
+                throw Exception(ERR_func_error_string(ERR_get_error())?.toKString())
             }
+
+            return OpenSSLKey(secureHeap, purposes, algorithm, rawDataPtr, dataSize)
+        }
     }
 
 
