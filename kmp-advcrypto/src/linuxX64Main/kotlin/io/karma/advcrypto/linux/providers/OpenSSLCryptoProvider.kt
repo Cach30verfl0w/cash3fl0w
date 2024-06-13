@@ -24,13 +24,11 @@ import io.karma.advcrypto.keys.KeyPair
 import io.karma.advcrypto.linux.keys.OpenSSLKey
 import io.karma.advcrypto.linux.utils.SecureHeap
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UByteVar
 import kotlinx.cinterop.reinterpret
 import libssl.BIO_ctrl_pending
 import libssl.BIO_free
 import libssl.BIO_new
 import libssl.BIO_read
-import libssl.BIO_s_mem
 import libssl.BIO_s_secmem
 import libssl.BN_free
 import libssl.BN_new
