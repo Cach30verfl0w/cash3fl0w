@@ -51,8 +51,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-            ~/usr/local/lib/android/*
-          key: kmp-advcrypto-avd-${{ matrix.api-level }}
+          key: kmp-advcrypto-avd-${{ matrix.api-level }}-cache
 
       - name: Create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
