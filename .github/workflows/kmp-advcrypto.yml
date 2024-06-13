@@ -21,7 +21,7 @@ jobs:
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5
 
       - name: Build and Test
-        run: ./gradlew :kmp-advcrypto:cleanLinuxX64Test :kmp-advcrypto:linuxX64Test
+        run: ./gradlew :kmp-advcrypto:cleanLinuxX64Test :kmp-advcrypto:linuxX64Test --info
   build-android:
     name: Android Tests
     runs-on: ubuntu-latest
