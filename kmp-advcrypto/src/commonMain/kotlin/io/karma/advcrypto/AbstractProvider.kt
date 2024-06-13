@@ -17,6 +17,7 @@
 package io.karma.advcrypto
 
 import io.karma.advcrypto.algorithm.Algorithm
+import io.karma.advcrypto.algorithm.delegates.KeyStoreFactory
 
 /**
  * This class is the implementation template of a single provider in this library. These providers
@@ -37,6 +38,7 @@ abstract class AbstractProvider(
     val version: String = "1.0.0"
 ): AutoCloseable {
     private var algorithms: MutableList<Algorithm> = ArrayList()
+    private var keyStores: MutableList<KeyStoreFactory<*>> = ArrayList()
 
     /**
      * This method initializes the provider with the providers list. In this process, the provider
@@ -65,11 +67,37 @@ abstract class AbstractProvider(
     }
 
     /**
+     * This method registers the specified keystore into this provider. The closure lambda is used
+     * to delegate functions of the keystore.
+     *
+     * @param name    Then name of the keystore
+     * @param closure The closure to define delegate functions
+     * @param C       The type of the context used in the keystore
+     *
+     * @author Cedric Hammes
+     * @since  13/06/2024
+     */
+    fun <C: Any> keyStore(name: String, closure: KeyStoreFactory<C>.() -> Unit) {
+        if (this.keyStores.firstOrNull { it.name == name } != null) {
+            throw IllegalStateException("Unable to register same keystore twice")
+        }
+        this.keyStores.add(KeyStoreFactory<C>(name).apply(closure))
+    }
+
+    /**
      * This method returns a copy of the algorithms registered in this provider.
      *
      * @author Cedric Hammes
      * @since  11/06/2024
      */
     fun getAlgorithms(): List<Algorithm> = ArrayList(this.algorithms)
+
+    /**
+     * This method returns a copy of the keystores registered in this provider.
+     *
+     * @author Cedric Hammes
+     * @since  11/06/2024
+     */
+    fun getKeyStores(): List<KeyStoreFactory<*>> = ArrayList(this.keyStores)
 
 }

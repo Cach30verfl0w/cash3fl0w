@@ -17,6 +17,7 @@
 package io.karma.advcrypto
 
 import io.karma.advcrypto.algorithm.Algorithm
+import io.karma.advcrypto.algorithm.delegates.KeyStoreFactory
 
 @OptIn(ExperimentalStdlibApi::class)
 class Providers: AutoCloseable {
@@ -36,6 +37,9 @@ class Providers: AutoCloseable {
 
     fun getAlgorithmByName(name: String): Algorithm? = this.registeredProviders
         .map { it.getAlgorithms() }.flatten().firstOrNull { it.name == name }
+
+    fun getKeyStoreByName(name: String): KeyStoreFactory<*>? = this.registeredProviders
+        .map { it.getKeyStores() }.flatten().firstOrNull { it.name == name }
 
     override fun close() {
         this.registeredProviders.forEach { it.close() }

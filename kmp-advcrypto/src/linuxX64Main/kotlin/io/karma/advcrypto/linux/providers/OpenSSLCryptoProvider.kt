@@ -42,7 +42,7 @@ import libssl.RSA_new
 
 class OpenSSLCryptoProvider: AbstractProvider(
     "Default",
-    "This class provides access to the default asymmetric and symmetric algorithms",
+    "This class provides access to the default asymmetric and symmetric algorithms on Linux",
     "1.0.0-Dev"
 ) {
     private val secureHeap = SecureHeap(UShort.MAX_VALUE.toULong() + 1u, 0u)
@@ -122,6 +122,8 @@ class OpenSSLCryptoProvider: AbstractProvider(
                         BIO_free(pubKeyBio)
                         RSA_free(rsa)
                     }
+
+                    // Format
 
                     // Free BIO data
                     BIO_free(privKeyBio)

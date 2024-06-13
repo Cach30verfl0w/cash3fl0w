@@ -33,7 +33,7 @@ interface Signature: AutoCloseable {
 
     companion object {
         /**
-         * This method returns an instance of a signature, created by the internal architecture of
+         * This method returns an instance of a signature created by the internal architecture of
          * this library. This interface is implemented in [SignatureDelegate] and used here.
          *
          * @author Cedric Hammes

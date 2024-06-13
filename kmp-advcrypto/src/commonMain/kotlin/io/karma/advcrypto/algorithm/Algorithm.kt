@@ -41,7 +41,7 @@ class Algorithm(val name: String) {
         private set
     var hasher: HasherDelegate<*>? = null
         private set
-
+    
     var allowedBlockModes: Array<BlockMode> = arrayOf()
     var defaultBlockMode: BlockMode? = null
 

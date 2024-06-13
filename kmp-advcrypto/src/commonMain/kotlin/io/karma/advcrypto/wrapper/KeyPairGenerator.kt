@@ -51,7 +51,7 @@ interface KeyPairGenerator: AutoCloseable {
 
     companion object {
         /**
-         * This method returns an instance of a keypair generator, created by the internal
+         * This method returns an instance of a keypair generator created by the internal
          * architecture of this library. This interface is implemented in [KeyGeneratorDelegate]
          * and used here.
          *

@@ -31,7 +31,7 @@ import javax.crypto.spec.IvParameterSpec
 
 class DefaultCryptoProvider: AbstractProvider(
     "Default",
-    "This class provides access to the default asymmetric and symmetric algorithms",
+    "This class provides access to the default asymmetric and symmetric algorithms on Android",
     "1.0.0-Dev"
 ) {
     override fun initialize(providers: Providers) {

@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-package io.karma.advcrypto
+package io.karma.advcrypto.linux.providers
 
-import io.karma.advcrypto.linux.providers.DefaultKeyStoreProvider
-import io.karma.advcrypto.linux.providers.OpenSSLCryptoProvider
+import io.karma.advcrypto.AbstractProvider
+import io.karma.advcrypto.Providers
 
-internal actual fun getDefaultPlatformInitializer(): Providers.() -> Unit = {
-    addProvider(OpenSSLCryptoProvider())
-    addProvider(DefaultKeyStoreProvider())
+class DefaultKeyStoreProvider: AbstractProvider(
+    "Default KeyStore",
+    "This provider provides access to the keystore interface on Linux devices",
+    "1.0.0-Dev"
+) {
+    override fun initialize(providers: Providers) {
+        keyStore("Default") {
+            initialize {
+                "Placeholder"
+            }
+        }
+    }
+
+    override fun close() {}
 }

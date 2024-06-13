@@ -45,7 +45,7 @@ interface Cipher: AutoCloseable {
 
     companion object {
         /**
-         * This method returns an instance of a key generator, created by the internal architecture
+         * This method returns an instance of a key generator created by the internal architecture
          * of this library. This interface is implemented in [CipherDelegate] and used here.
          *
          * @author Cedric Hammes
