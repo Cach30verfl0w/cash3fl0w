@@ -1,11 +1,9 @@
 package io.karma.advcrypto.tests
 
-import io.karma.advcrypto.Providers
 import io.karma.advcrypto.algorithm.BlockMode
 import io.karma.advcrypto.algorithm.Padding
 import io.karma.advcrypto.algorithm.specs.CipherSpec
 import io.karma.advcrypto.algorithm.specs.KeyGeneratorSpec
-import io.karma.advcrypto.android.providers.DefaultCryptoProvider
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.wrapper.Cipher
 import io.karma.advcrypto.wrapper.KeyGenerator
@@ -16,10 +14,6 @@ class CipherTests {
 
     @Test
     fun testAESWithCBC() {
-        if (Providers.getProviderByName("Default") == null) {
-            Providers.addProvider(DefaultCryptoProvider())
-        }
-
         // Generate key
         val keyGenerator = KeyGenerator.getInstance("AES")
         keyGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_SYMMETRIC).run {
@@ -42,10 +36,6 @@ class CipherTests {
 
     @Test
     fun testAESWithGCM() {
-        if (Providers.getProviderByName("Default") == null) {
-            Providers.addProvider(DefaultCryptoProvider())
-        }
-
         // Generate key
         val keyGenerator = KeyGenerator.getInstance("AES")
         keyGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_SYMMETRIC).run {
@@ -65,10 +55,6 @@ class CipherTests {
 
     @Test
     fun testRSA() {
-        if (Providers.getProviderByName("Default") == null) {
-            Providers.addProvider(DefaultCryptoProvider())
-        }
-
         // Generate keypair
         val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
         keyPairGenerator.initialize(KeyGeneratorSpec.Builder(Key.PURPOSES_ALL).run {

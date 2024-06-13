@@ -21,6 +21,10 @@ import io.karma.advcrypto.algorithm.Algorithm
 object Providers {
     private val registeredProviders: MutableList<AbstractProvider> = ArrayList()
 
+    init {
+        initDefaultPlatformProvider()
+    }
+
     fun addProvider(provider: AbstractProvider) {
         this.registeredProviders.add(provider)
     }
@@ -31,3 +35,5 @@ object Providers {
     fun getAlgorithmByName(name: String): Algorithm? = this.registeredProviders
         .map { it.getAlgorithms() }.flatten().firstOrNull { it.name == name }
 }
+
+internal expect fun initDefaultPlatformProvider()

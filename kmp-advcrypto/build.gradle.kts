@@ -1,5 +1,4 @@
 import com.android.build.api.dsl.ManagedVirtualDevice
-import org.jetbrains.kotlin.tooling.core.closure
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
