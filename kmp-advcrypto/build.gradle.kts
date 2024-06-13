@@ -31,6 +31,7 @@ kotlin {
             implementation(libs.bouncycastle.prov)
         }
         commonMain.dependencies {
+            implementation(libs.okio)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

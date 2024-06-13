@@ -29,6 +29,9 @@ class DefaultKeyStoreProvider: AbstractProvider(
             initialize {
                 "Placeholder"
             }
+            readKeyFromFile { context, path ->
+                TODO("Read and derive key")
+            }
         }
     }
 

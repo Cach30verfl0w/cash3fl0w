@@ -9,7 +9,7 @@ class KeyStoreTests {
     @Test
     fun testFileLoading() {
         val providers = Providers()
-        val keyStore = KeyStore.getInstance(providers, "Default")
+        KeyStore.getInstance(providers, "Default")
         providers.close()
     }
 

@@ -16,7 +16,9 @@
 
 package io.karma.advcrypto.algorithm.delegates
 
+import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.wrapper.KeyStore
+import okio.Path
 
 /**
  * This delegate implements the functionality of a keystore. This keystore is used to load files
@@ -30,6 +32,7 @@ import io.karma.advcrypto.wrapper.KeyStore
  */
 class KeyStoreFactory<C: Any>(val name: String) {
     private lateinit var initialize: () -> C
+    private var readKeyFromFile: ((C, Path) -> Key)? = null
 
     /**
      * This method creates a new keystore with the delegate functions specified and initializes the
@@ -42,6 +45,18 @@ class KeyStoreFactory<C: Any>(val name: String) {
      */
     fun createKeyStore(): KeyStore = object: KeyStore {
         private val context = initialize()
+
+        /**
+         * This method opens the file with `okio` and reads the content as a bytearray. This content
+         * is used to extract information from the key and return this key to the user.
+         *
+         * @param path The path of the file
+         * @return     The key derived from the file
+         *
+         * @author Cedric Hammes
+         * @since  14/06/2024
+         */
+        override fun readKeyFromFile(path: Path): Key = readKeyFromFile!!.invoke(context, path)
     }
 
     /**
@@ -52,5 +67,18 @@ class KeyStoreFactory<C: Any>(val name: String) {
      * @since         13/06/2024
      */
     fun initialize(closure: () -> C) = this.apply { initialize = closure }
+
+    /**
+     * This method sets the method delegate to the `readKeyFromFile` method. This delegate is used
+     * in the created cipher.
+     *
+     * @author Cedric Hammes
+     * @since  14/06/2024
+     */
+    fun readKeyFromFile(closure: (C, Path) -> Key) = this.apply {
+        if (readKeyFromFile != null)
+            throw IllegalStateException("Unable to set readKeyFromFile delegate twice")
+        readKeyFromFile = closure
+    }
 
 }
