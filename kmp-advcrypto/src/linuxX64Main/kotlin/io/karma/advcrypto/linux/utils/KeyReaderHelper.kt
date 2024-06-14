@@ -31,6 +31,8 @@ import libssl.BIO_write
 import libssl.EVP_PKEY
 import libssl.PEM_read_bio_PUBKEY
 import libssl.PEM_read_bio_PrivateKey
+import libssl.d2i_PUBKEY_bio
+import libssl.d2i_PrivateKey_bio
 
 /**
  * This utility is used to read keys from a raw memory pointer, size and purpose. This is used in
@@ -103,9 +105,55 @@ object KeyReaderHelper {
         }
 
         // Try to interpret the key as PEM-formatted key and return
-        val pemParsedKey = getPEMKey(pointer, size)
-        if (pemParsedKey != null) {
-            return OpenSSLPKey(pemParsedKey.first, purposes, pemParsedKey.second, KeyFormat.PEM)
+        val key = getPEMKey(pointer, size)
+        if (key != null) {
+            return OpenSSLPKey(key.first, purposes, key.second, KeyFormat.PEM)
+        }
+        return null
+    }
+
+    /**
+     * This method constructs a key buffer and try to interpret it as DER-formated private key. If
+     * that doesn't work, it tries to create a new buffer and interpret it as DER-formatted public
+     * key. If one of these worked, this function creates the key from the content and returns it
+     * to the caller. Otherwise this function returns null
+     *
+     * This method is try-to-parse and only works if the key it DER-formatted. Otherwise we return
+     * null (like mentioned before). All buffers created a being freed by the method itself and
+     * the key returned is being freed because of the [AutoCloseable].
+     *
+     * @param pointer  Pointer to the (encoded) data to try to interpret
+     * @param size     The size of the data provided by the pointer
+     * @param purposes The purposes of the key or the key creation
+     * @return         The key if one of the parses succeeds, otherwise null
+     *
+     * @author Cedric Hammes
+     * @since  14/06/2024
+     */
+    private fun tryParseAsDER(pointer: CPointer<ByteVar>, size: ULong, purposes: UByte): Key? {
+        fun getDERKey(pointer: CPointer<ByteVar>, size: ULong): Pair<CPointer<EVP_PKEY>, KeyType>? {
+            // Try to interpret the key as private key. If it works, we return it
+            val privateKeyBuffer = createSecureMemoryBuffer(pointer, size)
+            val privateKey = d2i_PrivateKey_bio(privateKeyBuffer, null)
+            BIO_free(privateKeyBuffer)
+            if (privateKey != null) {
+                return Pair(privateKey, KeyType.PRIVATE)
+            }
+
+            // Try to interpret the key as public key. If it works, we return it
+            val publicKeyBuffer = createSecureMemoryBuffer(pointer, size)
+            val publicKey = d2i_PUBKEY_bio(publicKeyBuffer, null)
+            BIO_free(publicKeyBuffer)
+            if (publicKey != null) {
+                return Pair(publicKey, KeyType.PUBLIC)
+            }
+            return null
+        }
+
+        // Try to interpret the key as PEM-formatted key and return
+        val key = getDERKey(pointer, size)
+        if (key != null) {
+            return OpenSSLPKey(key.first, purposes, key.second, KeyFormat.DER)
         }
         return null
     }
