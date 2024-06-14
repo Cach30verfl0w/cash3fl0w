@@ -27,5 +27,5 @@ package io.karma.advcrypto.annotations
 @RequiresOptIn(level = RequiresOptIn.Level.ERROR)
 @MustBeDocumented
 @Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FIELD)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 annotation class InsecureCryptoApi

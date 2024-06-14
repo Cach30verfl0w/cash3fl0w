@@ -16,7 +16,9 @@
 
 package io.karma.advcrypto.linux.keys
 
+import io.karma.advcrypto.annotations.InsecureCryptoApi
 import io.karma.advcrypto.keys.Key
+import io.karma.advcrypto.keys.enum.KeyFormat
 import io.karma.advcrypto.keys.enum.KeyType
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -31,6 +33,11 @@ import libssl.OBJ_nid2sn
 @OptIn(ExperimentalForeignApi::class)
 class OpenSSLPKey(private val rawKey: CPointer<EVP_PKEY>, override val purposes: UByte,
                   override val type: KeyType): Key {
+    @InsecureCryptoApi
+    override val encoded: ByteArray
+        get() = TODO("Not yet implemented")
+    override val format: KeyFormat = KeyFormat.PEM // TODO: Derive from encoded content
+
     override val algorithm: String = when(val baseId = EVP_PKEY_get_base_id(rawKey)) {
         EVP_PKEY_RSA -> "RSA"
         EVP_PKEY_ED25519 -> "ED25519"

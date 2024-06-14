@@ -77,6 +77,32 @@ enum class KeyFormat {
      * @see https://en.wikipedia.org/wiki/PKCS_12
      * @see https://datatracker.ietf.org/doc/html/rfc7292
      */
-    PKCS12
+    PKCS12,
+
+    /**
+     * X.509 is an International Telecommunication Union (ITU) standard defining the format of
+     * public key certificates. X.509 certificates are used in many Internet protocols, including
+     * TLS/SSL, which is the basis for HTTPS, the secure protocol for browsing the web.
+     *
+     * @see https://en.wikipedia.org/wiki/X.509
+     */
+    X509;
+
+    /**
+     * This method returns the string-literal name of the key format.
+     *
+     * @author Cedric Hammes
+     * @since  14/06/2024
+     */
+    override fun toString(): String {
+        return when(this) {
+            DER -> "DER"
+            PEM -> "PEM"
+            PKCS7 -> "PKCS#7"
+            PKCS8 -> "PKCS#8"
+            PKCS12 -> "PKCS#12"
+            X509 -> "X.509"
+        }
+    }
 
 }

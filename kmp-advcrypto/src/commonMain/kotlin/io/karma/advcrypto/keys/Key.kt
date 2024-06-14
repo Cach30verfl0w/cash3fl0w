@@ -16,6 +16,8 @@
 
 package io.karma.advcrypto.keys
 
+import io.karma.advcrypto.annotations.InsecureCryptoApi
+import io.karma.advcrypto.keys.enum.KeyFormat
 import io.karma.advcrypto.keys.enum.KeyType
 
 /**
@@ -29,6 +31,26 @@ import io.karma.advcrypto.keys.enum.KeyType
  */
 @OptIn(ExperimentalStdlibApi::class)
 interface Key: AutoCloseable {
+
+    /**
+     * This value represents the raw encoded key in the format also specified in this key. This is
+     * used to create another key by a key. Warning: If you use this method, the key can be copied
+     * into insecure memory that can be vulnerable to information leakage.
+     *
+     * @author Cedric Hammes
+     * @since  14/06/2024
+     */
+    @InsecureCryptoApi
+    val encoded: ByteArray
+
+    /**
+     * This value represents the format of the raw encoded key. This format is used to transform the
+     * format when the user exports this key or to genenerate another key by this key.
+     *
+     * @author Cedric Hammes
+     * @since  14/06/2024
+     */
+    val format: KeyFormat
 
     /**
      * This value represents the algorithm that was used to generate the key/the algorithm for which

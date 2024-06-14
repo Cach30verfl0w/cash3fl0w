@@ -16,12 +16,15 @@
 
 package io.karma.advcrypto.linux.keys
 
+import io.karma.advcrypto.annotations.InsecureCryptoApi
 import io.karma.advcrypto.keys.Key
+import io.karma.advcrypto.keys.enum.KeyFormat
 import io.karma.advcrypto.keys.enum.KeyType
 import io.karma.advcrypto.linux.utils.SecureHeap
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.UByteVar
+import kotlinx.cinterop.get
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.toKString
 import libssl.ERR_func_error_string
@@ -36,6 +39,9 @@ class OpenSSLKey(private val secureHeap: SecureHeap,
                  private val rawDataSize: ULong,
                  override val type: KeyType
 ): Key {
+    @InsecureCryptoApi
+    override val encoded: ByteArray = ByteArray(rawDataSize.toInt()) { rawDataPtr[it].toByte() }
+    override val format: KeyFormat = KeyFormat.DER // TODO: Derive from encoded content
 
     override fun close() {
         secureHeap.free(rawDataSize, rawDataPtr)
