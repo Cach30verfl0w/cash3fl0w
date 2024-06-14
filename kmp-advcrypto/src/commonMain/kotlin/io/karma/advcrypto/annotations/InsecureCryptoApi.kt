@@ -24,7 +24,7 @@ package io.karma.advcrypto.annotations
  * @author Cedric Hammes
  * @since  11/06/2024
  */
-@RequiresOptIn(level = RequiresOptIn.Level.ERROR)
+@RequiresOptIn("By using this function of the API, the confidentiality of sensitive data is in risk", RequiresOptIn.Level.ERROR)
 @MustBeDocumented
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
