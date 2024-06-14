@@ -17,6 +17,9 @@
 package io.karma.advcrypto.linux.utils
 
 import io.karma.advcrypto.keys.Key
+import io.karma.advcrypto.keys.enum.KeyFormat
+import io.karma.advcrypto.keys.enum.KeyType
+import io.karma.advcrypto.linux.keys.OpenSSLPKey
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -39,27 +42,27 @@ object KeyDetectionUtil {
             BIO_write(this, pointer, size.toInt())
         }?: throw RuntimeException("Error while writing key into secure memory BIO")
 
-    private fun tryParseAsPEM(pointer: CPointer<ByteVar>, size: ULong): Key? {
-        fun getPEMKey(pointer: CPointer<ByteVar>, size: ULong): Pair<CPointer<EVP_PKEY>, Boolean>? {
+    private fun tryParseAsPEM(pointer: CPointer<ByteVar>, size: ULong, purposes: UByte): Key? {
+        fun getPEMKey(pointer: CPointer<ByteVar>, size: ULong): Pair<CPointer<EVP_PKEY>, KeyType>? {
             val privateKeyBuffer = createSecureMemoryBuffer(pointer, size)
             val privateKey = PEM_read_bio_PrivateKey(privateKeyBuffer, null, null, null)
             BIO_free(privateKeyBuffer)
             if (privateKey != null) {
-                return Pair(privateKey, true)
+                return Pair(privateKey, KeyType.PRIVATE)
             }
 
             val publicKeyBuffer = createSecureMemoryBuffer(pointer, size)
             val publicKey = PEM_read_bio_PUBKEY(publicKeyBuffer, null, null, null)
             BIO_free(publicKeyBuffer)
             if (publicKey != null) {
-                return Pair(publicKey, false)
+                return Pair(publicKey, KeyType.PUBLIC)
             }
             return null
         }
 
         val pemParsedKey = getPEMKey(pointer, size)
         if (pemParsedKey != null) {
-
+            return OpenSSLPKey(pemParsedKey.first, purposes, pemParsedKey.second, KeyFormat.PEM)
         }
         return null
     }

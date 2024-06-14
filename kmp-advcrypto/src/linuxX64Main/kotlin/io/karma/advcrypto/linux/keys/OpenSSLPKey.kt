@@ -32,10 +32,9 @@ import libssl.OBJ_nid2sn
 
 @OptIn(ExperimentalForeignApi::class)
 class OpenSSLPKey(private val rawKey: CPointer<EVP_PKEY>, override val purposes: UByte,
-                  override val type: KeyType): Key {
+                  override val type: KeyType, override val format: KeyFormat = KeyFormat.PEM): Key { // TODO: Derive from encoded from default
     @InsecureCryptoApi
     override val encoded: ByteArray? = null
-    override val format: KeyFormat = KeyFormat.PEM // TODO: Derive from encoded content
 
     override val algorithm: String = when(val baseId = EVP_PKEY_get_base_id(rawKey)) {
         EVP_PKEY_RSA -> "RSA"
