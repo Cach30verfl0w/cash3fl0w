@@ -1,0 +1,1 @@
+These keys are only used to test the key reader. Don't use these keys in real-world applications!
