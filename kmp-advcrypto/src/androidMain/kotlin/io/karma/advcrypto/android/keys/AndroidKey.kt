@@ -17,10 +17,11 @@
 package io.karma.advcrypto.android.keys
 
 import io.karma.advcrypto.keys.Key
+import io.karma.advcrypto.keys.enum.KeyType
 
 typealias RawKey = java.security.Key
 
-class AndroidKey(val raw: RawKey, override val purposes: UByte): Key {
+class AndroidKey(val raw: RawKey, override val purposes: UByte, override val type: KeyType): Key {
     override val algorithm: String = raw.algorithm
 
     override fun toString(): String {

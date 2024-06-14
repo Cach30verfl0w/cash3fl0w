@@ -17,6 +17,7 @@
 package io.karma.advcrypto.linux.keys
 
 import io.karma.advcrypto.keys.Key
+import io.karma.advcrypto.keys.enum.KeyType
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toKString
@@ -28,7 +29,8 @@ import libssl.EVP_PKEY_get_base_id
 import libssl.OBJ_nid2sn
 
 @OptIn(ExperimentalForeignApi::class)
-class OpenSSLPKey(private val rawKey: CPointer<EVP_PKEY>, override val purposes: UByte): Key {
+class OpenSSLPKey(private val rawKey: CPointer<EVP_PKEY>, override val purposes: UByte,
+                  override val type: KeyType): Key {
     override val algorithm: String = when(val baseId = EVP_PKEY_get_base_id(rawKey)) {
         EVP_PKEY_RSA -> "RSA"
         EVP_PKEY_ED25519 -> "ED25519"

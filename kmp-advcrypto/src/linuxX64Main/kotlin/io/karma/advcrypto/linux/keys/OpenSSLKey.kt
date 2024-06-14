@@ -17,6 +17,7 @@
 package io.karma.advcrypto.linux.keys
 
 import io.karma.advcrypto.keys.Key
+import io.karma.advcrypto.keys.enum.KeyType
 import io.karma.advcrypto.linux.utils.SecureHeap
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -32,7 +33,8 @@ class OpenSSLKey(private val secureHeap: SecureHeap,
                  override val purposes: UByte,
                  override val algorithm: String,
                  private val rawDataPtr: CPointer<UByteVar>,
-                 private val rawDataSize: ULong
+                 private val rawDataSize: ULong,
+                 override val type: KeyType
 ): Key {
 
     override fun close() {
@@ -40,14 +42,20 @@ class OpenSSLKey(private val secureHeap: SecureHeap,
     }
 
     companion object {
-        fun generateRandom(secureHeap: SecureHeap, keySize: Int, purposes: UByte, algorithm: String): OpenSSLKey {
+        fun generateRandom(
+            secureHeap: SecureHeap,
+            keySize: Int,
+            purposes: UByte,
+            algorithm: String,
+            type: KeyType
+        ): OpenSSLKey {
             val dataSize = (keySize / 8).toULong()
             val rawDataPtr = secureHeap.allocate((keySize / 8).toULong()).reinterpret<UByteVar>()
             if (RAND_bytes(rawDataPtr, 1) != 1) {
                 throw Exception(ERR_func_error_string(ERR_get_error())?.toKString())
             }
 
-            return OpenSSLKey(secureHeap, purposes, algorithm, rawDataPtr, dataSize)
+            return OpenSSLKey(secureHeap, purposes, algorithm, rawDataPtr, dataSize, type)
         }
     }
 

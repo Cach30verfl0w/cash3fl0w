@@ -16,6 +16,7 @@
 
 package io.karma.advcrypto.android
 
+import android.annotation.SuppressLint
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import io.karma.advcrypto.algorithm.Algorithm
@@ -25,6 +26,7 @@ import io.karma.advcrypto.algorithm.delegates.SignatureDelegate
 import io.karma.advcrypto.android.keys.AndroidKey
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
+import io.karma.advcrypto.keys.enum.KeyType
 import java.security.KeyPairGenerator
 import java.security.MessageDigest
 import java.security.PrivateKey
@@ -59,16 +61,19 @@ fun KeyGeneratorDelegate<KeyPairGenerator>.androidKeyPairGenerator() {
         KeyPair(
             AndroidKey(
                 keyPair.public,
-                purposes and Key.PURPOSE_SIGNING.inv()
+                purposes and Key.PURPOSE_SIGNING.inv(),
+                KeyType.PUBLIC
             ),
             AndroidKey(
                 keyPair.private,
-                purposes and Key.PURPOSE_VERIFY.inv()
+                purposes and Key.PURPOSE_VERIFY.inv(),
+                KeyType.PRIVATE
             )
         )
     }
 }
 
+@SuppressLint("WrongConstant")
 fun KeyGeneratorDelegate<KeyPairGenerator>.androidKeyPair(defaultBlockMode: BlockMode, algorithm: String) {
     initializer { initSpec ->
         val purposes = purposesToAndroid(initSpec.purposes)
@@ -88,6 +93,7 @@ fun KeyGeneratorDelegate<KeyPairGenerator>.androidKeyPair(defaultBlockMode: Bloc
     androidKeyPairGenerator()
 }
 
+@SuppressLint("WrongConstant")
 fun KeyGeneratorDelegate<KeyGenerator>.androidKey(defaultBlockMode: BlockMode, algorithm: String) {
     initializer { initSpec ->
         val purposes = purposesToAndroid(initSpec.purposes)
@@ -107,7 +113,8 @@ fun KeyGeneratorDelegate<KeyGenerator>.androidKey(defaultBlockMode: BlockMode, a
     generateKey { context ->
         AndroidKey(
             context.internalContext.generateKey(),
-            context.generatorSpec.purposes
+            context.generatorSpec.purposes,
+            KeyType.SECRET
         )
     }
 }

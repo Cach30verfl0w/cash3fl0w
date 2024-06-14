@@ -21,6 +21,7 @@ import io.karma.advcrypto.Providers
 import io.karma.advcrypto.algorithm.delegates.KeyGenContext
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
+import io.karma.advcrypto.keys.enum.KeyType
 import io.karma.advcrypto.linux.keys.OpenSSLKey
 import io.karma.advcrypto.linux.keys.OpenSSLPKey
 import io.karma.advcrypto.linux.utils.SecureHeap
@@ -88,7 +89,8 @@ class OpenSSLCryptoProvider: AbstractProvider(
                         secureHeap,
                         context.generatorSpec.keySize?: defaultKeySize,
                         context.generatorSpec.purposes,
-                        "AES"
+                        "AES",
+                        KeyType.SECRET
                     )
                 }
             }
@@ -135,8 +137,16 @@ class OpenSSLCryptoProvider: AbstractProvider(
 
                     // Return key pair
                     KeyPair(
-                        OpenSSLPKey(publicKey!!, (purposes and (Key.PURPOSE_ENCRYPT or Key.PURPOSE_VERIFY))),
-                        OpenSSLPKey(privateKey!!, (purposes and (Key.PURPOSE_DECRYPT or Key.PURPOSE_SIGNING)))
+                        OpenSSLPKey(
+                            publicKey!!,
+                            (purposes and (Key.PURPOSE_ENCRYPT or Key.PURPOSE_VERIFY)),
+                            KeyType.PUBLIC
+                        ),
+                        OpenSSLPKey(
+                            privateKey!!,
+                            (purposes and (Key.PURPOSE_DECRYPT or Key.PURPOSE_SIGNING)),
+                            KeyType.PRIVATE
+                        )
                     )
                 }
 
