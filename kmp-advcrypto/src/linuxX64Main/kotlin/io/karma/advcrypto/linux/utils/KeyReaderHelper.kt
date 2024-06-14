@@ -32,18 +32,59 @@ import libssl.EVP_PKEY
 import libssl.PEM_read_bio_PUBKEY
 import libssl.PEM_read_bio_PrivateKey
 
-// TODO: Detect key format, key size and algorithm (etc)
-
+/**
+ * This utility is used to read keys from a raw memory pointer, size and purpose. This is used in
+ * the default keystore to create keys from byte arrays, strings and files. This class uses a few
+ * methods to try to interpret the key with different formats. The format that doesn't fails is
+ * being chosen and returned to the caller. Otherwise this helper returns null to the caller.
+ *
+ * This utility is 100% based on OpenSSL and it's BIO interface. We try to hold secret information
+ * like private keys as secure as possible. So we try to instrument system features to hide that
+ * information.
+ *
+ * @author Cedric Hammes
+ * @since  14/06/2024
+ */
 @OptIn(ExperimentalForeignApi::class)
-object KeyDetectionUtil {
+object KeyReaderHelper {
 
+    /**
+     * This method creates a BIO (Basic Input/Output) object in secured memory and writes the
+     * specified data into it. This memory is more protected against memory leakage as normal
+     * memory.
+     *
+     * This buffer is marked secure because is holds secret/private keys and the leakage of
+     * them is a security concern and this memory tries to prevent that.
+     *
+     * @author Cedric Hammes
+     * @since  14/06/2024
+     */
     private fun createSecureMemoryBuffer(pointer: CPointer<ByteVar>, size: ULong): CPointer<BIO> =
         BIO_new(BIO_s_secmem()).apply {
             BIO_write(this, pointer, size.toInt())
         }?: throw RuntimeException("Error while writing key into secure memory BIO")
 
+    /**
+     * This method constructs a key buffer and try to interpret it as PEM-formated private key. If
+     * that doesn't work, it tries to create a new buffer and interpret it as PEM-formatted public
+     * key. If one of these worked, this function creates the key from the content and returns it
+     * to the caller. Otherwise this function returns null
+     *
+     * This method is try-to-parse and only works if the key it PEM-formatted. Otherwise we return
+     * null (like mentioned before). All buffers created a being freed by the method itself and
+     * the key returned is being freed because of the [AutoCloseable].
+     *
+     * @param pointer  Pointer to the (encoded) data to try to interpret
+     * @param size     The size of the data provided by the pointer
+     * @param purposes The purposes of the key or the key creation
+     * @return         The key if one of the parses succeeds, otherwise null
+     *
+     * @author Cedric Hammes
+     * @since  14/06/2024
+     */
     private fun tryParseAsPEM(pointer: CPointer<ByteVar>, size: ULong, purposes: UByte): Key? {
         fun getPEMKey(pointer: CPointer<ByteVar>, size: ULong): Pair<CPointer<EVP_PKEY>, KeyType>? {
+            // Try to interpret the key as private key. If it works, we return it
             val privateKeyBuffer = createSecureMemoryBuffer(pointer, size)
             val privateKey = PEM_read_bio_PrivateKey(privateKeyBuffer, null, null, null)
             BIO_free(privateKeyBuffer)
@@ -51,6 +92,7 @@ object KeyDetectionUtil {
                 return Pair(privateKey, KeyType.PRIVATE)
             }
 
+            // Try to interpret the key as public key. If it works, we return it
             val publicKeyBuffer = createSecureMemoryBuffer(pointer, size)
             val publicKey = PEM_read_bio_PUBKEY(publicKeyBuffer, null, null, null)
             BIO_free(publicKeyBuffer)
@@ -60,6 +102,7 @@ object KeyDetectionUtil {
             return null
         }
 
+        // Try to interpret the key as PEM-formatted key and return
         val pemParsedKey = getPEMKey(pointer, size)
         if (pemParsedKey != null) {
             return OpenSSLPKey(pemParsedKey.first, purposes, pemParsedKey.second, KeyFormat.PEM)

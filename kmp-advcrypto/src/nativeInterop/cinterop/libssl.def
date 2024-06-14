@@ -1,3 +1,3 @@
-headers = openssl/crypto.h openssl/err.h openssl/aes.h openssl/rsa.h openssl/rand.h openssl/evp.h openssl/pem.h openssl/bio.h openssl/md5.h
+headers = openssl/crypto.h openssl/err.h openssl/aes.h openssl/rsa.h openssl/rand.h openssl/evp.h openssl/pem.h openssl/bio.h openssl/md5.h openssl/pkcs7.h
 linkerOpts = -L/usr/lib/x86_64-linux-gnu -L/usr/lib -ldl -lpthread -lc -lm -lssl -lcrypto
 compilerOpts = -I/usr/include -I/usr/include/x86_64-linux-gnu
