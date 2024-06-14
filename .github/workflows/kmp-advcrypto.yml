@@ -18,6 +18,12 @@ jobs:
           architecture: 'x64'
           cache: 'gradle'
 
+      - name: Setup Konan Cache
+        uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-konan-cache
+          path: ~/.konan
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5
 
