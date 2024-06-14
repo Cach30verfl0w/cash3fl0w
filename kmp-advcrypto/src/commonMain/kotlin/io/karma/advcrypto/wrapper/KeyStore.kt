@@ -35,13 +35,15 @@ interface KeyStore {
      * This method opens the file with `okio` and reads the content as a bytearray. This content is
      * used to extract information from the key and return this key to the user.
      *
-     * @param path The path of the file
-     * @return     The key derived from the file
+     * @param path      The path of the file
+     * @param algorithm The name of the key's algorithm
+     * @param purposes  The purposes of the key
+     * @return          The key derived from the file
      *
      * @author Cedric Hammes
      * @since  14/06/2024
      */
-    fun readKeyFromFile(path: Path): Key
+    fun readKeyFromFile(path: Path, algorithm: String, purposes: UByte): Key
 
     companion object {
         /**

@@ -32,7 +32,7 @@ import okio.Path
  */
 class KeyStoreFactory<C: Any>(val name: String) {
     private lateinit var initialize: () -> C
-    private var readKeyFromFile: ((C, Path) -> Key)? = null
+    private var readKeyFromFile: ((C, Path, String, UByte) -> Key)? = null
 
     /**
      * This method creates a new keystore with the delegate functions specified and initializes the
@@ -45,18 +45,9 @@ class KeyStoreFactory<C: Any>(val name: String) {
      */
     fun createKeyStore(): KeyStore = object: KeyStore {
         private val context = initialize()
-
-        /**
-         * This method opens the file with `okio` and reads the content as a bytearray. This content
-         * is used to extract information from the key and return this key to the user.
-         *
-         * @param path The path of the file
-         * @return     The key derived from the file
-         *
-         * @author Cedric Hammes
-         * @since  14/06/2024
-         */
-        override fun readKeyFromFile(path: Path): Key = readKeyFromFile!!.invoke(context, path)
+        
+        override fun readKeyFromFile(path: Path, algorithm: String, purposes: UByte): Key =
+            readKeyFromFile!!.invoke(context, path, algorithm, purposes)
     }
 
     /**
@@ -75,7 +66,7 @@ class KeyStoreFactory<C: Any>(val name: String) {
      * @author Cedric Hammes
      * @since  14/06/2024
      */
-    fun readKeyFromFile(closure: (C, Path) -> Key) = this.apply {
+    fun readKeyFromFile(closure: (C, Path, String, UByte) -> Key) = this.apply {
         if (readKeyFromFile != null)
             throw IllegalStateException("Unable to set readKeyFromFile delegate twice")
         readKeyFromFile = closure

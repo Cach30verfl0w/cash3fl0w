@@ -18,6 +18,7 @@ package io.karma.advcrypto.linux.providers
 
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.Providers
+import io.karma.advcrypto.linux.utils.KeyReaderHelper
 import okio.FileSystem
 
 class DefaultKeyStoreProvider: AbstractProvider(
@@ -30,12 +31,14 @@ class DefaultKeyStoreProvider: AbstractProvider(
             initialize {
                 "Placeholder"
             }
-            readKeyFromFile { context, path ->
+            readKeyFromFile { _, path, algorithm, purposes ->
                 FileSystem.SYSTEM.read(path) {
                     val data = readByteArray()
                     close()
+                    return@readKeyFromFile KeyReaderHelper.tryParse(data, purposes, algorithm)?:
+                    throw RuntimeException("Unable to parse key, no valid format!")
+
                 }
-                TODO("Read and derive key")
             }
         }
     }

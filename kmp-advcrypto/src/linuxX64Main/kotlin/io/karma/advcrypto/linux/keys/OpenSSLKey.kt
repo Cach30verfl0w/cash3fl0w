@@ -41,7 +41,7 @@ class OpenSSLKey(private val secureHeap: SecureHeap,
 ): Key {
     @InsecureCryptoApi
     override val encoded: ByteArray = ByteArray(rawDataSize.toInt()) { rawDataPtr[it].toByte() }
-    override val format: KeyFormat = KeyFormat.DER // TODO: Derive from encoded content
+    override val format: KeyFormat = KeyFormat.DER // TODO: Derive from key
 
     override fun close() {
         secureHeap.free(rawDataSize, rawDataPtr)
