@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.karma.advcrypto.keys.formats
+package io.karma.advcrypto.keys.enum
 
 /**
  * This enum contains all key file/data formats supported by this library. These formats are used to
