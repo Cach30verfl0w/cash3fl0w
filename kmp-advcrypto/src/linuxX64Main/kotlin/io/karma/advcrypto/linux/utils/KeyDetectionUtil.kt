@@ -16,14 +16,17 @@
 
 package io.karma.advcrypto.linux.utils
 
-import io.karma.advcrypto.keys.formats.KeyFormat
+import io.karma.advcrypto.keys.Key
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import libssl.BIO
+import libssl.BIO_free
 import libssl.BIO_new
 import libssl.BIO_s_secmem
 import libssl.BIO_write
+import libssl.EVP_PKEY
+import libssl.PEM_read_bio_PUBKEY
 import libssl.PEM_read_bio_PrivateKey
 
 // TODO: Detect key format, key size and algorithm (etc)
@@ -31,48 +34,33 @@ import libssl.PEM_read_bio_PrivateKey
 @OptIn(ExperimentalForeignApi::class)
 object KeyDetectionUtil {
 
-    private fun createSecureMemoryBuffer(pointer: CPointer<ByteVar>, size: Int): CPointer<BIO> =
+    private fun createSecureMemoryBuffer(pointer: CPointer<ByteVar>, size: ULong): CPointer<BIO> =
         BIO_new(BIO_s_secmem()).apply {
-            BIO_write(this, pointer, size)
+            BIO_write(this, pointer, size.toInt())
         }?: throw RuntimeException("Error while writing key into secure memory BIO")
 
-    private fun tryParseAsPEM(pointer: CPointer<ByteVar>, size: Int): Unit? {
-        val privateKeyBuffer = createSecureMemoryBuffer(pointer, size)
-        val privateKey = PEM_read_bio_PrivateKey(privateKeyBuffer, null, null, null)
-        if (privateKey == null) {
-            val publicKeyBuffer = createSecureMemoryBuffer(pointer, size)
-            // TODO: Parse as public key and handle
-        }
-
-
-        return null
-    }
-
-    /*private fun tryParseAsPEM(pointer: CPointer<ByteVar>, size: Int): KeyInfo {
-        val privateKeyBuffer = createSecureMemoryBuffer(pointer, size)
-        val parsedPrivateKey = PEM_read_bio_PrivateKey(privateKeyBuffer, null, null, null)
-        val algorithm = when (EVP_PKEY_get_base_id(parsedPrivateKey)) {
-            EVP_PKEY_RSA -> "RSA"
-            EVP_PKEY_ED25519 -> "ED25519"
-            EVP_PKEY_EC -> {
-
+    private fun tryParseAsPEM(pointer: CPointer<ByteVar>, size: ULong): Key? {
+        fun getPEMKey(pointer: CPointer<ByteVar>, size: ULong): Pair<CPointer<EVP_PKEY>, Boolean>? {
+            val privateKeyBuffer = createSecureMemoryBuffer(pointer, size)
+            val privateKey = PEM_read_bio_PrivateKey(privateKeyBuffer, null, null, null)
+            BIO_free(privateKeyBuffer)
+            if (privateKey != null) {
+                return Pair(privateKey, true)
             }
-            else -> "Unknown"
+
+            val publicKeyBuffer = createSecureMemoryBuffer(pointer, size)
+            val publicKey = PEM_read_bio_PUBKEY(publicKeyBuffer, null, null, null)
+            BIO_free(publicKeyBuffer)
+            if (publicKey != null) {
+                return Pair(publicKey, false)
+            }
+            return null
         }
 
-        BIO_free(privateKeyBuffer)
-        TODO("Return key info")
-    }*/
+        val pemParsedKey = getPEMKey(pointer, size)
+        if (pemParsedKey != null) {
 
-    fun detectKeyFormat(pointer: CPointer<ByteVar>, size: Int): KeyFormat? {
-        /*val tempKeyBuffer = BIO_new_mem_buf(pointer, size)
-       // val publicKey = PEM_read_bio_RSAPublicKey(tempKeyBuffer, null, null, null)
-        val privateKey = PEM_read_bio_PrivateKey(tempKeyBuffer, null, null, null)
-        if (privateKey != null) {
-            println(OBJ_nid2sn(EVP_PKEY_get_base_id(privateKey))!!.toKString())
-            EVP_PKEY_free(privateKey)
-            return KeyFormat.PEM
-        }*/
+        }
         return null
     }
 

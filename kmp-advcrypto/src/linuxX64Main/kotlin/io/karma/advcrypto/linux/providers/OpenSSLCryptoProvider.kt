@@ -22,26 +22,20 @@ import io.karma.advcrypto.algorithm.delegates.KeyGenContext
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.KeyPair
 import io.karma.advcrypto.linux.keys.OpenSSLKey
+import io.karma.advcrypto.linux.keys.OpenSSLPKey
 import io.karma.advcrypto.linux.utils.SecureHeap
-import kotlinx.cinterop.ByteVar
-import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CValuesRef
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.UByteVar
-import kotlinx.cinterop.UByteVarOf
 import kotlinx.cinterop.refTo
-import kotlinx.cinterop.reinterpret
-import libssl.BIO_ctrl_pending
-import libssl.BIO_free
-import libssl.BIO_new
-import libssl.BIO_read
-import libssl.BIO_s_secmem
 import libssl.BN_free
 import libssl.BN_new
 import libssl.BN_set_word
+import libssl.EVP_PKEY_free
+import libssl.EVP_PKEY_new
+import libssl.EVP_PKEY_set1_RSA
 import libssl.MD5
-import libssl.PEM_write_bio_RSAPrivateKey
-import libssl.PEM_write_bio_RSAPublicKey
+import libssl.RSAPublicKey_dup
 import libssl.RSA_F4
 import libssl.RSA_free
 import libssl.RSA_generate_key_ex
@@ -113,6 +107,7 @@ class OpenSSLCryptoProvider: AbstractProvider(
 
                 generateKeyPair { context ->
                     val keySize = context.generatorSpec.keySize?: defaultKeySize
+                    val purposes = context.generatorSpec.purposes
 
                     // Generate keys
                     val rsa = RSA_new()
@@ -121,57 +116,27 @@ class OpenSSLCryptoProvider: AbstractProvider(
                         throw RuntimeException("RSA key generation failed")
                     }
 
-                    // Write public and private key into memory
-                    val privKeyBio = BIO_new(BIO_s_secmem())
-                    if (PEM_write_bio_RSAPrivateKey(privKeyBio, rsa, null, null, 0, null, null) != 1) {
-                        BIO_free(privKeyBio)
+                    val privateKey = EVP_PKEY_new()
+                    if (EVP_PKEY_set1_RSA(privateKey, rsa) != 1) {
+                        EVP_PKEY_free(privateKey)
                         RSA_free(rsa)
-                        throw RuntimeException("Writing private key into memory failed")
+                        throw RuntimeException("Unable to acquire private key from RSA generator")
                     }
 
-                    val pubKeyBio = BIO_new(BIO_s_secmem())
-                    if (PEM_write_bio_RSAPublicKey(pubKeyBio, rsa) != 1) {
-                        BIO_free(privKeyBio)
-                        BIO_free(pubKeyBio)
+                    val publicKey = EVP_PKEY_new()
+                    val publicKeyRSA = RSAPublicKey_dup(rsa)
+                    if (EVP_PKEY_set1_RSA(publicKey, publicKeyRSA) != 1) {
+                        EVP_PKEY_free(privateKey)
+                        EVP_PKEY_free(publicKey)
+                        RSA_free(publicKeyRSA)
                         RSA_free(rsa)
-                        throw RuntimeException("Writing public key into memory failed")
+                        throw RuntimeException("Unable to acquire public key from RSA generator")
                     }
-
-                    // Read public key into other secure memory
-                    val pubKeyBufferSize = BIO_ctrl_pending(pubKeyBio)
-                    val pubKeyBuffer = secureHeap.allocate(pubKeyBufferSize)
-                    val pubLen = BIO_read(pubKeyBio, pubKeyBuffer, pubKeyBufferSize.toInt())
-                    if (pubLen < 0) {
-                        secureHeap.free(pubKeyBufferSize, pubKeyBuffer)
-                        BIO_free(privKeyBio)
-                        BIO_free(pubKeyBio)
-                        RSA_free(rsa)
-                    }
-
-                    // Read public key into other secure memory
-                    val privKeyBufferSize = BIO_ctrl_pending(privKeyBio)
-                    val privKeyBuffer = secureHeap.allocate(privKeyBufferSize)
-                    val privLen = BIO_read(privKeyBio, privKeyBuffer, privKeyBufferSize.toInt())
-                    if (privLen < 0) {
-                        secureHeap.free(pubKeyBufferSize, pubKeyBuffer)
-                        secureHeap.free(privKeyBufferSize, privKeyBuffer)
-                        BIO_free(privKeyBio)
-                        BIO_free(pubKeyBio)
-                        RSA_free(rsa)
-                    }
-
-                    // Format
-
-                    // Free BIO data
-                    BIO_free(privKeyBio)
-                    BIO_free(pubKeyBio)
 
                     // Return key pair
                     KeyPair(
-                        OpenSSLKey(secureHeap, 0u, "RSA", pubKeyBuffer.reinterpret(),
-                            pubKeyBufferSize),
-                        OpenSSLKey(secureHeap, 0u, "RSA", privKeyBuffer.reinterpret(),
-                            privKeyBufferSize)
+                        OpenSSLPKey(publicKey!!, (purposes and (Key.PURPOSE_ENCRYPT or Key.PURPOSE_VERIFY))),
+                        OpenSSLPKey(privateKey!!, (purposes and (Key.PURPOSE_DECRYPT or Key.PURPOSE_SIGNING)))
                     )
                 }
 

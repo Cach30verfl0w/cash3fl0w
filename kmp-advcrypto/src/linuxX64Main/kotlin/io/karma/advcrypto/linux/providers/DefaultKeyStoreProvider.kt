@@ -18,6 +18,7 @@ package io.karma.advcrypto.linux.providers
 
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.Providers
+import okio.FileSystem
 
 class DefaultKeyStoreProvider: AbstractProvider(
     "Default KeyStore",
@@ -30,6 +31,10 @@ class DefaultKeyStoreProvider: AbstractProvider(
                 "Placeholder"
             }
             readKeyFromFile { context, path ->
+                FileSystem.SYSTEM.read(path) {
+                    val data = readByteArray()
+                    close()
+                }
                 TODO("Read and derive key")
             }
         }
