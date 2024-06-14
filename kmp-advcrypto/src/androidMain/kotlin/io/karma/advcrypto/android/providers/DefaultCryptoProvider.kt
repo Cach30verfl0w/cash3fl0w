@@ -85,9 +85,12 @@ class DefaultCryptoProvider: AbstractProvider(
                     Cipher.getInstance("AES/${spec.blockMode?: defaultBlockMode}/${spec.padding}")
                 }
                 encrypt { context, data ->
+                    if (context.key !is AndroidKey) // TODO: How to read encoded key on Android?
+                        throw IllegalArgumentException("Due to the Android security system you " +
+                                "can only use keys generated with the default key generators")
+
                     val cipher = context.internalContext
-                    // TODO: Add support for non-default implemented key
-                    cipher.init(Cipher.ENCRYPT_MODE, (context.key as AndroidKey).raw)
+                    cipher.init(Cipher.ENCRYPT_MODE, (context.key).raw)
                     val encryptedData = cipher.doFinal(data)
                     val initVector = cipher.iv
                     val finalData = ByteArray(encryptedData.size + initVector.size + 4)
@@ -102,6 +105,10 @@ class DefaultCryptoProvider: AbstractProvider(
                     finalData
                 }
                 decrypt { context, data ->
+                    if (context.key !is AndroidKey) // TODO: How to read encoded key on Android?
+                        throw IllegalArgumentException("Due to the Android security system you " +
+                                "can only use keys generated with the default key generators")
+
                     val initVectorSize = (data[0].toInt() shl 24) or
                             (data[1].toInt() shl 16) or
                             (data[2].toInt() shl 8) or
@@ -111,8 +118,7 @@ class DefaultCryptoProvider: AbstractProvider(
 
                     // Init cipher
                     val cipher = context.internalContext
-                    // TODO: Add support for non-default implemented key
-                    cipher.init(Cipher.DECRYPT_MODE, (context.key as AndroidKey).raw,
+                    cipher.init(Cipher.DECRYPT_MODE, context.key.raw,
                         when(context.spec.blockMode?: defaultBlockMode) {
                             BlockMode.GCM -> GCMParameterSpec(128, initVector)
                             else -> IvParameterSpec(initVector)

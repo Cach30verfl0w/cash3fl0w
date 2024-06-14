@@ -21,13 +21,13 @@ import io.karma.advcrypto.wrapper.Hasher
 class HasherDelegate<C> {
     private lateinit var initialize: () -> C
     private lateinit var hash: (C, ByteArray) -> String
-    private var close: (CipherContext<C>) -> Unit = {}
+    private var close: (C) -> Unit = {}
 
     fun createHasher(): Hasher {
         return object: Hasher {
             val context = initialize()
             override fun hash(data: ByteArray): String = hash(context, data)
-            override fun close() { close() }
+            override fun close() { if (close != null) close(context) }
         }
     }
 
@@ -46,7 +46,7 @@ class HasherDelegate<C> {
      * @since  11/06/2024
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    fun close(closure: (context: CipherContext<C>) -> Unit) {
+    fun close(closure: (context: C) -> Unit) {
         this.close = closure
     }
 }

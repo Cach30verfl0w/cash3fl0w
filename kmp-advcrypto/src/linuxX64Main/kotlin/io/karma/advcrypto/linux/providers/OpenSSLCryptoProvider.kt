@@ -25,16 +25,45 @@ import io.karma.advcrypto.keys.enum.KeyType
 import io.karma.advcrypto.linux.keys.OpenSSLKey
 import io.karma.advcrypto.linux.keys.OpenSSLPKey
 import io.karma.advcrypto.linux.utils.SecureHeap
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.CPointerVar
 import kotlinx.cinterop.CValuesRef
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.IntVar
 import kotlinx.cinterop.UByteVar
+import kotlinx.cinterop.UIntVar
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.ptr
 import kotlinx.cinterop.refTo
+import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.usePinned
+import kotlinx.cinterop.value
 import libssl.BN_free
 import libssl.BN_new
 import libssl.BN_set_word
+import libssl.EVP_DigestFinal
+import libssl.EVP_DigestInit
+import libssl.EVP_DigestUpdate
+import libssl.EVP_MAX_MD_SIZE
+import libssl.EVP_MD
+import libssl.EVP_MD_CTX
+import libssl.EVP_MD_CTX_free
+import libssl.EVP_MD_CTX_new
 import libssl.EVP_PKEY_free
 import libssl.EVP_PKEY_new
 import libssl.EVP_PKEY_set1_RSA
+import libssl.EVP_md5
+import libssl.EVP_sha1
+import libssl.EVP_sha224
+import libssl.EVP_sha256
+import libssl.EVP_sha384
+import libssl.EVP_sha3_224
+import libssl.EVP_sha3_256
+import libssl.EVP_sha3_384
+import libssl.EVP_sha3_512
+import libssl.EVP_sha512
 import libssl.MD5
 import libssl.RSAPublicKey_dup
 import libssl.RSA_F4
@@ -60,26 +89,48 @@ class OpenSSLCryptoProvider: AbstractProvider(
 
     @OptIn(ExperimentalForeignApi::class, ExperimentalStdlibApi::class)
     override fun initialize(providers: Providers) {
-        fun openSSLHasher(name: String, size: Int,
-                          hasher: (CValuesRef<UByteVar>, ULong, CValuesRef<UByteVar>) -> Unit) {
+        fun openSSLHasher(name: String, hasher: CValuesRef<EVP_MD>?) {
             algorithm(providers, name) {
                 hasher {
-                    initialize { 0 }
-                    hash { _, data ->
-                        val output = UByteArray(size)
-                        hasher(data.toUByteArray().refTo(0), data.size.toULong(), output.refTo(0))
-                        output.toByteArray().toHexString()
+                    initialize {
+                        val context = EVP_MD_CTX_new()!!
+                        if (EVP_DigestInit(context, hasher) != 1) {
+                            EVP_MD_CTX_free(context)
+                            throw RuntimeException("Unable to create digest for '$name'")
+                        }
+                        context
                     }
+                    hash { context, data ->
+                        if (EVP_DigestUpdate(context, data.refTo(0), data.size.toULong()) != 1) {
+                            throw RuntimeException("Unable to load content into hasher for '$name'")
+                        }
+                        memScoped {
+                            val outLen = alloc<UIntVar>()
+                            val outputArray = ByteArray(EVP_MAX_MD_SIZE)
+                            outputArray.usePinned {
+                                if (EVP_DigestFinal(context, it.addressOf(0).reinterpret(),
+                                        outLen.ptr) != 1) {
+                                    throw RuntimeException("Unable to finalize hasher for '$name'")
+                                }
+                            }
+                            outputArray.sliceArray(0..<outLen.value.toInt()).toHexString()
+                        }
+                    }
+                    close { context -> EVP_MD_CTX_free(context) }
                 }
             }
         }
 
-        openSSLHasher("MD5", 16, ::MD5)
-        openSSLHasher("SHA1", 20, ::SHA1)
-        openSSLHasher("SHA224", SHA224_DIGEST_LENGTH, ::SHA224)
-        openSSLHasher("SHA256", SHA256_DIGEST_LENGTH, ::SHA256)
-        openSSLHasher("SHA384", SHA384_DIGEST_LENGTH, ::SHA384)
-        openSSLHasher("SHA512", SHA512_DIGEST_LENGTH, ::SHA512)
+        openSSLHasher("MD5", EVP_md5())
+        openSSLHasher("SHA1", EVP_sha1())
+        openSSLHasher("SHA224", EVP_sha224())
+        openSSLHasher("SHA256", EVP_sha256())
+        openSSLHasher("SHA384", EVP_sha384())
+        openSSLHasher("SHA512", EVP_sha512())
+        openSSLHasher("SHA3-224", EVP_sha3_224())
+        openSSLHasher("SHA3-256", EVP_sha3_256())
+        openSSLHasher("SHA3-384", EVP_sha3_384())
+        openSSLHasher("SHA3-512", EVP_sha3_512())
 
         algorithm(providers, "AES") {
             keyGenerator<Unit>(Key.PURPOSES_SYMMETRIC, arrayOf(128, 196, 256), 256) {

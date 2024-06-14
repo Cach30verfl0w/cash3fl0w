@@ -6,7 +6,7 @@ kmp-advcrypto is a cross-platform cryptography library developed with Kotlin Mul
 
 ## Supported algorithms (WIP)
 Below this text is a list of different category of algorithms and a list with the supported algorithms:
-- **Hash Functions:** MD5, SHA (SHA-1, SHA-224, SHA-256, SHA-384 and SHA-512) and Argon2 (Argon2i, Argon2d and Argon2id)
+- **Hash Functions:** MD5, SHA (SHA-1, SHA-224, SHA-256, SHA-384 and SHA-512), SHA3 (SHA3-224, SHA3-256, SHA3-384 and SHA3-512) and Argon2 (Argon2i, Argon2d and Argon2id)
 - **Ciphers:** AES (AES-128, AES-196 and AES-256), Blowfish, DES and RSA (RSA-1024, RSA-2048 and RSA-4096)
 - **KEMs:** CRYSTALS-Kyber (Kyber-512, Kyber-768 and Kyber-1024)
 - **Signatures:** CRYSTALS-Dilithium (2, 3 and 5)
