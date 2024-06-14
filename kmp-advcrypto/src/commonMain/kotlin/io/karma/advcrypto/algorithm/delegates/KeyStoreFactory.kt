@@ -45,7 +45,7 @@ class KeyStoreFactory<C: Any>(val name: String) {
      */
     fun createKeyStore(): KeyStore = object: KeyStore {
         private val context = initialize()
-        
+
         override fun readKeyFromFile(path: Path, algorithm: String, purposes: UByte): Key =
             readKeyFromFile!!.invoke(context, path, algorithm, purposes)
     }

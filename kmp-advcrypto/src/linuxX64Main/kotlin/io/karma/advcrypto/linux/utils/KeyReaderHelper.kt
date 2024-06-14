@@ -193,7 +193,7 @@ object KeyReaderHelper {
      */
     fun tryParse(array: ByteArray, purposes: UByte, algorithm: String? = null): Key? = array.usePinned {
         val parsedKey = tryParse(it.addressOf(0), array.size.toULong(), purposes)?: return null
-        if (parsedKey.algorithm != algorithm)
+        if (algorithm != null && parsedKey.algorithm != algorithm)
             throw IllegalArgumentException("The algorithm '$algorithm' was specified, but key is '${parsedKey.algorithm}'")
         return parsedKey
     }
