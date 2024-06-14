@@ -2,7 +2,7 @@ name: kmp-advcrypto
 on:
   push:
 
-# TODO: Add Gradle cache and don't create Android SDK if SDK was cached
+# TODO: Don't create Android SDK if SDK was cached
 jobs:
   build-linux:
     name: Linux Tests
@@ -37,6 +37,7 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
           architecture: 'x64'
+          cache: 'gradle'
 
       - name: Enable KVM
         run: |
