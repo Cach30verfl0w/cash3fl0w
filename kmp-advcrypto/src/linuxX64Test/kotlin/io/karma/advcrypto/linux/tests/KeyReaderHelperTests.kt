@@ -10,11 +10,10 @@ import okio.Path.Companion.toPath
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.test.Test
 
-@OptIn(ExperimentalNativeApi::class)
+@OptIn(ExperimentalNativeApi::class, InsecureCryptoApi::class)
 class KeyReaderHelperTests {
     private val fileSystem = FileSystem.SYSTEM
-
-    @OptIn(InsecureCryptoApi::class)
+    
     @Test
     fun testPEM() {
         fileSystem.read("./testkeys/rsa-private-key.pem".toPath()) {
