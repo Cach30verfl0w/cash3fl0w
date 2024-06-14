@@ -48,7 +48,6 @@ class KeyReaderHelperTests {
             assert(key.algorithm == "RSA")
             assert(key.format == KeyFormat.DER)
             assert(key.type == KeyType.PUBLIC)
-            close()
         }
     }
 
