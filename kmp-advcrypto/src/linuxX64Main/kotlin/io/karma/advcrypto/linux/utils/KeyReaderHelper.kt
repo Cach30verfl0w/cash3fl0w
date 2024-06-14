@@ -23,6 +23,8 @@ import io.karma.advcrypto.linux.keys.OpenSSLPKey
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
 import libssl.BIO
 import libssl.BIO_free
 import libssl.BIO_new
@@ -159,7 +161,7 @@ object KeyReaderHelper {
     }
 
     /**
-     * This method tries to parse the data in the specified pointer in a key. This method supports
+     * This method tries to parse the data of the specified pointer in a key. This method supports
      * PEM and DER. If no supported format worked, this method simply returns null.
      *
      * @author Cedric Hammes
@@ -180,6 +182,17 @@ object KeyReaderHelper {
 
         // If no format works, return null
         return null
+    }
+
+    /**
+     * This method tries to parse the data of the specified array in a key. This method supports PEM
+     * and DER. If no supported format worked, this method simply returns null.
+     *
+     * @author Cedric Hammes
+     * @since  14/06/2024
+     */
+    fun tryParse(array: ByteArray, purposes: UByte): Key? = array.usePinned {
+        tryParse(it.addressOf(0), array.size.toULong(), purposes)
     }
 
 }
