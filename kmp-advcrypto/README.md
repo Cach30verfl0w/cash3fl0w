@@ -16,5 +16,9 @@ This library uses a few dependencies to provide correctly-implemented cryptograp
 | [OpenSSL](https://github.com/openssl/openssl) | [OpenSSL](https://github.com/openssl) | Linux | [Apache License 2.0](https://github.com/openssl/openssl/blob/master/LICENSE.txt) |
 | [Bouncycastle](https://github.com/bcgit/bc-java) | [Legion of the Bouncy Castle Inc](https://github.com/bcgit) | Android and JVM | [MIT License](https://github.com/bcgit/bc-java/blob/main/LICENSE.md) |
 
+## ToDo
+- [ ] Support Integrity HMAC with AES and other algorithms
+- [ ] Support AES and RSA Encryption and CRYSTALS-Diltithium signing on Linux
+
 ## License
 Please respect the license and the work behind this project. This project is licensed under the [Apache-2.0 License](https://github.com/Cach30verfl0w/cash3fl0w/blob/main/kmp-advcrypto/LICENSE.md).

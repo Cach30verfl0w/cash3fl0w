@@ -41,7 +41,7 @@ interface Key: AutoCloseable {
      * @since  14/06/2024
      */
     @InsecureCryptoApi
-    val encoded: ByteArray
+    val encoded: ByteArray?
 
     /**
      * This value represents the format of the raw encoded key. This format is used to transform the
@@ -50,7 +50,7 @@ interface Key: AutoCloseable {
      * @author Cedric Hammes
      * @since  14/06/2024
      */
-    val format: KeyFormat
+    val format: KeyFormat?
 
     /**
      * This value represents the algorithm that was used to generate the key/the algorithm for which

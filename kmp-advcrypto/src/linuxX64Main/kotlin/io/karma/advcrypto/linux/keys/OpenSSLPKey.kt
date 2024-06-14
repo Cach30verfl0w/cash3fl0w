@@ -34,8 +34,7 @@ import libssl.OBJ_nid2sn
 class OpenSSLPKey(private val rawKey: CPointer<EVP_PKEY>, override val purposes: UByte,
                   override val type: KeyType): Key {
     @InsecureCryptoApi
-    override val encoded: ByteArray
-        get() = TODO("Not yet implemented")
+    override val encoded: ByteArray? = null
     override val format: KeyFormat = KeyFormat.PEM // TODO: Derive from encoded content
 
     override val algorithm: String = when(val baseId = EVP_PKEY_get_base_id(rawKey)) {
