@@ -167,7 +167,7 @@ object KeyReaderHelper {
      * @author Cedric Hammes
      * @since  14/06/2024
      */
-    fun tryParse(pointer: CPointer<ByteVar>, size: ULong, purposes: UByte): Key? {
+    private fun tryParse(pointer: CPointer<ByteVar>, size: ULong, purposes: UByte): Key? {
         // Try to parse as PEM and return if successful
         val pemKey = tryParseAsPEM(pointer, size, purposes)
         if (pemKey != null) {
