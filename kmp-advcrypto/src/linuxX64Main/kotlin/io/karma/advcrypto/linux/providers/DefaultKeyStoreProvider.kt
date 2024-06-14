@@ -19,6 +19,7 @@ package io.karma.advcrypto.linux.providers
 import io.karma.advcrypto.AbstractProvider
 import io.karma.advcrypto.Providers
 import io.karma.advcrypto.linux.utils.KeyReaderHelper
+import io.karma.advcrypto.linux.utils.SecureHeap
 import okio.FileSystem
 
 class DefaultKeyStoreProvider: AbstractProvider(
@@ -26,6 +27,8 @@ class DefaultKeyStoreProvider: AbstractProvider(
     "This provider provides access to the keystore interface on Linux devices",
     "1.0.0-Dev"
 ) {
+    private val secHeap = SecureHeap(UShort.MAX_VALUE.toULong() + 1u, 0u)
+
     override fun initialize(providers: Providers) {
         keyStore("Default") {
             initialize {
@@ -35,13 +38,15 @@ class DefaultKeyStoreProvider: AbstractProvider(
                 FileSystem.SYSTEM.read(path) {
                     val data = readByteArray()
                     close()
-                    return@readKeyFromFile KeyReaderHelper.tryParse(data, purposes, algorithm)?:
-                    throw RuntimeException("Unable to parse key, no valid format!")
+                    return@readKeyFromFile KeyReaderHelper.tryParse(data, purposes, algorithm,
+                        secHeap)?: throw RuntimeException("Unable to parse key, no valid format!")
 
                 }
             }
         }
     }
 
-    override fun close() {}
+    override fun close() {
+        this.secHeap.close()
+    }
 }

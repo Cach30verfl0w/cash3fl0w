@@ -19,11 +19,15 @@ package io.karma.advcrypto.linux.utils
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.enum.KeyFormat
 import io.karma.advcrypto.keys.enum.KeyType
+import io.karma.advcrypto.linux.keys.OpenSSLKey
 import io.karma.advcrypto.linux.keys.OpenSSLPKey
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.convert
+import kotlinx.cinterop.refTo
+import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.usePinned
 import libssl.BIO
 import libssl.BIO_free
@@ -35,6 +39,7 @@ import libssl.PEM_read_bio_PUBKEY
 import libssl.PEM_read_bio_PrivateKey
 import libssl.d2i_PUBKEY_bio
 import libssl.d2i_PrivateKey_bio
+import platform.posix.memcpy
 
 /**
  * This utility is used to read keys from a raw memory pointer, size and purpose. This is used in
@@ -186,12 +191,27 @@ object KeyReaderHelper {
 
     /**
      * This method tries to parse the data of the specified array in a key. This method supports PEM
-     * and DER. If no supported format worked, this method simply returns null.
+     * and DER. If no supported format worked, this method simply returns null. If the key algorithm
+     * was specified as AES, it parses a raw key.
      *
      * @author Cedric Hammes
      * @since  14/06/2024
      */
-    fun tryParse(array: ByteArray, purposes: UByte, algorithm: String? = null): Key? = array.usePinned {
+    fun tryParse(array: ByteArray, purposes: UByte, algorithm: String? = null, secureHeap: SecureHeap? = null): Key? = array.usePinned {
+        if (algorithm == "AES") { // TODO: Other formats than raw?
+            if (secureHeap == null)
+                throw IllegalArgumentException("If you are importing an AES key, please specify a secure heap")
+
+            val bitSize = array.size * 8
+            if (!arrayOf(128, 196, 256).contains(bitSize))
+                throw IllegalArgumentException("The AES key file doesn't match the allowed bit sizes for the key ($bitSize)")
+
+            val secureMemory = secureHeap.allocate(array.size.toULong())
+            memcpy(secureMemory, array.refTo(0), array.size.convert())
+            return OpenSSLKey(secureHeap, purposes, algorithm, secureMemory.reinterpret(),
+                array.size.toULong(), KeyType.SECRET)
+        }
+
         val parsedKey = tryParse(it.addressOf(0), array.size.toULong(), purposes)?: return null
         if (algorithm != null && parsedKey.algorithm != algorithm)
             throw IllegalArgumentException("The algorithm '$algorithm' was specified, but key is '${parsedKey.algorithm}'")
