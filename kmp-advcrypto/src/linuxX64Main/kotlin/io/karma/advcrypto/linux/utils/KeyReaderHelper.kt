@@ -158,4 +158,28 @@ object KeyReaderHelper {
         return null
     }
 
+    /**
+     * This method tries to parse the data in the specified pointer in a key. This method supports
+     * PEM and DER. If no supported format worked, this method simply returns null.
+     *
+     * @author Cedric Hammes
+     * @since  14/06/2024
+     */
+    fun tryParse(pointer: CPointer<ByteVar>, size: ULong, purposes: UByte): Key? {
+        // Try to parse as PEM and return if successful
+        val pemKey = tryParseAsPEM(pointer, size, purposes)
+        if (pemKey != null) {
+            return pemKey
+        }
+
+        // Try to parse as DER and return if successful
+        val derKey = tryParseAsDER(pointer, size, purposes)
+        if (derKey != null) {
+            return derKey
+        }
+
+        // If no format works, return null
+        return null
+    }
+
 }
