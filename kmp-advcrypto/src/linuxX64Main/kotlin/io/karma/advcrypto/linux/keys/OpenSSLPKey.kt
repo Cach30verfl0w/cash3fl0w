@@ -39,7 +39,7 @@ import libssl.PEM_write_bio_PUBKEY
 import libssl.i2d_PUBKEY_bio
 
 @OptIn(ExperimentalForeignApi::class)
-class OpenSSLPKey(private val rawKey: CPointer<EVP_PKEY>,
+class OpenSSLPKey(val rawKey: CPointer<EVP_PKEY>,
                   override val purposes: UByte, override val type: KeyType,
                   override val format: KeyFormat = KeyFormat.DER): Key {
     @InsecureCryptoApi
@@ -65,7 +65,6 @@ class OpenSSLPKey(private val rawKey: CPointer<EVP_PKEY>,
                 else -> null
             }
         }
-
     override val algorithm: String = when(val baseId = EVP_PKEY_get_base_id(rawKey)) {
         EVP_PKEY_RSA -> "RSA"
         EVP_PKEY_ED25519 -> "ED25519"

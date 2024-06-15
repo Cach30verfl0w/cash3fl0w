@@ -16,6 +16,7 @@
 
 package io.karma.advcrypto.algorithm.delegates
 
+import io.karma.advcrypto.algorithm.Algorithm
 import io.karma.advcrypto.algorithm.specs.CipherSpec
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.wrapper.Cipher
@@ -34,7 +35,7 @@ data class CipherContext<C>(val spec: CipherSpec, val key: Key, val internalCont
  * @author Cedric Hammes
  * @since  11/06/2024
  */
-class CipherDelegate<C: Any> {
+class CipherDelegate<C: Any>(private val algorithm: Algorithm) {
     private lateinit var initializer: (CipherSpec, Key) -> CipherContext<C>
     private lateinit var encrypt: ((CipherContext<C>, ByteArray) -> ByteArray)
     private lateinit var decrypt: ((CipherContext<C>, ByteArray) -> ByteArray)
@@ -85,6 +86,13 @@ class CipherDelegate<C: Any> {
             if ((key.purposes and (Key.PURPOSE_ENCRYPT or Key.PURPOSE_DECRYPT)).toInt() == 0) {
                 throw UnsupportedOperationException("This key doesn't support encrypt or decrypt")
             }
+
+            if (key.algorithm != algorithm.name) {
+                throw IllegalArgumentException("""The cipher only accepts keys for 
+                    |'${algorithm.name}', but the supposed algorithm of the key is 
+                    |'${key.algorithm}'""".trimMargin())
+            }
+
             CipherContext(spec, key, closure(spec, key))
         }
     }

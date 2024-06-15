@@ -89,7 +89,7 @@ class Algorithm(val name: String) {
         if (cipher != null) {
             throw IllegalStateException("You can set cipher twice")
         }
-        cipher = CipherDelegate<C>().apply(closure)
+        cipher = CipherDelegate<C>(this).apply(closure)
     }
 
     /**

@@ -21,18 +21,26 @@ package io.karma.advcrypto.keys.enum
  * detect the format of a key in the memory or in a file. This is also used for conversion between
  * key formats.
  *
+ * TODO: Hex and Base64?
+ *
  * @author Cedric Hammes
  * @since  13/06/2024
  */
 enum class KeyFormat {
 
     /**
-     *  This format can contain private keys (RSA or DSA), public keys (RSA or DSA) and X.509
-     *  certificates. It is header-less. It is the default format for most browsers. A file can
-     *  contain only one certificate. Optionally the certificate can be encrypted. The standard
-     *  extension is .cer, but might be .der in some installations.
+     * This format identifies that the keys is not encoded. This format is normal for keys generated
+     * for AES encryption/decryption.
+     */
+    BINARY,
+
+    /**
+     * This format can contain private keys (RSA or DSA), public keys (RSA or DSA) and X.509
+     * certificates. It is header-less. It is the default format for most browsers. A file can
+     * contain only one certificate. Optionally the certificate can be encrypted. The standard
+     * extension is .cer, but might be .der in some installations.
      *
-     *  @see https://wiki.openssl.org/index.php/DER
+     * @see https://wiki.openssl.org/index.php/DER
      */
     DER,
 
@@ -96,6 +104,7 @@ enum class KeyFormat {
      */
     override fun toString(): String {
         return when(this) {
+            BINARY -> "Binary"
             DER -> "DER"
             PEM -> "PEM"
             PKCS7 -> "PKCS#7"

@@ -35,6 +35,8 @@ import libssl.BIO_new
 import libssl.BIO_s_secmem
 import libssl.BIO_write
 import libssl.EVP_PKEY
+import libssl.EVP_PKEY_free
+import libssl.EVP_PKEY_get_bits
 import libssl.PEM_read_bio_PUBKEY
 import libssl.PEM_read_bio_PrivateKey
 import libssl.d2i_PUBKEY_bio
@@ -74,6 +76,32 @@ object KeyReaderHelper {
         }?: throw RuntimeException("Error while writing key into secure memory BIO")
 
     /**
+     * This method tries to parse the content as a PEM private key or PEM public key. If it works,
+     * this method returns a pair with the key object and the type of the key.
+     *
+     * @author Cedric Hammes
+     * @since  15/06/2024
+     */
+    private fun getPEMKey(pointer: CPointer<ByteVar>, size: ULong): Pair<CPointer<EVP_PKEY>, KeyType>? {
+        // Try to interpret the key as private key. If it works, we return it
+        val privateKeyBuffer = createSecureMemoryBuffer(pointer, size)
+        val privateKey = PEM_read_bio_PrivateKey(privateKeyBuffer, null, null, null)
+        BIO_free(privateKeyBuffer)
+        if (privateKey != null) {
+            return Pair(privateKey, KeyType.PRIVATE)
+        }
+
+        // Try to interpret the key as public key. If it works, we return it
+        val publicKeyBuffer = createSecureMemoryBuffer(pointer, size)
+        val publicKey = PEM_read_bio_PUBKEY(publicKeyBuffer, null, null, null)
+        BIO_free(publicKeyBuffer)
+        if (publicKey != null) {
+            return Pair(publicKey, KeyType.PUBLIC)
+        }
+        return null
+    }
+
+    /**
      * This method constructs a key buffer and try to interpret it as PEM-formated private key. If
      * that doesn't work, it tries to create a new buffer and interpret it as PEM-formatted public
      * key. If one of these worked, this function creates the key from the content and returns it
@@ -92,29 +120,37 @@ object KeyReaderHelper {
      * @since  14/06/2024
      */
     private fun tryParseAsPEM(pointer: CPointer<ByteVar>, size: ULong, purposes: UByte): Key? {
-        fun getPEMKey(pointer: CPointer<ByteVar>, size: ULong): Pair<CPointer<EVP_PKEY>, KeyType>? {
-            // Try to interpret the key as private key. If it works, we return it
-            val privateKeyBuffer = createSecureMemoryBuffer(pointer, size)
-            val privateKey = PEM_read_bio_PrivateKey(privateKeyBuffer, null, null, null)
-            BIO_free(privateKeyBuffer)
-            if (privateKey != null) {
-                return Pair(privateKey, KeyType.PRIVATE)
-            }
-
-            // Try to interpret the key as public key. If it works, we return it
-            val publicKeyBuffer = createSecureMemoryBuffer(pointer, size)
-            val publicKey = PEM_read_bio_PUBKEY(publicKeyBuffer, null, null, null)
-            BIO_free(publicKeyBuffer)
-            if (publicKey != null) {
-                return Pair(publicKey, KeyType.PUBLIC)
-            }
-            return null
-        }
-
         // Try to interpret the key as PEM-formatted key and return
         val key = getPEMKey(pointer, size)
         if (key != null) {
             return OpenSSLPKey(key.first, purposes, key.second, KeyFormat.PEM)
+        }
+        return null
+    }
+
+    /**
+     * This method tries to parse the content as a DER private key or DER public key. If it works,
+     * this method returns a pair with the key object and the type of the key.
+     *
+     * @author Cedric Hammes
+     * @since  15/06/2024
+     */
+    private fun getDERKey(pointer: CPointer<ByteVar>, size: ULong):
+            Pair<CPointer<EVP_PKEY>, KeyType>? {
+        // Try to interpret the key as private key. If it works, we return it
+        val privateKeyBuffer = createSecureMemoryBuffer(pointer, size)
+        val privateKey = d2i_PrivateKey_bio(privateKeyBuffer, null)
+        BIO_free(privateKeyBuffer)
+        if (privateKey != null) {
+            return Pair(privateKey, KeyType.PRIVATE)
+        }
+
+        // Try to interpret the key as public key. If it works, we return it
+        val publicKeyBuffer = createSecureMemoryBuffer(pointer, size)
+        val publicKey = d2i_PUBKEY_bio(publicKeyBuffer, null)
+        BIO_free(publicKeyBuffer)
+        if (publicKey != null) {
+            return Pair(publicKey, KeyType.PUBLIC)
         }
         return null
     }
@@ -138,25 +174,6 @@ object KeyReaderHelper {
      * @since  14/06/2024
      */
     private fun tryParseAsDER(pointer: CPointer<ByteVar>, size: ULong, purposes: UByte): Key? {
-        fun getDERKey(pointer: CPointer<ByteVar>, size: ULong): Pair<CPointer<EVP_PKEY>, KeyType>? {
-            // Try to interpret the key as private key. If it works, we return it
-            val privateKeyBuffer = createSecureMemoryBuffer(pointer, size)
-            val privateKey = d2i_PrivateKey_bio(privateKeyBuffer, null)
-            BIO_free(privateKeyBuffer)
-            if (privateKey != null) {
-                return Pair(privateKey, KeyType.PRIVATE)
-            }
-
-            // Try to interpret the key as public key. If it works, we return it
-            val publicKeyBuffer = createSecureMemoryBuffer(pointer, size)
-            val publicKey = d2i_PUBKEY_bio(publicKeyBuffer, null)
-            BIO_free(publicKeyBuffer)
-            if (publicKey != null) {
-                return Pair(publicKey, KeyType.PUBLIC)
-            }
-            return null
-        }
-
         // Try to interpret the key as PEM-formatted key and return
         val key = getDERKey(pointer, size)
         if (key != null) {
@@ -197,7 +214,8 @@ object KeyReaderHelper {
      * @author Cedric Hammes
      * @since  14/06/2024
      */
-    fun tryParse(array: ByteArray, purposes: UByte, algorithm: String? = null, secureHeap: SecureHeap? = null): Key? = array.usePinned {
+    fun tryParse(array: ByteArray, purposes: UByte, algorithm: String? = null,
+                 secureHeap: SecureHeap? = null): Key? = array.usePinned {
         if (algorithm == "AES") { // TODO: Other formats than raw?
             if (secureHeap == null)
                 throw IllegalArgumentException("If you are importing an AES key, please specify a secure heap")
@@ -216,6 +234,47 @@ object KeyReaderHelper {
         if (algorithm != null && parsedKey.algorithm != algorithm)
             throw IllegalArgumentException("The algorithm '$algorithm' was specified, but key is '${parsedKey.algorithm}'")
         return parsedKey
+    }
+
+    /**
+     * This method tries to acquire the key's size in bits based on the type of the key. If the key
+     * is a internal-provided key, this method uses the easiest method to parse the key. Below this
+     * text you see a list of all supported key types and how we acquire this value from it:
+     * - [OpenSSLKey]: Try to parse it into the format and acquire key's size with OpenSSL. If the
+     * key is binary "formatted", return the size of the buffer multiplied with 8.
+     * - [OpenSSLPKey]: Acquire the raw key object and read the size from it with the OpenSSL method
+     * [EVP_PKEY_get_bits].
+     * - Other: Copy the content into another secure buffer and parse it based on the format of the
+     * key. It's like the method for the [OpenSSLKey] object but without the copy.
+     *
+     * @author Cedric Hammes
+     * @since  15/06/2024
+     */
+    fun readKeySizeInBits(key: Key): Int {
+        if (key is OpenSSLKey) {
+            return when(key.format) {
+                KeyFormat.PEM -> checkNotNull(getPEMKey(key.rawDataPtr.reinterpret(),
+                    key.rawDataSize)).first.run {
+                        val keySize = EVP_PKEY_get_bits(this)
+                        EVP_PKEY_free(this)
+                        return keySize
+                    }
+                KeyFormat.DER -> checkNotNull(getDERKey(key.rawDataPtr.reinterpret(),
+                    key.rawDataSize)).first.run {
+                        val keySize = EVP_PKEY_get_bits(this)
+                        EVP_PKEY_free(this)
+                        return keySize
+                    }
+                KeyFormat.BINARY -> (key.rawDataSize * 8u).toInt()
+                else -> throw UnsupportedOperationException("Format ${key.format} is unsupported")
+            }
+        }
+
+        if (key is OpenSSLPKey) {
+            return EVP_PKEY_get_bits(key.rawKey)
+        }
+
+        TODO("Read key into secure buffer by a function like copyTo() with a secure-allocated buffer")
     }
 
 }

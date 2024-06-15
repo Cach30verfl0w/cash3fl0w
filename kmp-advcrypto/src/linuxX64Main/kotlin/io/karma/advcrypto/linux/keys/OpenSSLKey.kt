@@ -35,8 +35,8 @@ import libssl.RAND_bytes
 class OpenSSLKey(private val secureHeap: SecureHeap,
                  override val purposes: UByte,
                  override val algorithm: String,
-                 private val rawDataPtr: CPointer<UByteVar>,
-                 private val rawDataSize: ULong,
+                 val rawDataPtr: CPointer<UByteVar>,
+                 val rawDataSize: ULong,
                  override val type: KeyType
 ): Key {
     @InsecureCryptoApi
