@@ -25,12 +25,8 @@ import io.karma.advcrypto.keys.enum.KeyType
 import io.karma.advcrypto.linux.keys.OpenSSLKey
 import io.karma.advcrypto.linux.keys.OpenSSLPKey
 import io.karma.advcrypto.linux.utils.SecureHeap
-import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.CPointerVar
 import kotlinx.cinterop.CValuesRef
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.IntVar
-import kotlinx.cinterop.UByteVar
 import kotlinx.cinterop.UIntVar
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.alloc
@@ -48,7 +44,6 @@ import libssl.EVP_DigestInit
 import libssl.EVP_DigestUpdate
 import libssl.EVP_MAX_MD_SIZE
 import libssl.EVP_MD
-import libssl.EVP_MD_CTX
 import libssl.EVP_MD_CTX_free
 import libssl.EVP_MD_CTX_new
 import libssl.EVP_PKEY_free
@@ -64,21 +59,11 @@ import libssl.EVP_sha3_256
 import libssl.EVP_sha3_384
 import libssl.EVP_sha3_512
 import libssl.EVP_sha512
-import libssl.MD5
 import libssl.RSAPublicKey_dup
 import libssl.RSA_F4
 import libssl.RSA_free
 import libssl.RSA_generate_key_ex
 import libssl.RSA_new
-import libssl.SHA1
-import libssl.SHA224
-import libssl.SHA224_DIGEST_LENGTH
-import libssl.SHA256
-import libssl.SHA256_DIGEST_LENGTH
-import libssl.SHA384
-import libssl.SHA384_DIGEST_LENGTH
-import libssl.SHA512
-import libssl.SHA512_DIGEST_LENGTH
 
 class OpenSSLCryptoProvider: AbstractProvider(
     "Default",

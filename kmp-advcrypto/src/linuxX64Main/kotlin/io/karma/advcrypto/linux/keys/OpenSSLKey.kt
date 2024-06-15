@@ -27,7 +27,7 @@ import kotlinx.cinterop.UByteVar
 import kotlinx.cinterop.get
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.toKString
-import libssl.ERR_func_error_string
+import libssl.ERR_error_string
 import libssl.ERR_get_error
 import libssl.RAND_bytes
 
@@ -57,8 +57,8 @@ class OpenSSLKey(private val secureHeap: SecureHeap,
         ): OpenSSLKey {
             val dataSize = (keySize / 8).toULong()
             val rawDataPtr = secureHeap.allocate((keySize / 8).toULong()).reinterpret<UByteVar>()
-            if (RAND_bytes(rawDataPtr, 1) != 1) {
-                throw Exception(ERR_func_error_string(ERR_get_error())?.toKString())
+            if (RAND_bytes(rawDataPtr, dataSize.toInt()) != 1) {
+                throw Exception(ERR_error_string(ERR_get_error(), null)?.toKString())
             }
 
             return OpenSSLKey(secureHeap, purposes, algorithm, rawDataPtr, dataSize, type)

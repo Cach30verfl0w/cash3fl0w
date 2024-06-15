@@ -24,7 +24,7 @@ import libssl.CRYPTO_secure_malloc
 import libssl.CRYPTO_secure_malloc_done
 import libssl.CRYPTO_secure_malloc_init
 import libssl.CRYPTO_secure_malloc_initialized
-import libssl.ERR_func_error_string
+import libssl.ERR_error_string
 import libssl.ERR_get_error
 
 /**
@@ -66,7 +66,7 @@ class SecureHeap(size: ULong, minSize: ULong): AutoCloseable {
      * @since  12/06/2024
      */
     fun allocate(size: ULong): COpaquePointer = CRYPTO_secure_malloc(size, this.toString(), 47)
-        ?: throw Exception(ERR_func_error_string(ERR_get_error())?.toKString())
+        ?: throw Exception(ERR_error_string(ERR_get_error(), null)?.toKString())
 
     /**
      * This method frees the allocated memory from the secure heap. This also deletes the data
