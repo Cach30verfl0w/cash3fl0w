@@ -7,7 +7,6 @@ package de.cacheoverflow.cashflow.utils
 
 import de.cacheoverflow.cashflow.security.EnumAuthScheme
 import de.cacheoverflow.cashflow.security.EnumAuthStatus
-import de.cacheoverflow.cashflow.security.IKey
 import de.cacheoverflow.cashflow.security.ISecurityProvider
 import de.cacheoverflow.cashflow.security.cryptography.IAsymmetricCryptoProvider
 import de.cacheoverflow.cashflow.security.cryptography.ISymmetricCryptoProvider

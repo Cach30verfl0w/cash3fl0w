@@ -5,11 +5,7 @@
 
 package de.cacheoverflow.cashflow.security
 
-import de.cacheoverflow.cashflow.security.cryptography.IAsymmetricCryptoProvider
-import de.cacheoverflow.cashflow.security.cryptography.ISymmetricCryptoProvider
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import okio.Path
 
 /**
  * This interface is the implementation templates for the security and cryptography architecture of
@@ -23,28 +19,6 @@ import okio.Path
  * @since  02/06/2024
  */
 interface ISecurityProvider {
-
-    fun getSymmetricCryptoProvider(usePadding: Boolean = true): ISymmetricCryptoProvider
-
-    fun getAsymmetricCryptoProvider(usePadding: Boolean = true): IAsymmetricCryptoProvider
-
-    /**
-     * This method reads the specified file from the file system specified in the constructor to
-     * extract a key from the file.
-     *
-     * @param file       The relative path to the file being read
-     * @param algorithm  The key's algorithm
-     * @param privateKey Whether the key is a private key or not (ignored on symmetric algorithms)
-     *
-     * @author Cedric Hammes
-     * @since  05/06/2024
-     */
-    fun readKeyFromFile(
-        file: Path,
-        algorithm: EnumAlgorithm,
-        privateKey: Boolean = true,
-        usePadding: Boolean = true
-    ): Flow<IKey>
 
     /**
      * This method returns the authentication methods supported by this system. This is used to

@@ -12,24 +12,12 @@ import android.view.WindowManager.LayoutParams
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators
 import de.cacheoverflow.cashflow.MainActivity
-import de.cacheoverflow.cashflow.security.cryptography.AESCryptoProvider
-import de.cacheoverflow.cashflow.security.cryptography.IAsymmetricCryptoProvider
-import de.cacheoverflow.cashflow.security.cryptography.ISymmetricCryptoProvider
-import de.cacheoverflow.cashflow.security.cryptography.RSACryptoProvider
 import de.cacheoverflow.cashflow.utils.DI
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
-import okio.FileSystem
 import okio.Path
 import java.io.IOException
-import java.security.KeyFactory
-import java.security.KeyStore
-import java.security.spec.PKCS8EncodedKeySpec
-import java.security.spec.X509EncodedKeySpec
 import java.util.ArrayList
-import javax.crypto.spec.SecretKeySpec
 
 /**
  * This is the Android-specific implementation of the security manager. This security manager
@@ -44,54 +32,12 @@ import javax.crypto.spec.SecretKeySpec
  * @author Cedric Hammes
  * @since  03/06/2024
  *
- * @see KeyStore
  * @see LayoutParams
  * @see KeyguardManager
  */
 class AndroidSecurityProvider(private val pathProvider: (Path) -> Path): ISecurityProvider {
-    internal val keyStore = KeyStore.getInstance(KEY_STORE).apply { load(null) }
     val isAuthenticated = MutableStateFlow(false)
     private var screenshotDisabled = false
-
-    override fun getSymmetricCryptoProvider(usePadding: Boolean): ISymmetricCryptoProvider {
-        return AESCryptoProvider(this, usePadding)
-    }
-
-    override fun getAsymmetricCryptoProvider(usePadding: Boolean): IAsymmetricCryptoProvider {
-        return RSACryptoProvider(this, usePadding)
-    }
-
-    /**
-     * This method reads the specified file from the file system specified in the constructor to
-     * extract a key from the file.
-     *
-     * @param file       The relative path to the file being read
-     * @param algorithm  The key's algorithm
-     * @param privateKey Whether the key is a private key or not (ignored on symmetric algorithms)
-     *
-     * @author Cedric Hammes
-     * @since  05/06/2024
-     */
-    override fun readKeyFromFile(
-        file: Path,
-        algorithm: ISecurityProvider.EnumAlgorithm,
-        privateKey: Boolean,
-        usePadding: Boolean
-    ): Flow<IKey> = flow {
-        FileSystem.SYSTEM.read(pathProvider(file)) {
-            emit(AndroidKey(when(algorithm) {
-                ISecurityProvider.EnumAlgorithm.AES -> SecretKeySpec(readByteArray(), "AES")
-                ISecurityProvider.EnumAlgorithm.RSA -> {
-                    val keyFactory = KeyFactory.getInstance("RSA")
-                    when(privateKey) {
-                        false -> keyFactory.generatePrivate(PKCS8EncodedKeySpec(readByteArray()))
-                        true -> keyFactory.generatePublic(X509EncodedKeySpec(readByteArray()))
-                    }
-                }
-            }!!, usePadding))
-            close()
-        }
-    }
 
     /**
      * This method returns the authentication methods supported by this system. This is used to

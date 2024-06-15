@@ -17,7 +17,7 @@ kotlin {
         }
     }
 
-    listOf(
+    /*listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
@@ -26,7 +26,7 @@ kotlin {
             baseName = "Cash3Fl0w"
             isStatic = true
         }
-    }
+    }*/
 
     sourceSets {
 
@@ -41,6 +41,9 @@ kotlin {
         iosMain.dependencies {
         }
         commonMain.dependencies {
+            // Add kmp-advcrypto
+            implementation(project(":kmp-advcrypto"))
+
             // Compose and decompose
             implementation(compose.runtime)
             implementation(compose.foundation)
