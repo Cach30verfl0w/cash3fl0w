@@ -14,7 +14,7 @@ class SecureHeapTests {
 
     @Test
     fun test() {
-        SecureHeap(ULong.SIZE_BYTES.toULong(), 0U).use { heap ->
+        SecureHeap().use { heap ->
             val pointer = heap.allocate(8U).reinterpret<ULongVar>()
             pointer.pointed.value = 100U
             assert(pointer.pointed.value == 100UL)

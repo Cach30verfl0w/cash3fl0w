@@ -23,7 +23,6 @@ import libssl.CRYPTO_secure_clear_free
 import libssl.CRYPTO_secure_malloc
 import libssl.CRYPTO_secure_malloc_done
 import libssl.CRYPTO_secure_malloc_init
-import libssl.CRYPTO_secure_malloc_initialized
 import libssl.ERR_error_string
 import libssl.ERR_get_error
 
@@ -40,7 +39,7 @@ import libssl.ERR_get_error
  * @since  12/06/2024
  */
 @OptIn(ExperimentalForeignApi::class, ExperimentalStdlibApi::class)
-class SecureHeap(size: ULong, minSize: ULong): AutoCloseable {
+class SecureHeap: AutoCloseable {
 
     /**
      * This constructor initializes the secure heap if no secure heap was already initialized. If
@@ -50,8 +49,9 @@ class SecureHeap(size: ULong, minSize: ULong): AutoCloseable {
      * @since  12/06/2024
      */
     init {
-        if (CRYPTO_secure_malloc_initialized() != 1) {
-            CRYPTO_secure_malloc_init(size, minSize)
+        counter += 1
+        if (counter == 1) {
+            CRYPTO_secure_malloc_init(UShort.MAX_VALUE.toULong() + 1u, 0u)
         }
     }
 
@@ -65,8 +65,10 @@ class SecureHeap(size: ULong, minSize: ULong): AutoCloseable {
      * @author Cedric Hammes
      * @since  12/06/2024
      */
-    fun allocate(size: ULong): COpaquePointer = CRYPTO_secure_malloc(size, this.toString(), 47)
-        ?: throw Exception(ERR_error_string(ERR_get_error(), null)?.toKString())
+    fun allocate(size: ULong): COpaquePointer {
+        return CRYPTO_secure_malloc(size, this.toString(), 47) ?:
+        throw Exception("Failed to allocate secure heap: ${ERR_error_string(ERR_get_error(), null)?.toKString()}")
+    }
 
     /**
      * This method frees the allocated memory from the secure heap. This also deletes the data
@@ -90,9 +92,14 @@ class SecureHeap(size: ULong, minSize: ULong): AutoCloseable {
      * @since  12/06/2024
      */
     override fun close() {
-        if (CRYPTO_secure_malloc_initialized() == 1) {
+        counter -= 1
+        if (counter == 0) {
             CRYPTO_secure_malloc_done()
         }
+    }
+
+    companion object {
+        private var counter = 0
     }
 
 

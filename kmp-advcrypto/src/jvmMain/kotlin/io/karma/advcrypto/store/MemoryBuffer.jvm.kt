@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package io.karma.advcrypto.annotations
+package io.karma.advcrypto.store
 
 /**
- * This annotations marks an insecure/outdated API for providing or perform cryptographic operations
- * with your KMP application. This annotation is used for block modes or other insecure or outdated
- * cryptographic parameter.
+ * This method creates a memory buffer from the specified byte array. This can be used to
+ * copy data directly into the byte array
  *
  * @author Cedric Hammes
- * @since  11/06/2024
+ * @since  16/06/2024
  */
-@RequiresOptIn("By using this function of the API, the confidentiality of sensitive data is in risk", RequiresOptIn.Level.ERROR)
-@MustBeDocumented
-@Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FIELD, AnnotationTarget.PROPERTY,
-    AnnotationTarget.FUNCTION
-)
-annotation class InsecureCryptoApi
+actual fun emptyBuffer(): MemoryBuffer {
+    TODO("Not yet implemented")
+}
+
+/**
+ * This method creates a secure memory buffer based on the platform.
+ *
+ * @author Cedric Hammes
+ * @since  16/06/2024
+ */
+actual fun secureBuffer(): MemoryBuffer {
+    TODO("Not yet implemented")
+}

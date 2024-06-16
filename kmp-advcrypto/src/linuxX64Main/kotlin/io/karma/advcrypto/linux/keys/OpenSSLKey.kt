@@ -16,15 +16,16 @@
 
 package io.karma.advcrypto.linux.keys
 
-import io.karma.advcrypto.annotations.InsecureCryptoApi
+
 import io.karma.advcrypto.keys.Key
 import io.karma.advcrypto.keys.enum.KeyFormat
 import io.karma.advcrypto.keys.enum.KeyType
 import io.karma.advcrypto.linux.utils.SecureHeap
+import io.karma.advcrypto.store.MemoryBuffer
+import io.karma.advcrypto.store.PointerMemoryBuffer
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.UByteVar
-import kotlinx.cinterop.get
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.toKString
 import libssl.ERR_error_string
@@ -32,15 +33,18 @@ import libssl.ERR_get_error
 import libssl.RAND_bytes
 
 @OptIn(ExperimentalForeignApi::class)
-class OpenSSLKey(private val secureHeap: SecureHeap,
-                 override val purposes: UByte,
-                 override val algorithm: String,
-                 val rawDataPtr: CPointer<UByteVar>,
-                 val rawDataSize: ULong,
-                 override val type: KeyType
+class OpenSSLKey(
+    private val secureHeap: SecureHeap,
+    override val purposes: UByte,
+    override val algorithm: String,
+    val rawDataPtr: CPointer<UByteVar>,
+    val rawDataSize: ULong,
+    override val type: KeyType
 ): Key {
-    @InsecureCryptoApi
-    override val encoded: ByteArray = ByteArray(rawDataSize.toInt()) { rawDataPtr[it].toByte() }
+    override fun copyEncodedInto(buffer: MemoryBuffer) {
+        PointerMemoryBuffer(rawDataPtr, rawDataSize.toInt()).copyInto(buffer)
+    }
+
     override val format: KeyFormat = KeyFormat.DER // TODO: Derive from key
 
     override fun close() {

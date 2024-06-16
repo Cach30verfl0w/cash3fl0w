@@ -166,7 +166,7 @@ class OpenSSLCryptoProvider: AbstractProvider(
     "This class provides access to the default asymmetric and symmetric algorithms on Linux",
     "1.0.0-Dev"
 ) {
-    private val secureHeap = SecureHeap(UShort.MAX_VALUE.toULong() + 1u, 0u)
+    private val secureHeap = SecureHeap()
 
     @OptIn(ExperimentalForeignApi::class, ExperimentalStdlibApi::class)
     override fun initialize(providers: Providers) {

@@ -27,7 +27,7 @@ class DefaultKeyStoreProvider: AbstractProvider(
     "This provider provides access to the keystore interface on Linux devices",
     "1.0.0-Dev"
 ) {
-    private val secHeap = SecureHeap(UShort.MAX_VALUE.toULong() + 1u, 0u)
+    private val secHeap = SecureHeap()
 
     override fun initialize(providers: Providers) {
         keyStore("Default") {
