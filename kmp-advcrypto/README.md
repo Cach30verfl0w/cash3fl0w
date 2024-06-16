@@ -1,4 +1,3 @@
-
 # kmp-advcrypto (WIP)
 kmp-advcrypto is a cross-platform cryptography library developed with Kotlin Multiplatform. This library allows to perform cryptographic operations on Desktop and Mobile operating systems without developing a crypto module for separate platforms.
 
@@ -21,6 +20,9 @@ This library uses a few dependencies to provide correctly-implemented cryptograp
 ## ToDo
 - [ ] Support Integrity HMAC with AES and other algorithms
 - [ ] Support AES and RSA Encryption and CRYSTALS-Diltithium signing on Linux
+- [ ] Add support for Argon2 algorithms on Linux
+- [ ] Support for additional authentication data (AAD) in ciphers
+- [ ] Add extra module for compose with Authenticator composable etc.
 
 ## License
 Please respect the license and the work behind this project. This project is licensed under the [Apache-2.0 License](https://github.com/Cach30verfl0w/cash3fl0w/blob/main/kmp-advcrypto/LICENSE.md).
