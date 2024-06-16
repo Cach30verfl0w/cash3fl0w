@@ -8,31 +8,10 @@ package de.cacheoverflow.cashflow.utils
 import de.cacheoverflow.cashflow.security.EnumAuthScheme
 import de.cacheoverflow.cashflow.security.EnumAuthStatus
 import de.cacheoverflow.cashflow.security.ISecurityProvider
-import de.cacheoverflow.cashflow.security.cryptography.IAsymmetricCryptoProvider
-import de.cacheoverflow.cashflow.security.cryptography.ISymmetricCryptoProvider
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import okio.Path
 
 class DesktopSecurityProvider: ISecurityProvider {
-
-    override fun getSymmetricCryptoProvider(usePadding: Boolean): ISymmetricCryptoProvider {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAsymmetricCryptoProvider(usePadding: Boolean): IAsymmetricCryptoProvider {
-        TODO("Not yet implemented")
-    }
-
-    override fun readKeyFromFile(
-        file: Path,
-        algorithm: ISecurityProvider.EnumAlgorithm,
-        privateKey: Boolean,
-        usePadding: Boolean
-    ): Flow<IKey> {
-        TODO("Not yet implemented")
-    }
 
     override fun getSupportedAuthMethods(): Array<EnumAuthScheme> {
         return EnumAuthScheme.entries.toTypedArray() // TODO
