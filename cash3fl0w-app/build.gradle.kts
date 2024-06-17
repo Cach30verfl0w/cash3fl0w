@@ -17,19 +17,7 @@ kotlin {
         }
     }
 
-    /*listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "Cash3Fl0w"
-            isStatic = true
-        }
-    }*/
-
     sourceSets {
-
         androidMain.dependencies {
             implementation(libs.androidx.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -37,8 +25,7 @@ kotlin {
             implementation(libs.androidx.biometric)
             implementation(libs.decompose)
             implementation(libs.koin.android)
-        }
-        iosMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             // Add kmp-advcrypto
@@ -62,7 +49,11 @@ kotlin {
             // Other
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.okio)
-            implementation(libs.qrkit)
+
+            // Ktor
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

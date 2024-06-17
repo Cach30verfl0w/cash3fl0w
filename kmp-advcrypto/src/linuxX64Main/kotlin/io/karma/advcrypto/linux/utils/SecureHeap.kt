@@ -51,7 +51,7 @@ class SecureHeap: AutoCloseable {
     init {
         counter += 1
         if (counter == 1) {
-            CRYPTO_secure_malloc_init(UShort.MAX_VALUE.toULong() + 1u, 0u)
+            CRYPTO_secure_malloc_init(heapSize, 0u)
         }
     }
 
@@ -100,6 +100,12 @@ class SecureHeap: AutoCloseable {
 
     companion object {
         private var counter = 0
+
+        /**
+         * This is the size of the heap being initialized. Set only before the initialization of the
+         * heap happened. After the init, this value has no effect.
+         */
+        var heapSize = UShort.MAX_VALUE.toULong() + 1u
     }
 
 
